@@ -7,6 +7,7 @@ use App\Http\Controllers\ApiBaseController;
 use App\Http\Controllers\Controller;
 use App\Http\Errors\ErrorCode;
 use App\Http\Requests\Api\V1\Auth\LoginApiRequest;
+use App\Models\User;
 use App\Services\v1\AuthService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -38,7 +39,8 @@ class AuthController extends ApiBaseController
 
     public function me()
     {
-        return $this->successResponse(Auth::user());
+        $user_id = Auth::user()->id;
+        return $this->successResponse(User::with('permissions')->find($user_id));
     }
 
     public function authFail()

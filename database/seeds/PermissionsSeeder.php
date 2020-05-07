@@ -18,6 +18,6 @@ class PermissionsSeeder extends Seeder
         Permission::create(['name' => 'patients','alias'=>'Пациенты']);
         Permission::create(['name' => 'services','alias'=>'Услуги']);
         Permission::create(['name' => 'materials','alias'=>'Материалы']);
-        Permission::create(['name' => 'protocols','alias'=>'Шаюлоны протоколов']);
+        Permission::create(['name' => 'protocols','alias'=>'Шаблоны протоколов']);
     }
 }

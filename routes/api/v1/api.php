@@ -29,6 +29,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     });
     Route::group(['namespace' => 'Settings'], function () {
         Route::get('/services','ServicesController@index');
+        Route::get('/get_services_array','ServicesController@getServicesArray');
         Route::get('/services_by_category/{id}','ServicesController@getAllServicesByCategory')->where('category_id', '[0-9]+');
         Route::get('/service_categories','ServicesController@getServiceCategories');
         Route::get('/search_services','ServicesController@searchServices');
@@ -39,5 +40,17 @@ Route::group(['middleware' => 'auth:api'], function () {
 
         Route::post('/service_categories','ServicesController@storeCategory');
         Route::put('/service_categories/{id}','ServicesController@updateCategory');
+        Route::delete('/service_categories/{id}','ServicesController@deleteCategory');
+
+        Route::get('/positions','PositionsController@index');
+        Route::get('/positions/{id}','PositionsController@show');
+        Route::post('/positions','PositionsController@store');
+        Route::put('/positions/{id}','PositionsController@update');
+        Route::delete('/positions/{id}','PositionsController@destroy');
+
+        Route::get('/employees','EmployeesController@index');
+        Route::get('/employees/{id}','EmployeesController@show');
+        Route::post('/employees','EmployeesController@store');
+        Route::put('/employees/{id}','EmployeesController@update');
     });
 });

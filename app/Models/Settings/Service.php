@@ -10,4 +10,8 @@ class Service extends Model
     public function category(){
         return $this->belongsTo(ServiceCategory::class,'category_id');
     }
+
+    public function employees(){
+        return $this->belongsToMany(Employee::class,'employees_has_services');
+    }
 }

@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Services\v1\impl\AuthServiceImpl;
+use App\Services\v1\impl\EmployeesAndPositionsServiceImpl;
 use App\Services\v1\impl\PermissionsServiceImpl;
 use App\Services\v1\impl\ServicesServiceImpl;
 use Illuminate\Support\ServiceProvider;
@@ -26,6 +27,9 @@ class SystemServiceProvider extends ServiceProvider
         });
         $this->app->bind('App\Services\v1\ServicesService', function ($app) {
             return (new ServicesServiceImpl());
+        });
+        $this->app->bind('App\Services\v1\EmployeesAndPositionsService', function ($app) {
+            return (new EmployeesAndPositionsServiceImpl());
         });
 
 

@@ -77,7 +77,6 @@ class ServicesController extends ApiBaseController
      */
     public function show($id)
     {
-        //
     }
 
     /**
@@ -138,5 +137,12 @@ class ServicesController extends ApiBaseController
         $category->update($request->all());
         return $this->successResponse($this->servicesService->getServiceCategories());
 
+    }
+
+    public function deleteCategory($id){
+        return $this->successResponse($this->servicesService->deleteCategory($id));
+    }
+    public function getServicesArray(){
+        return $this->successResponse(Service::all());
     }
 }

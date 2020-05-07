@@ -17,4 +17,5 @@ interface ServicesService
     public function searchServices($search_key);
     public function searchByCategories($category_id,$search_key);
     public function getServiceById($id);
+    public function deleteCategory($id);
 }

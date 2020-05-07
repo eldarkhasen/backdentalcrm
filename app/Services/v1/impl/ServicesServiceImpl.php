@@ -9,6 +9,8 @@
 namespace App\Services\v1\impl;
 
 
+use App\Exceptions\ApiServiceException;
+use App\Http\Errors\ErrorCode;
 use App\Models\Settings\Service;
 use App\Models\Settings\ServiceCategory;
 use App\Services\v1\ServicesService;
@@ -48,5 +50,15 @@ class ServicesServiceImpl implements ServicesService
 
     public function getServiceById($id){
         return Service::with('category')->find($id);
+    }
+
+    public function deleteCategory($id){
+        $category = ServiceCategory::findOrFail($id);
+        if(count($category->services)>0){
+            throw new ApiServiceException(400, false,
+                ['message' => 'Нельзя удалить данную категорию',
+                    'errorCode' => ErrorCode::NOT_ALLOWED]);
+        }
+        return ServiceCategory::destroy($id);
     }
 }

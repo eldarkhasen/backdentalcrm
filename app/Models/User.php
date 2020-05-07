@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Settings\Employee;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -17,7 +18,7 @@ class User extends Authenticatable implements JWTSubject
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'email', 'password', 'role_id'
     ];
 
     /**
@@ -60,5 +61,9 @@ class User extends Authenticatable implements JWTSubject
 
     public function permissions(){
         return $this->belongsToMany(Permission::class,'user_has_permissions');
+    }
+
+    public function employee(){
+        return $this->hasOne(Employee::class, 'account_id');
     }
 }

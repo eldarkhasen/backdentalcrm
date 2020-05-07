@@ -16,7 +16,6 @@ class CreateUsersHasPermissionsTable extends Migration
         Schema::create('user_has_permissions', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedBigInteger('permission_id');
-            $table->string('model_type');
             $table->unsignedBigInteger('user_id');
 
             $table->foreign('permission_id')
