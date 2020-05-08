@@ -11,11 +11,11 @@ namespace App\Services\v1;
 
 interface ServicesService
 {
-    public function getAllServices();
-    public function getAllServicesByCategory($category_id);
+    public function getAllServices($perPage);
+    public function getAllServicesByCategory($category_id,$perPage);
     public function getServiceCategories();
-    public function searchServices($search_key);
-    public function searchByCategories($category_id,$search_key);
+    public function searchServices($search_key,$perPage);
+    public function searchByCategories($category_id,$search_key,$perPage);
     public function getServiceById($id);
     public function deleteCategory($id);
 }

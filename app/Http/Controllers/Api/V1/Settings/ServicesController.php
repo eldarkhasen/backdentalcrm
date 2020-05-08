@@ -32,14 +32,15 @@ class ServicesController extends ApiBaseController
      */
     public function index(Request $request)
     {
+        $perPage = $request->get('perPage',10);
         if($request->has('search') && !$request->has('category_id')){
-            return $this->successResponse($this->servicesService->searchServices($request->get('search')));
+            return $this->successResponse($this->servicesService->searchServices($request->get('search'),$perPage));
         }else if($request->has('category_id') && !$request->has('search')){
-            return $this->successResponse($this->servicesService->getAllServicesByCategory($request->get('category_id')));
+            return $this->successResponse($this->servicesService->getAllServicesByCategory($request->get('category_id'),$perPage));
         }else if($request->has('category_id') && $request->has('search')){
-            return $this->successResponse($this->servicesService->searchByCategories($request->get('category_id'),$request->get('search')));
+            return $this->successResponse($this->servicesService->searchByCategories($request->get('category_id'),$request->get('search'),$perPage));
         }else{
-            return $this->successResponse($this->servicesService->getAllServices());
+            return $this->successResponse($this->servicesService->getAllServices($perPage));
         }
 
     }

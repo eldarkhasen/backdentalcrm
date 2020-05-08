@@ -26,9 +26,21 @@ class EmployeesController extends ApiBaseController
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return $this->successResponse($this->employeeService->getEmployees());
+        $perPage = $request->get('perPage',10);
+        if($request->has('search') && !$request->has('position')){
+            return $this->successResponse($this->employeeService->searchEmployee($request->get('search'),$perPage));
+
+        }else if($request->has('position') && !$request->has('search')){
+            return $this->successResponse($this->employeeService->getEmployeeByPosition($request->get('position'),$perPage));
+
+        }else if($request->has('position') && $request->has('search')){
+            return $this->successResponse($this->employeeService->searchEmployeeByPosition($request->get('search'),$request->get('position'),$perPage));
+        }else{
+            return $this->successResponse($this->employeeService->getEmployees($perPage));
+        }
+
     }
 
     /**

@@ -14,19 +14,20 @@ use App\Http\Errors\ErrorCode;
 use App\Models\Settings\Service;
 use App\Models\Settings\ServiceCategory;
 use App\Services\v1\ServicesService;
+use Illuminate\Http\Request;
 
 class ServicesServiceImpl implements ServicesService
 {
 
 
-    public function getAllServices()
+    public function getAllServices($perPage)
     {
-        return Service::with('category')->paginate(10);
+        return Service::with('category')->paginate($perPage);
     }
 
-    public function getAllServicesByCategory($category_id)
+    public function getAllServicesByCategory($category_id,$perPage)
     {
-        return Service::where('category_id',$category_id)->with('category')->paginate(10);
+        return Service::where('category_id',$category_id)->with('category')->paginate($perPage);
     }
 
     public function getServiceCategories()
@@ -34,18 +35,18 @@ class ServicesServiceImpl implements ServicesService
         return ServiceCategory::all();
     }
 
-    public function searchServices($search_key)
+    public function searchServices($search_key,$perPage)
     {
         return Service::where('name', 'LIKE', '%'.$search_key.'%')
             ->orWhere('description', 'LIKE', '%'.$search_key.'%')
             ->with('category')
-            ->paginate(10);
+            ->paginate($perPage);
     }
 
-    public function searchByCategories($category_id, $search_key)
+    public function searchByCategories($category_id, $search_key,$perPage)
     {
         return Service::where('category_id',$category_id)->where('name', 'LIKE', '%'.$search_key.'%')->with('category')
-            ->paginate(10);
+            ->paginate($perPage);
     }
 
     public function getServiceById($id){

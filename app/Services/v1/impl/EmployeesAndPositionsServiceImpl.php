@@ -23,9 +23,27 @@ use App\Services\v1\EmployeesAndPositionsService;
 class EmployeesAndPositionsServiceImpl implements EmployeesAndPositionsService
 {
 
-    public function getEmployees()
+    public function getEmployees($perPage)
     {
-        return Employee::with('positions', 'account','services')->paginate(10);
+        return Employee::with('positions', 'account','services')->paginate($perPage);
+    }
+
+    public function getEmployeeByPosition($position, $perPage)
+    {
+        $pos = Position::findOrFail($position);
+        return $pos->employees()->with('positions')->paginate($perPage);
+    }
+
+    public function searchEmployeeByPosition($search_key, $position, $perPage)
+    {
+        $pos = Position::findOrFail($position);
+        $emps = $pos->employees();
+        return $emps->where('surname', 'LIKE', '%'.$search_key.'%')
+//            ->orWhere('name', 'LIKE', '%'.$search_key.'%')
+//            ->orWhere('patronymic', 'LIKE', '%'.$search_key.'%')
+            ->with('positions')
+            ->paginate($perPage);
+
     }
 
     public function getPositions()
@@ -33,9 +51,13 @@ class EmployeesAndPositionsServiceImpl implements EmployeesAndPositionsService
         return Position::all();
     }
 
-    public function searchEmployee($search_key)
+    public function searchEmployee($search_key,$perPage)
     {
-        // TODO: Implement searchEmployee() method.
+        return Employee::where('name', 'LIKE', '%'.$search_key.'%')
+            ->orWhere('surname', 'LIKE', '%'.$search_key.'%')
+            ->orWhere('patronymic', 'LIKE', '%'.$search_key.'%')
+            ->with('positions')
+            ->paginate($perPage);
     }
 
     public function searchPosition($search_key)
@@ -173,4 +195,5 @@ class EmployeesAndPositionsServiceImpl implements EmployeesAndPositionsService
         }
         return $employee;
     }
+
 }
