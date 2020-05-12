@@ -53,4 +53,11 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::post('/employees','EmployeesController@store');
         Route::put('/employees/{id}','EmployeesController@update');
     });
+
+    Route::group(['namespace' => 'Patients'], function () {
+        Route::get('/patients','PatientsController@index');
+        Route::get('/patients/{id}','PatientsController@show');
+        Route::post('/patients','PatientsController@store');
+        Route::put('/patients/{id}','PatientsController@update');
+    });
 });
