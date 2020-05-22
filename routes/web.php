@@ -13,6 +13,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-//Route::get('/', function () {
-//    return view('welcome');
-//});
+Route::group(['namespace' => 'Web'], function () {
+    Route::get('/', ['uses' => 'MainController@index', 'name' => 'main']);
+});
