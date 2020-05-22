@@ -14,5 +14,6 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::group(['namespace' => 'Web'], function () {
-    Route::get('/', ['uses' => 'MainController@index', 'name' => 'main']);
+    Route::get('/', ['uses' => 'MainController@index']);
+    Route::get('/secure/config', ['uses' => 'ConfigController@configure']);
 });
