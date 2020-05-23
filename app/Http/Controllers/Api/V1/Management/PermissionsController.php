@@ -44,7 +44,7 @@ class PermissionsController extends ApiBaseController
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -55,7 +55,7 @@ class PermissionsController extends ApiBaseController
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -66,7 +66,7 @@ class PermissionsController extends ApiBaseController
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -77,8 +77,8 @@ class PermissionsController extends ApiBaseController
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \Illuminate\Http\Request $request
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
@@ -89,7 +89,7 @@ class PermissionsController extends ApiBaseController
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
@@ -97,11 +97,13 @@ class PermissionsController extends ApiBaseController
         //
     }
 
-    public function getPermissionsByUserId($user_id){
+    public function getPermissionsByUserId($user_id)
+    {
         return $this->successResponse($this->permissionService->getUsersPermissions($user_id));
     }
 
-    public function getAllPermissions(){
+    public function getAllPermissions()
+    {
         return $this->successResponse($this->permissionService->getAllPermissions());
     }
 }
