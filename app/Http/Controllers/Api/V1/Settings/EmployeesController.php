@@ -37,7 +37,9 @@ class EmployeesController extends ApiBaseController
 
         }else if($request->has('position') && $request->has('search')){
             return $this->successResponse($this->employeeService->searchEmployeeByPosition($request->get('search'),$request->get('position'),$perPage));
-        }else{
+        }else if($request->has('array')){
+            return $this->successResponse($this->employeeService->getEmployeesArray());
+        } else{
             return $this->successResponse($this->employeeService->getEmployees($perPage));
         }
 

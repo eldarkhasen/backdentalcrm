@@ -94,7 +94,6 @@ class EmployeesAndPositionsServiceImpl implements EmployeesAndPositionsService
 
         if ($request->create_account) {
             $user = User::create([
-                'name' => $request->name,
                 'email' => $request->email,
                 'password' =>  bcrypt($request->password),
                 'role_id' => $request->role_id
@@ -174,7 +173,6 @@ class EmployeesAndPositionsServiceImpl implements EmployeesAndPositionsService
                 $user = $employee->account;
                 $permissions_all = $user->permissions;
                 $user->update([
-                    'name' => $request->name,
                     'email' => $request->email,
                     'password' =>  bcrypt($request->password),
                     'role_id' => $request->role_id
@@ -196,4 +194,8 @@ class EmployeesAndPositionsServiceImpl implements EmployeesAndPositionsService
         return $employee;
     }
 
+    public function getEmployeesArray()
+    {
+        return Employee::all();
+    }
 }

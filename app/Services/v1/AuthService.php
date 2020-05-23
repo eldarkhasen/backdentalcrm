@@ -17,5 +17,5 @@ interface AuthService
 {
     public function login($credentials);
 
-    public function register($email, $password, $name);
+    public function register($email, $password);
 }

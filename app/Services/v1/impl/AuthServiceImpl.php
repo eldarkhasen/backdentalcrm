@@ -38,10 +38,9 @@ class AuthServiceImpl implements AuthService
         ];
     }
 
-    public function register($email, $password, $name)
+    public function register($email, $password)
     {
         return User::create([
-            'name' => $name,
             'email' => $email,
             'password' => bcrypt($password),
             'role_id' => Role::EMPLOYEE_ID

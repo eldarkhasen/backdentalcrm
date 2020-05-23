@@ -23,7 +23,6 @@ class UsersAndRolesSeeder extends Seeder
 
         User::create([
             'id' => 1,
-            'name' => 'Admin',
             'email' => 'admin@mail.ru',
             'password' => bcrypt('password'),
             'role_id' => \App\Models\Role::ADMIN_ID

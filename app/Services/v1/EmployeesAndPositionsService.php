@@ -15,6 +15,7 @@ use App\Http\Requests\Api\V1\Settings\StoreAndUpdatePositionApiRequest;
 interface EmployeesAndPositionsService
 {
     public function getEmployees($perPage);
+    public function getEmployeesArray();
     public function getPositions();
     public function searchEmployee($search_key,$perPage);
     public function getEmployeeByPosition($position,$perPage);
