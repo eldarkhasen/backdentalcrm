@@ -3,6 +3,7 @@
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use \App\Models\Permission;
 
 class UsersAndRolesSeeder extends Seeder
 {
@@ -21,11 +22,12 @@ class UsersAndRolesSeeder extends Seeder
             'name' => 'Сотрудник',
         ]);
 
-        User::create([
+        $adminUser = User::create([
             'id' => 1,
             'email' => 'admin@mail.ru',
             'password' => bcrypt('password'),
             'role_id' => \App\Models\Role::ADMIN_ID
         ]);
+        $adminUser->permissions()->attach(Permission::all());
     }
 }
