@@ -7,6 +7,8 @@ use App\Services\v1\impl\EmployeesAndPositionsServiceImpl;
 use App\Services\v1\impl\PatientsServiceImpl;
 use App\Services\v1\impl\PermissionsServiceImpl;
 use App\Services\v1\impl\ServicesServiceImpl;
+use App\Services\v1\SubscriptionLogic\impl\SubscriptionServiceImpl;
+use App\Services\v1\SubscriptionLogic\impl\SubscriptionTypeServiceImpl;
 use Illuminate\Support\ServiceProvider;
 
 class SystemServiceProvider extends ServiceProvider
@@ -34,6 +36,12 @@ class SystemServiceProvider extends ServiceProvider
         });
         $this->app->bind('App\Services\v1\PatientsService', function ($app) {
             return (new PatientsServiceImpl());
+        });
+        $this->app->bind('App\Services\v1\SubscriptionLogic\SubscriptionService', function ($app) {
+            return (new SubscriptionServiceImpl());
+        });
+        $this->app->bind('App\Services\v1\SubscriptionLogic\SubscriptionTypeService', function ($app) {
+            return (new SubscriptionTypeServiceImpl());
         });
 
 
