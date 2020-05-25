@@ -17,8 +17,8 @@ class StoreAndUpdateEmployeeApiRequest extends ApiBaseRequest
     public function injectedRules()
     {
         return [
-            "name"=>['required', 'string'],
-            "surname"=>['required', 'string'],
+            "name" => ['required', 'string'],
+            "surname" => ['required', 'string'],
             "patronymic",
             "positions",
             "services",
@@ -26,12 +26,12 @@ class StoreAndUpdateEmployeeApiRequest extends ApiBaseRequest
             "password",
             "role_id",
             "permissions",
-            "phone"=>['required', 'string'],
-            "birth_date"=>['required', 'string'],
-            "gender"=>['required', 'string'],
-            "color"=>['required', 'string'],
-            "create_account"=>['required', 'boolean'],
-
+            "phone" => ['required', 'string'],
+            "birth_date" => ['required', 'string'],
+            "gender" => ['required', 'string'],
+            "color" => ['required', 'string'],
+            "create_account" => ['required', 'boolean'],
+//            "organization_id" => ['required', 'exists:organizations,id']
         ];
     }
 }
