@@ -11,5 +11,5 @@ namespace App\Services\v1\SubscriptionLogic;
 
 interface SubscriptionTypeService
 {
-    
+
 }
