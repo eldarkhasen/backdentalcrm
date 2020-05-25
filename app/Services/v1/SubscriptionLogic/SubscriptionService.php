@@ -9,7 +9,10 @@
 namespace App\Services\v1\SubscriptionLogic;
 
 
+use Illuminate\Http\Request;
+
 interface SubscriptionService
 {
-
+    public function storeSubscription(Request $request);
+    public function updateSubscription($id, Request $request);
 }

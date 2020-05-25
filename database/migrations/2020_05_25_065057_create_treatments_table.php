@@ -57,6 +57,13 @@ class CreateTreatmentsTable extends Migration
                 ->nullable();
             $table->boolean('is_finished')
                 ->default(false);
+
+            $table->unsignedBigInteger('final_diagnosis_id')
+                ->nullable();
+            $table->foreign('final_diagnosis_id')
+                ->on('diagnoses')
+                ->references('id')
+                ->onDelete('RESTRICT');
             $table->timestamps();
         });
     }

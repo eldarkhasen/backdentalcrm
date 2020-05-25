@@ -19,9 +19,9 @@ class CreateAppointmentsTable extends Migration
             $table->string('title')
                 ->nullable(false);
             $table->timestamp('start_date')
-                ->nullable(false);
+                ->nullable()->default(null);
             $table->timestamp('end_date')
-                ->nullable(false);
+                ->nullable()->default(null);
             $table->double('price')
                 ->default(0);
             $table->enum('status', ['pending', 'success', 'client_miss']);

@@ -13,6 +13,7 @@ class SubscriptionType extends Model
     protected $fillable = [
         'name',
         'price',
-        'expiration_days'
+        'expiration_days',
+        'employees_count'
     ];
 }

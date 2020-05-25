@@ -9,7 +9,12 @@
 namespace App\Services\v1\SubscriptionLogic;
 
 
+use Illuminate\Http\Request;
+
 interface SubscriptionTypeService
 {
+    public function getSubscriptionTypes(Request $request);
+    public function storeSubscriptionType(Request $request);
+    public function updateSubscriptionType($id,Request $request);
 
 }

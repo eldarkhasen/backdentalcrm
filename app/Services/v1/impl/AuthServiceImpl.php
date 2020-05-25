@@ -8,7 +8,6 @@
 
 namespace App\Services\v1\impl;
 
-
 use App\Exceptions\ApiServiceException;
 use App\Http\Errors\ErrorCode;
 use App\Http\Utils\ApiUtil;
