@@ -10,9 +10,7 @@ namespace App\Services\v1\OrganizationLogic\impl;
 
 
 use App\Models\Core\Organization;
-use App\Models\Management\Subscription;
 use App\Services\v1\OrganizationLogic\OrganizationService;
-use App\Services\v1\SubscriptionLogic\SubscriptionService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -26,9 +24,30 @@ class OrganizationServiceImpl implements OrganizationService
         return $organization->getCurrentSubscription();
     }
 
+    public function getAllPaginatedOrganizations($perPage)
+    {
+        return Organization::paginate($perPage);
+    }
+
     public function getAllOrganizations(Request $request)
     {
         return Organization::with('subscriptions')->all();
+    }
+
+    public function getAllOrganizationsArray()
+    {
+        return Organization::all();
+    }
+
+    public function searchPaginatedOrganizations($search_key, $perPage)
+    {
+        return Organization::search($search_key)
+            ->paginate($perPage);
+    }
+
+    public function searchOrganizationsArray($search_key)
+    {
+        return Organization::search($search_key)->get();
     }
 
     public function getOrganizationById($org_id)

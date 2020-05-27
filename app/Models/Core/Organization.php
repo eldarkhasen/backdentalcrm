@@ -37,4 +37,9 @@ class Organization extends Model
             : $this->subscriptions()->latest()->get();
     }
 
+    public function scopeSearch($query, $search_key) {
+        return $query->where('name', 'LIKE', '%'.$search_key.'%')
+            ->orWhere('address', 'LIKE', '%'.$search_key.'%')
+            ->orWhere('phone', 'LIKE', '%'.$search_key.'%');
+    }
 }

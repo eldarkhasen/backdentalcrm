@@ -13,6 +13,10 @@ use Illuminate\Http\Request;
 
 interface OrganizationService
 {
+    public function getAllPaginatedOrganizations($perPage);
+    public function getAllOrganizationsArray();
+    public function searchPaginatedOrganizations($searchKey, $perPage);
+    public function searchOrganizationsArray($search_key);
     public function getAllOrganizations(Request $request);
     public function getOrganizationById($org_id);
     public function getCurrentSubscriptionType($org_id);
