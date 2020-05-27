@@ -15,7 +15,7 @@ interface OrganizationService
 {
     public function getAllOrganizations(Request $request);
     public function getOrganizationById($org_id);
-    public function getCurrentSubscription($org_id);
+    public function getCurrentSubscriptionType($org_id);
     public function storeOrganization(Request $request);
     public function updateOrganization($org_id, Request $request);
     public function getCurrentSubscriptionOfOrganization($org_id);
