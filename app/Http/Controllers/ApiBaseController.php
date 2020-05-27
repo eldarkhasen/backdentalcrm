@@ -43,12 +43,12 @@ class ApiBaseController extends Controller implements WithUser
 
     public function getCurrentUser()
     {
-        return Auth::user();
+        return auth()->user();
     }
 
     public function getCurrentUserId()
     {
-        return Auth::id();
+        return auth()->id();
     }
 
 }

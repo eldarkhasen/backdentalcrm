@@ -2,17 +2,13 @@
 
 namespace App\Http\Controllers\Api\V1\Auth;
 
-use App\Exceptions\ApiServiceException;
 use App\Http\Controllers\ApiBaseController;
-use App\Http\Controllers\Controller;
 use App\Http\Errors\ErrorCode;
 use App\Http\Requests\Api\V1\Auth\LoginApiRequest;
 use App\Models\User;
 use App\Services\v1\AuthService;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use JWTAuth;
-use Tymon\JWTAuth\Exceptions\JWTException;
 
 class AuthController extends ApiBaseController
 {
@@ -30,17 +26,13 @@ class AuthController extends ApiBaseController
 
     public function authenticate(LoginApiRequest $request)
     {
-        // grab credentials from the request
-        $credentials = $request->only('email', 'password');
-
-        //Pass credentials to authservice to generate token and send response to user
-        return $this->successResponse($this->authService->login($credentials));
+        return $this->successResponse($this->authService->login($request->all()));
     }
 
     public function me()
     {
-        $user_id = Auth::user()->id;
-        return $this->successResponse(User::with('permissions')->find($user_id));
+        return $this->successResponse(User::with('permissions')
+            ->find($this->getCurrentUserId()));
     }
 
     public function authFail()
@@ -52,7 +44,7 @@ class AuthController extends ApiBaseController
 
     public function logout()
     {
-        $this->guard()->logout();
+        auth()->logout();
         return $this->successResponse(['message' => 'Successfully logged out']);
     }
 
