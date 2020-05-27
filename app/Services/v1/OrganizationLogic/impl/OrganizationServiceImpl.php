@@ -9,28 +9,20 @@
 namespace App\Services\v1\OrganizationLogic\impl;
 
 
+
 use App\Models\Core\Organization;
 use App\Models\Management\Subscription;
 use App\Services\v1\OrganizationLogic\OrganizationService;
 use App\Services\v1\SubscriptionLogic\SubscriptionService;
-use Carbon\Carbon;
-use function foo\func;
 use Illuminate\Http\Request;
 
 class OrganizationServiceImpl implements OrganizationService
 
 {
-    public function getCurrentSubscription($org_id)
+    public function getCurrentSubscriptionType($org_id)
     {
-        $carbon = Carbon::now();
-        $subscription = Organization::with(['subscriptions' => function ($q) use ($carbon) {
-            $q->whereDate('start_date', '<=', $carbon)
-                ->whereDate('end_date', '>=', $carbon);
-        }, 'subscriptions.subscriptionType'])
-            ->findOrFail($org_id);
-        return $subscription;
-
-//        return $organization->getCurrentSubscription();
+        $organization = Organization::with('subscriptions')->findOrFail($org_id);
+        return $organization->getCurrentSubscription();
     }
 
     public function getAllOrganizations(Request $request)
@@ -58,5 +50,15 @@ class OrganizationServiceImpl implements OrganizationService
             'phone',
             'city_id']);
         return $organization->update($input);
+    }
+
+    public function getCurrentSubscription($org_id)
+    {
+        // TODO: Implement getCurrentSubscription() method.
+    }
+
+    public function getCurrentSubscriptionOfOrganization($org_id)
+    {
+        // TODO: Implement getCurrentSubscriptionOfOrganization() method.
     }
 }

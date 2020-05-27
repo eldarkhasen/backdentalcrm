@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 Route::group(['namespace' => 'Auth'], function () {
-    Route::get('/login', ['uses' => 'AuthController@authFail', 'as' => 'login']);
+    Route::get('/login', ['uses' => 'AuthController@authFail']);
     Route::post('/login','AuthController@authenticate');
 });
 

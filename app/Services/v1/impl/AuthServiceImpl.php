@@ -10,21 +10,16 @@ namespace App\Services\v1\impl;
 
 use App\Exceptions\ApiServiceException;
 use App\Http\Errors\ErrorCode;
-use App\Http\Utils\ApiUtil;
 use App\Models\Role;
 use App\Models\User;
 use App\Services\v1\AuthService;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use JWTAuth;
 
 class AuthServiceImpl implements AuthService
 {
     public function login($credentials)
     {
-        $user = User::where('email',$credentials['email'])->first();
-        // attempt to verify the credentials and create a token for the user
-        if (!$token = JWTAuth::attempt($credentials)) {
+        $user = User::where('email', $credentials['email'])->first();
+        if (!($token = $this->guard()->attempt($credentials))) {
             throw new ApiServiceException(400, false,
                 ['message' => 'Invalid email or password',
                     'errorCode' => ErrorCode::UNAUTHORIZED]);
@@ -53,17 +48,15 @@ class AuthServiceImpl implements AuthService
      */
     public function refresh()
     {
-        return $this->respondWithToken($this->guard()->refresh());
+        return [
+            'token' => $this->guard()->refresh(),
+        ];
     }
 
-    /**
-     * Get the guard to be used during authentication.
-     *
-     * @return \Illuminate\Contracts\Auth\Guard
-     */
     public function guard()
     {
-        return Auth::guard();
+        return auth()->guard('api');
     }
+
 
 }
