@@ -19,7 +19,7 @@ interface EmployeesAndPositionsService
     public function getPositions();
     public function searchEmployee($search_key,$perPage);
     public function getEmployeeByPosition($position,$perPage);
-    public function searchEmployeeByPosition($search_key,$position,$perPage);
+    public function searchEmployeeByPosition($search_key,$position,$perPage = 10);
     public function searchPosition($search_key);
     public function storeEmployee(StoreAndUpdateEmployeeApiRequest $request);
     public function storePosition(StoreAndUpdatePositionApiRequest $request);

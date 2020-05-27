@@ -9,12 +9,13 @@
 namespace App\Services\v1\OrganizationLogic\impl;
 
 
-
 use App\Models\Core\Organization;
 use App\Models\Management\Subscription;
 use App\Services\v1\OrganizationLogic\OrganizationService;
 use App\Services\v1\SubscriptionLogic\SubscriptionService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class OrganizationServiceImpl implements OrganizationService
 
@@ -51,4 +52,23 @@ class OrganizationServiceImpl implements OrganizationService
             'city_id']);
         return $organization->update($input);
     }
+
+    //TODO FIX TIME_ZONE ISSUE
+    public function getCurrentSubscriptionOfOrganization($org_id)
+    {
+        $carbon = Carbon::now();
+        return DB::table('subscriptions as sub')
+            ->leftJoin('subscription_types as st', 'st.id', '=', 'sub.subscription_type_id')
+            ->where(function ($query) use ($carbon) {
+                $query->where(function ($query) use ($carbon) {
+                    $query->whereDate('sub.start_date', '<=', $carbon)
+                        ->whereDate('sub.end_date', '>=', $carbon);
+                });
+                $query->orWhere('st.expiration_days', '=', DB::raw(0));
+            })
+            ->where('sub.organization_id', '=', $org_id)
+            ->first();
+    }
+
+
 }

@@ -14,7 +14,6 @@ use App\Http\Errors\ErrorCode;
 use App\Http\Requests\Api\V1\Settings\StoreAndUpdateEmployeeApiRequest;
 use App\Http\Requests\Api\V1\Settings\StoreAndUpdatePositionApiRequest;
 use App\Models\Permission;
-use App\Models\Role;
 use App\Models\Settings\Employee;
 use App\Models\Settings\Position;
 use App\Models\User;
@@ -25,7 +24,7 @@ class EmployeesAndPositionsServiceImpl implements EmployeesAndPositionsService
 
     public function getEmployees($perPage)
     {
-        return Employee::with('positions', 'account','services')->paginate($perPage);
+        return Employee::with('positions', 'account', 'services')->paginate($perPage);
     }
 
     public function getEmployeeByPosition($position, $perPage)
@@ -34,16 +33,19 @@ class EmployeesAndPositionsServiceImpl implements EmployeesAndPositionsService
         return $pos->employees()->with('positions')->paginate($perPage);
     }
 
-    public function searchEmployeeByPosition($search_key, $position, $perPage)
+    public function searchEmployeeByPosition($search_key, $position, $perPage = 10)
     {
-        $pos = Position::findOrFail($position);
-        $emps = $pos->employees();
-        return $emps->where('surname', 'LIKE', '%'.$search_key.'%')
-//            ->orWhere('name', 'LIKE', '%'.$search_key.'%')
-//            ->orWhere('patronymic', 'LIKE', '%'.$search_key.'%')
-            ->with('positions')
+        return Employee::with(['positions'])
+            ->leftJoin('employees_has_positions as pos', 'pos.employee_id', '=', 'employees.id')
+            ->where('pos.id', '=', $position)
+            ->where(function ($query) use ($search_key) {
+                $query->where('surname', 'LIKE', '%' . $search_key . '%');
+                $query->Orwhere('name', 'LIKE', '%' . $search_key . '%');
+                $query->Orwhere('patronymic', 'LIKE', '%' . $search_key . '%');
+            })
+            ->distinct()
+            ->select(['employees.*'])
             ->paginate($perPage);
-
     }
 
     public function getPositions()
@@ -51,11 +53,11 @@ class EmployeesAndPositionsServiceImpl implements EmployeesAndPositionsService
         return Position::all();
     }
 
-    public function searchEmployee($search_key,$perPage)
+    public function searchEmployee($search_key, $perPage)
     {
-        return Employee::where('name', 'LIKE', '%'.$search_key.'%')
-            ->orWhere('surname', 'LIKE', '%'.$search_key.'%')
-            ->orWhere('patronymic', 'LIKE', '%'.$search_key.'%')
+        return Employee::where('name', 'LIKE', '%' . $search_key . '%')
+            ->orWhere('surname', 'LIKE', '%' . $search_key . '%')
+            ->orWhere('patronymic', 'LIKE', '%' . $search_key . '%')
             ->with('positions')
             ->paginate($perPage);
     }
@@ -80,14 +82,14 @@ class EmployeesAndPositionsServiceImpl implements EmployeesAndPositionsService
         $positions = $request->positions;
         $services = $request->services;
         if (isset($positions)) {
-            foreach($positions as $pos){
+            foreach ($positions as $pos) {
                 $employee->positions()->attach($pos['id']);
             }
 
         }
 
         if (isset($services)) {
-            foreach ($services as $serv){
+            foreach ($services as $serv) {
                 $employee->services()->attach($serv['id']);
             }
         }
@@ -95,7 +97,7 @@ class EmployeesAndPositionsServiceImpl implements EmployeesAndPositionsService
         if ($request->create_account) {
             $user = User::create([
                 'email' => $request->email,
-                'password' =>  bcrypt($request->password),
+                'password' => bcrypt($request->password),
                 'role_id' => $request->role_id
             ]);
 
@@ -105,7 +107,7 @@ class EmployeesAndPositionsServiceImpl implements EmployeesAndPositionsService
             } else {
                 $permissions = $request->permissions;
                 foreach ($permissions as $permission)
-                $user->permissions()->attach($permission['id']);
+                    $user->permissions()->attach($permission['id']);
             }
 
             $user->employee()->save($employee);
@@ -141,8 +143,9 @@ class EmployeesAndPositionsServiceImpl implements EmployeesAndPositionsService
         return Position::findOrFail($id);
     }
 
-    public function getEmployeeById($id){
-        return Employee::with('positions', 'account','services','account.permissions')->find($id);
+    public function getEmployeeById($id)
+    {
+        return Employee::with('positions', 'account', 'services', 'account.permissions')->find($id);
     }
 
     public function updateEmployee(StoreAndUpdateEmployeeApiRequest $request, $id)
@@ -152,42 +155,42 @@ class EmployeesAndPositionsServiceImpl implements EmployeesAndPositionsService
         $services = $request->services;
         $p_all = $employee->positions;
         $s_all = $employee->services;
-        foreach ($p_all as $p){
+        foreach ($p_all as $p) {
             $employee->positions()->detach($p->id);
         }
-        foreach ($positions as $pos){
+        foreach ($positions as $pos) {
             $employee->positions()->attach($pos['id']);
         }
 
-        foreach ($s_all as $s){
+        foreach ($s_all as $s) {
             $employee->services()->detach($s->id);
         }
-        foreach ($services as $serv){
+        foreach ($services as $serv) {
             $employee->services()->attach($serv['id']);
         }
 
-        $emp_data = $request->only(['name','surname','patronymic','phone','birth_date','gender','color']);
+        $emp_data = $request->only(['name', 'surname', 'patronymic', 'phone', 'birth_date', 'gender', 'color']);
         $employee->update($emp_data);
-        if($employee->hasAccount()){
-            if($request->create_account){
+        if ($employee->hasAccount()) {
+            if ($request->create_account) {
                 $user = $employee->account;
                 $permissions_all = $user->permissions;
                 $user->update([
                     'email' => $request->email,
-                    'password' =>  bcrypt($request->password),
+                    'password' => bcrypt($request->password),
                     'role_id' => $request->role_id
                 ]);
                 $user->employee()->save($employee);
-                foreach($permissions_all as $perm){
+                foreach ($permissions_all as $perm) {
                     $user->permissions()->detach($perm->id);
                 }
 
                 $new_perms = $request->permissions;
-                foreach ($new_perms as $perm){
+                foreach ($new_perms as $perm) {
                     $user->permissions()->attach($perm['id']);
                 }
 
-            }else{
+            } else {
                 //delete account
             }
         }
