@@ -17,7 +17,8 @@ class StoreAndUpdateServiceCategoryApiRequest extends ApiBaseRequest
     public function injectedRules()
     {
         return [
-            "name"=>['required', 'string']
+            "name"=>['required', 'string'],
+            "organization_id" => ['required', 'exists:organizations,id']
         ];
     }
 }

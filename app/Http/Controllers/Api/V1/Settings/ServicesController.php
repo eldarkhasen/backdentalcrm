@@ -34,19 +34,19 @@ class ServicesController extends ApiBaseController
     {
         $perPage = $request->get('perPage',10);
         if($request->has('search') && !$request->has('category_id')){
-            return $this->successResponse($this->servicesService->searchServices($request->get('search'),$perPage));
+            return $this->successResponse($this->servicesService->searchServices($request->get('organization_id'),$request->get('search'),$perPage));
         }else if($request->has('category_id') && !$request->has('search')){
-            return $this->successResponse($this->servicesService->getAllServicesByCategory($request->get('category_id'),$perPage));
+            return $this->successResponse($this->servicesService->getAllServicesByCategory($request->get('organization_id'),$request->get('category_id'),$perPage));
         }else if($request->has('category_id') && $request->has('search')){
-            return $this->successResponse($this->servicesService->searchByCategories($request->get('category_id'),$request->get('search'),$perPage));
+            return $this->successResponse($this->servicesService->searchByCategories($request->get('organization_id'),$request->get('category_id'),$request->get('search'),$perPage));
         }else{
-            return $this->successResponse($this->servicesService->getAllServices($perPage));
+            return $this->successResponse($this->servicesService->getAllServices($request->get('organization_id'),$perPage));
         }
 
     }
 
-    public function getServiceCategories(){
-        return$this->successResponse($this->servicesService->getServiceCategories());
+    public function getServiceCategories(Request $request){
+        return$this->successResponse($this->servicesService->getServiceCategories($request->get('organization_id')));
     }
 
     /**
@@ -115,10 +115,11 @@ class ServicesController extends ApiBaseController
         //
     }
 
-    public function getAllServicesByCategory($category_id){
-        return $this->successResponse($this->servicesService->getAllServicesByCategory($category_id));
-
-    }
+//    public function getAllServicesByCategory(Request $request,$category_id){
+//        $perPage = $request->get('perPage',10);
+//        return $this->successResponse($this->servicesService->getAllServicesByCategory($request->get('organization_id'),$category_id,$perPage));
+//
+//    }
 
     public function searchServices(){
         $search_key = Input::only('search');
@@ -144,6 +145,6 @@ class ServicesController extends ApiBaseController
         return $this->successResponse($this->servicesService->deleteCategory($id));
     }
     public function getServicesArray(){
-        return $this->successResponse(Service::all());
+        return $this->successResponse(Service::with(['category','organization'])->all());
     }
 }

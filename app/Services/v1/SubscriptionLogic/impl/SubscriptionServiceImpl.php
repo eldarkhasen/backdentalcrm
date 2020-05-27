@@ -22,8 +22,6 @@ class SubscriptionServiceImpl implements SubscriptionService
         return Subscription::create($request->all());
     }
 
-
-
     public function updateSubscription($id, Request $request)
     {
         $organization = Organization::findOrFail($id);

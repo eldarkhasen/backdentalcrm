@@ -20,32 +20,36 @@ class ServicesServiceImpl implements ServicesService
 {
 
 
-    public function getAllServices($perPage)
+    public function getAllServices($org_id,$perPage)
     {
-        return Service::with('category')->paginate($perPage);
+        return Service::where('organization_id',$org_id)->with('category')->paginate($perPage);
     }
 
-    public function getAllServicesByCategory($category_id,$perPage)
+    public function getAllServicesByCategory($org_id,$category_id,$perPage)
     {
-        return Service::where('category_id',$category_id)->with('category')->paginate($perPage);
+        return Service::where('category_id',$category_id)->where('organization_id',$org_id)->with('category')->paginate($perPage);
     }
 
-    public function getServiceCategories()
+    public function getServiceCategories($org_id)
     {
-        return ServiceCategory::all();
+        return ServiceCategory::where('organization_id',$org_id)->get();
     }
 
-    public function searchServices($search_key,$perPage)
+    public function searchServices($org_id,$search_key,$perPage)
     {
-        return Service::where('name', 'LIKE', '%'.$search_key.'%')
+        return Service::where('organization_id',$org_id)
+            ->where('name', 'LIKE', '%'.$search_key.'%')
             ->orWhere('description', 'LIKE', '%'.$search_key.'%')
             ->with('category')
             ->paginate($perPage);
     }
 
-    public function searchByCategories($category_id, $search_key,$perPage)
+    public function searchByCategories($org_id,$category_id, $search_key,$perPage)
     {
-        return Service::where('category_id',$category_id)->where('name', 'LIKE', '%'.$search_key.'%')->with('category')
+        return Service::where('category_id',$category_id)
+            ->where('organization_id',$org_id)
+            ->where('name', 'LIKE', '%'.$search_key.'%')
+            ->with('category')
             ->paginate($perPage);
     }
 
