@@ -18,6 +18,7 @@ use App\Models\Settings\Employee;
 use App\Models\Settings\Position;
 use App\Models\User;
 use App\Services\v1\EmployeesAndPositionsService;
+use Illuminate\Support\Facades\DB;
 
 class EmployeesAndPositionsServiceImpl implements EmployeesAndPositionsService
 {
@@ -69,51 +70,64 @@ class EmployeesAndPositionsServiceImpl implements EmployeesAndPositionsService
 
     public function storeEmployee(StoreAndUpdateEmployeeApiRequest $request)
     {
-        $employee = Employee::create([
-            "name" => $request->name,
-            "surname" => $request->surname,
-            "patronymic" => $request->patronymic,
-            'phone' => $request->phone,
-            'birth_date' => $request->birth_date,
-            'gender' => $request->gender,
-            'color' => $request->color
-        ]);
-
-        $positions = $request->positions;
-        $services = $request->services;
-        if (isset($positions)) {
-            foreach ($positions as $pos) {
-                $employee->positions()->attach($pos['id']);
-            }
-
-        }
-
-        if (isset($services)) {
-            foreach ($services as $serv) {
-                $employee->services()->attach($serv['id']);
-            }
-        }
-
-        if ($request->create_account) {
-            $user = User::create([
-                'email' => $request->email,
-                'password' => bcrypt($request->password),
-                'role_id' => $request->role_id
+        DB::beginTransaction();
+        try {
+            $employee = Employee::create([
+                "name" => $request->name,
+                "surname" => $request->surname,
+                "patronymic" => $request->patronymic,
+                'phone' => $request->phone,
+                'birth_date' => $request->birth_date,
+                'gender' => $request->gender,
+                'color' => $request->color
             ]);
 
-            if ($request->role_id == \App\Models\Role::ADMIN_ID) {
-                $permissions = Permission::all();
-                $user->permissions()->attach($permissions);
-            } else {
-                $permissions = $request->permissions;
-                foreach ($permissions as $permission)
-                    $user->permissions()->attach($permission['id']);
+            $positions = $request->positions;
+            $services = $request->services;
+            if (isset($positions)) {
+                foreach ($positions as $pos) {
+                    $employee->positions()->attach($pos['id']);
+                }
+
             }
 
-            $user->employee()->save($employee);
+            if (isset($services)) {
+                foreach ($services as $serv) {
+                    $employee->services()->attach($serv['id']);
+                }
+            }
+
+            if ($request->create_account) {
+                $user = User::create([
+                    'email' => $request->email,
+                    'password' => bcrypt($request->password),
+                    'role_id' => $request->role_id
+                ]);
+
+                if ($request->role_id == \App\Models\Role::ADMIN_ID) {
+                    $permissions = Permission::all();
+                    $user->permissions()->attach($permissions);
+                } else {
+                    $permissions = $request->permissions;
+                    foreach ($permissions as $permission)
+                        $user->permissions()->attach($permission['id']);
+                }
+
+                $user->employee()->save($employee);
+            }
+
+            DB::commit();
+            return $employee;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw new ApiServiceException(400, false, [
+                'errors' => [
+                    $e->getMessage()
+                ],
+                'errorCode' => ErrorCode::SYSTEM_ERROR
+            ]);
         }
 
-        return $employee;
     }
 
     public function storePosition(StoreAndUpdatePositionApiRequest $request)
