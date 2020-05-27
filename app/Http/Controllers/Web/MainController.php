@@ -32,7 +32,6 @@ class MainController
 
     public function index()
     {
-        dd();
-        return view('welcome');
+        return redirect()->route('login');
     }
 }
