@@ -8,7 +8,7 @@
                 <h1 class="h3 mb-4 text-gray-800">Организации</h1>
             </div>
             <div class="col-sm-3 offset-lg-3">
-                <a href="{{ URL::to('organizations/create') }}" role = "button" class = "btn btn-block btn-outline-primary btn-md"> Добавить организацию</a>
+                <a href="{{ route('organizations.create') }}" role = "button" class = "btn btn-block btn-outline-primary btn-md"> Добавить организацию</a>
             </div>
         </div>
     </div>

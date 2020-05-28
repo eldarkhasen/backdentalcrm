@@ -99,7 +99,8 @@ class OrganizationController extends Controller
      */
     public function update(Request $request, $id)
     {
-        dd($request);
+        $this->organizationService->updateOrganization($id, $request);
+        return redirect()->route('organizations.index');
     }
 
     /**
