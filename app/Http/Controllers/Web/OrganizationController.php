@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\OrganizationResource;
 use App\Models\Core\Organization;
 use App\Models\Support\City;
 use App\Models\Support\Country;
@@ -27,13 +28,11 @@ class OrganizationController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
-        $perPage = $request->get('perPage',10);
-        $search_key = $request->has('search') ? $request->get('search') : null;
-        $organizations = isset($search_key)
-            ? $this->organizationService->searchPaginatedOrganizations($search_key, $perPage)
-            : $this->organizationService->getAllPaginatedOrganizations($perPage);
+        $organizations = OrganizationResource::collection(
+            $this->organizationService->getAllOrganizations(['city'])
+        )->resolve();
 
         return view('web.organizations.index', compact('organizations'));
     }
@@ -46,7 +45,7 @@ class OrganizationController extends Controller
     public function create()
     {
         $cities = City::with('country')->get();
-        return view('web.organizations.create',compact('cities'));
+        return view('web.organizations.create', compact('cities'));
     }
 
     /**

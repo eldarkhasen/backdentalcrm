@@ -21,8 +21,8 @@
             </div>
             <div class="card-body">
                 @include('components.datatable', [
-                    'headers' => ['id' => 'ID', 'name' => 'Название','city'=>'Город', 'address' => 'Адрес'],
-                    'data' => $organizations
+                    'headers' => ['id' => 'ID', 'name' => 'Название', 'city_name' => 'Город', 'address' => 'Адрес'],
+                    'items' => $organizations
                 ])
             </div>
         </div>

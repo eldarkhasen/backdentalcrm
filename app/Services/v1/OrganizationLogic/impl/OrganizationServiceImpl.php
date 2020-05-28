@@ -29,9 +29,9 @@ class OrganizationServiceImpl implements OrganizationService
         return Organization::paginate($perPage);
     }
 
-    public function getAllOrganizations(Request $request)
+    public function getAllOrganizations($withRelations = [])
     {
-        return Organization::with('subscriptions')->all();
+        return Organization::with($withRelations)->get();
     }
 
     public function getAllOrganizationsArray()

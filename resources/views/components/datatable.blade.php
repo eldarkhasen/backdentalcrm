@@ -17,10 +17,10 @@
             {{--</tr>--}}
         {{--</tfoot>--}}
         <tbody>
-            @foreach($data->items() as $item)
+            @foreach($items as $item)
                 <tr>
                     @foreach($headers as $key => $header)
-                        <td>{{ $item[$key] }}</td>
+                        <td>{{ $item[$key] ?? 'not defined' }}</td>
                     @endforeach
                     <td>
                         <a href="#" class="btn btn-outline-primary btn-sm">Редактировать</a>
