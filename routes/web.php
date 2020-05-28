@@ -33,6 +33,9 @@ Route::group(['namespace' => 'Web'], function () {
     });
     Route::group(['middleware' => 'auth'], function () {
         Route::get('/home', ['uses' => 'HomeController@index', 'as' => 'home']);
+//        Route::apiResource('/organizations', 'OrganizationController')
+//            ->name('index', 'organizations');
+        Route::resource('organizations', 'OrganizationController');
     });
 });
 
