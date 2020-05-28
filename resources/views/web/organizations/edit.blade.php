@@ -2,12 +2,12 @@
 
 @section('content')
     <div class="container-fluid">
-        <h1 class="h3 mb-4 text-gray-900">Новая организация</h1>
+        <h1 class="h3 mb-4 text-gray-900">Редактировать организацию</h1>
     </div>
     <div class="container-fluid">
         <div class="card shadow mb-4 text-gray-900">
             <div class="card-body">
-                <form method = "POST" action = "{{ URL::to('organizations') }}" autocomplete="off">
+                <form method = "POST" action = "{{route('organizations.update',$organization->id)}}" autocomplete="off">
                     @csrf
                     <div class="form-group">
                         <label for="inputName">Наименование</label>
@@ -15,8 +15,8 @@
                                class="form-control"
                                id="inputName"
                                name = "name"
-                               placeholder="Введите название организации">
-
+                               placeholder="Введите название организации"
+                               value="{{$organization->name}}">
                     </div>
                     <div class="form-group">
                         <label for="inputCity">Город</label>
@@ -54,7 +54,7 @@
                     <div class="form-group mt-3">
                         <button type="submit" class="btn btn-primary">Сохранить</button>
                     </div>
-
+                    {!! @method('PUT') !!}
                 </form>
             </div>
         </div>

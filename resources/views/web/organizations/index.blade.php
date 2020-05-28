@@ -1,12 +1,18 @@
 @extends('layouts.main')
 
 @section('content')
-
     <div class="container-fluid">
-
-        <!-- Page Heading -->
-        <h1 class="h3 mb-2 text-gray-800">Организации</h1>
-        <p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below. For more information about DataTables, please visit the <a target="_blank" href="https://datatables.net">official DataTables documentation</a>.</p>
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <!-- Page Heading -->
+                <h1 class="h3 mb-4 text-gray-800">Организации</h1>
+            </div>
+            <div class="col-sm-3 offset-lg-3">
+                <a href="{{ URL::to('organizations/create') }}" role = "button" class = "btn btn-block btn-outline-primary btn-md"> Добавить организацию</a>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
 
         <!-- DataTales Example -->
         <div class="card shadow mb-4">
@@ -15,12 +21,11 @@
             </div>
             <div class="card-body">
                 @include('components.datatable', [
-                    'headers' => ['id' => 'ID', 'name' => 'Название', 'address' => 'Адрес'],
+                    'headers' => ['id' => 'ID', 'name' => 'Название','city'=>'Город', 'address' => 'Адрес'],
                     'data' => $organizations
                 ])
             </div>
         </div>
-
     </div>
 @endsection
 
@@ -28,7 +33,36 @@
     <!-- Page level plugins -->
     <script src="{{ asset('vendor/datatables/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
-
-    <!-- Page level custom scripts -->
-    <script src="{{ asset('js/demo/datatables-demo.js') }}"></script>
+    {{--<!-- Page level custom scripts -->--}}
+    {{--<script src="{{ asset('js/demo/datatables-demo.js') }}"></script>--}}
+    <script>
+        $(document).ready(function () {
+            $('#dataTable').DataTable({
+                "processing": true,
+                "responsive": true,
+                "language": {
+                    "processing": "Подождите...",
+                    "search": "Поиск:",
+                    "lengthMenu": "Показать _MENU_ записей",
+                    "info": "Записи с _START_ до _END_ из _TOTAL_ записей",
+                    "infoEmpty": "Записи с 0 до 0 из 0 записей",
+                    "infoFiltered": "(отфильтровано из _MAX_ записей)",
+                    "infoPostFix": "",
+                    "loadingRecords": "Загрузка записей...",
+                    "zeroRecords": "Записи отсутствуют.",
+                    "emptyTable": "В таблице отсутствуют данные",
+                    "paginate": {
+                        "first": "Первая",
+                        "previous": "Предыдущая",
+                        "next": "Следующая",
+                        "last": "Последняя"
+                    },
+                    "aria": {
+                        "sortAscending": ": активировать для сортировки столбца по возрастанию",
+                        "sortDescending": ": активировать для сортировки столбца по убыванию"
+                    }
+                }
+            });     //capital "D"
+        });
+    </script>
 @endsection
