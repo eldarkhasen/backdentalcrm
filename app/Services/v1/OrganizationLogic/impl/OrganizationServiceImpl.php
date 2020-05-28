@@ -68,7 +68,8 @@ class OrganizationServiceImpl implements OrganizationService
             'name',
             'address',
             'phone',
-            'city_id']);
+            'city_id',
+            'deleted']);
         return $organization->update($input);
     }
 
@@ -89,4 +90,8 @@ class OrganizationServiceImpl implements OrganizationService
             ->first();
     }
 
+    public function deleteOrganization($org_id)
+    {
+        return Organization::findOrFail($org_id)->makeDeleted();
+    }
 }

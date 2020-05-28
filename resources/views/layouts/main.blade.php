@@ -11,6 +11,7 @@
     @include('parts.sidebar')
     <div id="content-wrapper" class="d-flex flex-column">
         <div id="content">
+            @include('parts.flash')
             @include('parts.topbar')
             <div class="container-fluid">
                 @yield('content')

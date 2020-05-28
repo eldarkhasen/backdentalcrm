@@ -23,7 +23,11 @@
                         <label for="inputCity">Город</label>
                         <select class="form-control" id="inputCity" name = "city_id">
                             @foreach($cities as $city)
-                                <option value="{{$city->id}}">{{$city->name}}</option>
+                                <option
+                                    {{ $organization->city_id == $city->id ? 'selected="selected"' : ''}}"
+                                    value="{{$city->id}}">
+                                    {{$city->name}}
+                                </option>
                             @endforeach
                         </select>
                     </div>
@@ -61,6 +65,30 @@
                     </div>
                     {{ method_field('PATCH')  }}
                 </form>
+                @if($organization->deleted)
+                    <form method="POST"
+                          action="{{route('organizations.update', $organization->id)}}">
+                        {{ csrf_field() }}
+                        <input type="hidden" name="deleted" value="0">
+                        {{ method_field('PATCH') }}
+
+                        <div class="form-group float-right">
+                            <input type="submit" class="btn btn-warning" value="Восстановить">
+                        </div>
+                    </form>
+                @else
+                    <form method="POST"
+                          action="{{ route('organizations.destroy', [
+                                                'organization' => $organization->id
+                                            ]) }}">
+                        {{ csrf_field() }}
+                        {{ method_field('DELETE') }}
+
+                        <div class="form-group float-right">
+                            <input type="submit" class="btn btn-danger" value="Удалить организацию">
+                        </div>
+                    </form>
+                @endif
             </div>
         </div>
     </div>
