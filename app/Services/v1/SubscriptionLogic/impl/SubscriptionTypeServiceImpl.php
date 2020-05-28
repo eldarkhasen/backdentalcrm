@@ -9,6 +9,7 @@
 namespace App\Services\v1\SubscriptionLogic\impl;
 
 
+use App\Http\Resources\SubscriptionTypeResource;
 use App\Models\Management\SubscriptionType;
 use App\Services\v1\SubscriptionLogic\SubscriptionTypeService;
 use Illuminate\Http\Request;
@@ -16,9 +17,10 @@ use Illuminate\Http\Request;
 class SubscriptionTypeServiceImpl implements SubscriptionTypeService
 {
 
-    public function getSubscriptionTypes(Request $request)
+    public function getSubscriptionTypes()
     {
-        return SubscriptionType::all();
+        $subscriptionTypes = SubscriptionTypeResource::collection(SubscriptionType::all())->resolve();
+        return $subscriptionTypes;
     }
 
     public function storeSubscriptionType(Request $request)
