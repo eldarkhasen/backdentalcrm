@@ -86,8 +86,8 @@ class OrganizationController extends Controller
     public function edit($id)
     {
         $cities = City::with('country')->get();
-        $organization = Organization::findOrFail($id);
-        return view('web.organizations.edit',compact(['cities','organization']));
+        $organization = Organization::with('city')->findOrFail($id);
+        return view('web.organizations.edit', compact(['cities','organization']));
     }
 
     /**

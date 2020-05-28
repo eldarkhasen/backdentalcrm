@@ -22,6 +22,7 @@
             <div class="card-body">
                 @include('components.datatable', [
                     'headers' => ['id' => 'ID', 'name' => 'Название', 'city_name' => 'Город', 'address' => 'Адрес'],
+                    'actions' => ['edit_form_link' => 'Редактировать'],
                     'items' => $organizations
                 ])
             </div>
