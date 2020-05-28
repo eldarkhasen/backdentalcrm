@@ -23,4 +23,5 @@ interface OrganizationService
     public function storeOrganization(Request $request);
     public function updateOrganization($org_id, Request $request);
     public function getCurrentSubscriptionOfOrganization($org_id);
+    public function deleteOrganization($org_id);
 }
