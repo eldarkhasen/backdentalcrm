@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\WebBaseController;
 use App\Http\Resources\OrganizationResource;
 use App\Models\Core\Organization;
 use App\Models\Support\City;
@@ -10,7 +11,7 @@ use App\Models\Support\Country;
 use App\Services\v1\OrganizationLogic\OrganizationService;
 use Illuminate\Http\Request;
 
-class OrganizationController extends Controller
+class OrganizationController extends WebBaseController
 {
     protected $organizationService;
 
@@ -63,6 +64,7 @@ class OrganizationController extends Controller
             'address'=>$request->address,
             'city_id'=>$request->city
         ]);
+        $this->added();
         return redirect()->route('organizations.index');
     }
 
@@ -74,7 +76,7 @@ class OrganizationController extends Controller
      */
     public function show($id)
     {
-        //
+        dd('check');
     }
 
     /**
@@ -100,6 +102,7 @@ class OrganizationController extends Controller
     public function update(Request $request, $id)
     {
         $this->organizationService->updateOrganization($id, $request);
+        $this->edited();
         return redirect()->route('organizations.index');
     }
 
@@ -111,6 +114,8 @@ class OrganizationController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $this->organizationService->deleteOrganization($id);
+        $this->deleted();
+        return redirect()->route('organizations.index');
     }
 }

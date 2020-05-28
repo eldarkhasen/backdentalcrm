@@ -53,7 +53,7 @@ class WebBaseController extends Controller implements WithUser
     {
         request()
             ->session()
-            ->flash('warning', 'Обновлено!');
+            ->flash('success', 'Обновлено!');
     }
 
     public function notFound()

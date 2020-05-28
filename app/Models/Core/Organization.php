@@ -4,6 +4,7 @@ namespace App\Models\Core;
 
 use App\Models\Management\Subscription;
 use App\Models\Support\City;
+use Faker\Provider\DateTime;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -16,6 +17,7 @@ class Organization extends Model
         'address',
         'phone',
         'city_id',
+        'deleted',
     ];
 
     public function city()
@@ -41,5 +43,11 @@ class Organization extends Model
         return $query->where('name', 'LIKE', '%'.$search_key.'%')
             ->orWhere('address', 'LIKE', '%'.$search_key.'%')
             ->orWhere('phone', 'LIKE', '%'.$search_key.'%');
+    }
+
+    public function makeDeleted() {
+        return $this->update([
+           'deleted' => 1,
+        ]);
     }
 }
