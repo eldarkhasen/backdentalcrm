@@ -15,12 +15,13 @@
                                class="form-control"
                                id="inputName"
                                name = "name"
+                               required
                                placeholder="Введите название организации"
                                value="{{$organization->name}}">
                     </div>
                     <div class="form-group">
                         <label for="inputCity">Город</label>
-                        <select class="form-control" id="inputCity" name = "city">
+                        <select class="form-control" id="inputCity" name = "city_id">
                             @foreach($cities as $city)
                                 <option value="{{$city->id}}">{{$city->name}}</option>
                             @endforeach
@@ -32,7 +33,9 @@
                                class="form-control"
                                id="inputAddress"
                                placeholder="Введите адрес организации"
-                               name = "address">
+                               name = "address"
+                               required
+                               value="{{$organization->address}}">
                     </div>
                     <div class="form-group">
                         <label for="inputPhone">Контактный телефон</label>
@@ -40,21 +43,23 @@
                                class="form-control"
                                id="inputPhone"
                                placeholder="Введите номер организации"
-                               name = "phone">
+                               name = "phone"
+                               required
+                               value="{{$organization->phone}}">
                     </div>
-                    <div class="form-group">
-                        <label for="inputEmail">Контактный email</label>
-                        <input type="email"
-                               class="form-control"
-                               id="inputEmail"
-                               placeholder="Введите email организации"
-                               name = "email">
-                    </div>
+{{--                    <div class="form-group">--}}
+{{--                        <label for="inputEmail">Контактный email</label>--}}
+{{--                        <input type="email"--}}
+{{--                               class="form-control"--}}
+{{--                               id="inputEmail"--}}
+{{--                               placeholder="Введите email организации"--}}
+{{--                               name = "email">--}}
+{{--                    </div>--}}
                     <hr>
                     <div class="form-group mt-3">
                         <button type="submit" class="btn btn-primary">Сохранить</button>
                     </div>
-                    {!! @method('PUT') !!}
+                    {{ method_field('PATCH')  }}
                 </form>
             </div>
         </div>
