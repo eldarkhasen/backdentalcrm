@@ -31,7 +31,12 @@ class SubscriptionTypeServiceImpl implements SubscriptionTypeService
     public function updateSubscriptionType($id, Request $request)
     {
         $subcrType = SubscriptionType::findOrFail($id);
-        $input = $request->only(['name','price','expiration_days','employees_count']);
+        $input = $request->only(['name','price','expiration_days','employees_count','deleted']);
         return $subcrType->update($input);
+    }
+
+    public function deleteSubscriptionType($id)
+    {
+       return SubscriptionType::findOrFail($id)->makeDeleted();;
     }
 }

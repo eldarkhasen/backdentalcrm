@@ -64,8 +64,36 @@
                     <hr>
                     <div class="form-group mt-3">
                         <button type="submit" class="btn btn-primary">Сохранить</button>
+
+                        @if($subscriptiontype->deleted)
+                            <a href="" onclick="event.preventDefault();
+                                    document.getElementById('recover_subcr_type').submit();" class="btn btn-warning">Восстановить</a>
+                        @else
+                            <a href="" onclick="event.preventDefault();
+                                    document.getElementById('delete_subcr_type').submit();" class="btn btn-danger">Удалить подписку</a>
+
+                        @endif
                     </div>
                     {{ method_field('PATCH')  }}
+                </form>
+
+                <form method="POST"
+                      id = "recover_subcr_type"
+                      action="{{route('subscriptiontypes.update', $subscriptiontype->id)}}">
+                    {{ csrf_field() }}
+                    <input type="hidden" name="deleted" value="0">
+                    {{ method_field('PATCH') }}
+
+                </form>
+
+                <form method="POST"
+                      id = "delete_subcr_type"
+                      action="{{ route('subscriptiontypes.destroy', [
+                                                'subscriptiontype' => $subscriptiontype->id
+                                            ]) }}">
+                    {{ csrf_field() }}
+                    {{ method_field('DELETE') }}
+
                 </form>
             </div>
         </div>

@@ -26,7 +26,8 @@
                         'name' => 'Название',
                         'city_name' => 'Город',
                         'address' => 'Адрес',
-                        'status' => 'Статус'
+                        'status' => 'Статус',
+                        'email' => 'Email'
                     ],
                     'actions' => ['edit_form_link' => 'Редактировать'],
                     'items' => $organizations

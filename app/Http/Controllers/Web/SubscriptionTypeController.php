@@ -86,6 +86,7 @@ class SubscriptionTypeController extends WebBaseController
     public function update(Request $request, $id)
     {
         $this->subscriptionTypeService->updateSubscriptionType($id,$request);
+        $this->edited();
         return redirect()->route('subscriptiontypes.index');
     }
 
@@ -97,6 +98,8 @@ class SubscriptionTypeController extends WebBaseController
      */
     public function destroy($id)
     {
-        //
+        $this->subscriptionTypeService->deleteSubscriptionType($id);
+        $this->deleted();
+        return redirect()->route('subscriptiontypes.index');
     }
 }
