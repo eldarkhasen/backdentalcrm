@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\WebBaseController;
 use App\Http\Resources\OrganizationResource;
 use App\Models\Core\Organization;
+use App\Models\Management\SubscriptionType;
 use App\Models\Support\City;
 use App\Models\Support\Country;
 use App\Services\v1\OrganizationLogic\OrganizationService;
@@ -90,8 +91,10 @@ class OrganizationController extends WebBaseController
     public function edit($id)
     {
         $cities = City::with('country')->get();
-        $organization = Organization::with('city')->findOrFail($id);
-        return view('web.organizations.edit', compact(['cities','organization']));
+        $organization = Organization::with(['city', 'currentSubscription'])->findOrFail($id);
+        $subscriptionTypes = SubscriptionType::all();
+
+        return view('web.organizations.edit', compact(['cities','organization', 'subscriptionTypes']));
     }
 
     /**

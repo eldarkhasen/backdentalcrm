@@ -10,6 +10,8 @@ namespace App\Services\v1\OrganizationLogic\impl;
 
 
 use App\Models\Core\Organization;
+use App\Models\Management\Subscription;
+use App\Models\Management\SubscriptionType;
 use App\Services\v1\OrganizationLogic\OrganizationService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -71,6 +73,16 @@ class OrganizationServiceImpl implements OrganizationService
             'city_id',
             'deleted',
             'email']);
+
+        $subscription_type = SubscriptionType::findOrFail($request->get('subscription_type_id'));
+
+        $organization->subscriptions()->save(new Subscription([
+            'subscription_type_id' => $request->get('subscription_type_id'),
+            'actual_price' => $request->get('actual_price'),
+            'start_date' => Carbon::now(),
+            'end_date' => Carbon::now()->addDay(intval($subscription_type->expiration_days)),
+        ]));
+
         return $organization->update($input);
     }
 
