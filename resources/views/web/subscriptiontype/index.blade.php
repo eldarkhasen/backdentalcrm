@@ -5,10 +5,10 @@
         <div class="row mb-2">
             <div class="col-sm-6">
                 <!-- Page Heading -->
-                <h1 class="h3 mb-4 text-gray-800">Организации</h1>
+                <h1 class="h3 mb-4 text-gray-800">Типы подписок и тарифы</h1>
             </div>
             <div class="col-sm-3 offset-lg-3">
-                <a href="{{ route('organizations.create') }}" role = "button" class = "btn btn-block btn-outline-primary btn-md"> Добавить организацию</a>
+                <a href="{{ route('subscriptiontypes.create') }}" role = "button" class = "btn btn-block btn-outline-primary btn-md"> Добавить тип подписки</a>
             </div>
         </div>
     </div>
@@ -17,21 +17,20 @@
         <!-- DataTales Example -->
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Организации</h6>
+                <h6 class="m-0 font-weight-bold text-primary">Типы подписок</h6>
             </div>
             <div class="card-body">
-                @include('components.datatable', [
-                    'headers' => [
-                        'id' => 'ID',
-                        'name' => 'Название',
-                        'city_name' => 'Город',
-                        'address' => 'Адрес',
-                        'status' => 'Статус',
-                        'email' => 'Email'
-                    ],
-                    'actions' => ['edit_form_link' => 'Редактировать'],
-                    'items' => $organizations
-                ])
+                    @include('components.datatable', [
+                        'headers' => [
+                            'id' => 'ID',
+                            'name' => 'Название',
+                            'price' => 'Цена (тг)',
+                            'expiration_days' => 'Кол-во дней',
+                            'employees_count'=>'Кол-во сотрудников',
+                            'status' => 'Статус',],
+                        'actions' => ['edit_form_link' => 'Редактировать'],
+                        'items' => $subscriptionTypes
+                    ])
             </div>
         </div>
     </div>

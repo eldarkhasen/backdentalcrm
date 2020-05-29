@@ -58,11 +58,13 @@ class OrganizationController extends WebBaseController
      */
     public function store(Request $request)
     {
+
         Organization::create([
             'name'=>$request->name,
             'phone'=>$request->phone,
             'address'=>$request->address,
-            'city_id'=>$request->city
+            'city_id'=>$request->city,
+            'email'=>$request->email
         ]);
         $this->added();
         return redirect()->route('organizations.index');

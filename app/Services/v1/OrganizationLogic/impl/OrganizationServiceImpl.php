@@ -69,7 +69,8 @@ class OrganizationServiceImpl implements OrganizationService
             'address',
             'phone',
             'city_id',
-            'deleted']);
+            'deleted',
+            'email']);
         return $organization->update($input);
     }
 

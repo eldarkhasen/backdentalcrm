@@ -13,8 +13,9 @@ use Illuminate\Http\Request;
 
 interface SubscriptionTypeService
 {
-    public function getSubscriptionTypes(Request $request);
+    public function getSubscriptionTypes();
     public function storeSubscriptionType(Request $request);
     public function updateSubscriptionType($id,Request $request);
+    public function deleteSubscriptionType($id);
 
 }

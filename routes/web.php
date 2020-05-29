@@ -36,6 +36,7 @@ Route::group(['namespace' => 'Web'], function () {
 //        Route::apiResource('/organizations', 'OrganizationController')
 //            ->name('index', 'organizations');
         Route::resource('organizations', 'OrganizationController');
+        Route::resource('subscriptiontypes', 'SubscriptionTypeController');
     });
 });
 

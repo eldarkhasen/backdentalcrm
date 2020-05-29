@@ -51,44 +51,48 @@
                                required
                                value="{{$organization->phone}}">
                     </div>
-{{--                    <div class="form-group">--}}
-{{--                        <label for="inputEmail">Контактный email</label>--}}
-{{--                        <input type="email"--}}
-{{--                               class="form-control"--}}
-{{--                               id="inputEmail"--}}
-{{--                               placeholder="Введите email организации"--}}
-{{--                               name = "email">--}}
-{{--                    </div>--}}
+                    <div class="form-group">
+                        <label for="inputEmail">Контактный email</label>
+                        <input type="email"
+                               class="form-control"
+                               id="inputEmail"
+                               placeholder="Введите email организации"
+                               name = "email"
+                               value="{{$organization->email}}">
+                    </div>
                     <hr>
                     <div class="form-group mt-3">
                         <button type="submit" class="btn btn-primary">Сохранить</button>
+
+                        @if($organization->deleted)
+                            <a href="" onclick="event.preventDefault();
+                                    document.getElementById('recover_org').submit();" class="btn btn-warning">Восстановить</a>
+                        @else
+                            <a href="" onclick="event.preventDefault();
+                                    document.getElementById('delete_org').submit();" class="btn btn-danger">Удалить организацию</a>
+
+                        @endif
                     </div>
                     {{ method_field('PATCH')  }}
                 </form>
-                @if($organization->deleted)
-                    <form method="POST"
-                          action="{{route('organizations.update', $organization->id)}}">
-                        {{ csrf_field() }}
-                        <input type="hidden" name="deleted" value="0">
-                        {{ method_field('PATCH') }}
+                <form method="POST"
+                      id = "recover_org"
+                      action="{{route('organizations.update', $organization->id)}}">
+                    {{ csrf_field() }}
+                    <input type="hidden" name="deleted" value="0">
+                    {{ method_field('PATCH') }}
 
-                        <div class="form-group float-right">
-                            <input type="submit" class="btn btn-warning" value="Восстановить">
-                        </div>
-                    </form>
-                @else
-                    <form method="POST"
-                          action="{{ route('organizations.destroy', [
+                </form>
+
+                <form method="POST"
+                      id = "delete_org"
+                      action="{{ route('organizations.destroy', [
                                                 'organization' => $organization->id
                                             ]) }}">
-                        {{ csrf_field() }}
-                        {{ method_field('DELETE') }}
+                    {{ csrf_field() }}
+                    {{ method_field('DELETE') }}
 
-                        <div class="form-group float-right">
-                            <input type="submit" class="btn btn-danger" value="Удалить организацию">
-                        </div>
-                    </form>
-                @endif
+                </form>
             </div>
         </div>
     </div>

@@ -18,6 +18,7 @@ class Organization extends Model
         'phone',
         'city_id',
         'deleted',
+        'email',
     ];
 
     public function city()

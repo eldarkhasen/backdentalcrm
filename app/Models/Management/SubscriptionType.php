@@ -14,6 +14,13 @@ class SubscriptionType extends Model
         'name',
         'price',
         'expiration_days',
-        'employees_count'
+        'employees_count',
+        'deleted'
     ];
+
+    public function makeDeleted() {
+        return $this->update([
+            'deleted' => 1,
+        ]);
+    }
 }

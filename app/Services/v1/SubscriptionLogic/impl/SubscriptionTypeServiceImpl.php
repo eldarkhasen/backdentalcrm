@@ -9,6 +9,7 @@
 namespace App\Services\v1\SubscriptionLogic\impl;
 
 
+use App\Http\Resources\SubscriptionTypeResource;
 use App\Models\Management\SubscriptionType;
 use App\Services\v1\SubscriptionLogic\SubscriptionTypeService;
 use Illuminate\Http\Request;
@@ -16,9 +17,10 @@ use Illuminate\Http\Request;
 class SubscriptionTypeServiceImpl implements SubscriptionTypeService
 {
 
-    public function getSubscriptionTypes(Request $request)
+    public function getSubscriptionTypes()
     {
-        return SubscriptionType::all();
+        $subscriptionTypes = SubscriptionTypeResource::collection(SubscriptionType::all())->resolve();
+        return $subscriptionTypes;
     }
 
     public function storeSubscriptionType(Request $request)
@@ -29,7 +31,12 @@ class SubscriptionTypeServiceImpl implements SubscriptionTypeService
     public function updateSubscriptionType($id, Request $request)
     {
         $subcrType = SubscriptionType::findOrFail($id);
-        $input = $request->only(['name','price','expiration_days','employees_count']);
+        $input = $request->only(['name','price','expiration_days','employees_count','deleted']);
         return $subcrType->update($input);
+    }
+
+    public function deleteSubscriptionType($id)
+    {
+       return SubscriptionType::findOrFail($id)->makeDeleted();;
     }
 }
