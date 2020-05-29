@@ -24,7 +24,7 @@
                         <select class="form-control" id="inputCity" name = "city_id">
                             @foreach($cities as $city)
                                 <option
-                                    {{ $organization->city_id == $city->id ? 'selected="selected"' : ''}}"
+                                    {{ $organization->city_id == $city->id ? 'selected="selected"' : ''}}
                                     value="{{$city->id}}">
                                     {{$city->name}}
                                 </option>
@@ -60,6 +60,39 @@
                                name = "email"
                                value="{{$organization->email}}">
                     </div>
+
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-6">
+                                <label for="inputSubscription">Подписка</label>
+                                <select class="form-control" id="inputSubscription" name = "subscription_type_id">
+                                    <option value="">Укажите подписку</option>
+                                    @foreach($subscriptionTypes as $subscription)
+                                        <option
+                                            {{ isset($organization->currentSubscription->subscriptionType)
+                                                && $subscription->id == $organization->currentSubscription->subscription_type_id
+                                                    ? 'selected="selected"' : ''
+                                            }}
+                                            value="{{$subscription->id}}">
+                                            {{$subscription->name . ", " . $subscription->price
+                                                . "тг., " . $subscription->expiration_days . " дней, "
+                                                . $subscription->employees_count . " чел." }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-6">
+                                <label for="inputEmail">Фактическая цена</label>
+                                <input type="number"
+                                       class="form-control"
+                                       id="inputActualPrice"
+                                       placeholder="Введите фактическую цену подписки"
+                                       name = "actual_price"
+                                       value="{{$organization->currentSubscription->actual_price ?? ""}}">
+                            </div>
+                        </div>
+                    </div>
+
                     <hr>
                     <div class="form-group mt-3">
                         <button type="submit" class="btn btn-primary">Сохранить</button>

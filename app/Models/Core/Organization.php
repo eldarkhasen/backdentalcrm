@@ -27,12 +27,19 @@ class Organization extends Model
     }
 
     public function subscriptions(){
-        return $this->hasMany(Subscription::class,'organization_id','id')->orderBy('created_at');
+        return $this->hasMany(Subscription::class,'organization_id','id')
+            ->with('subscriptionType')
+            ->orderBy('created_at');
     }
 
 //    public function getCurrentSubscription(){
 //        return $this->subscriptions()->orderBy('created_at','desc')->first()->get();
 //    }
+
+    public function currentSubscription(){
+        return $this->hasOne(Subscription::class,'organization_id','id')
+            ->latest();
+    }
 
     public function getCurrentSubscription(){
         return $this->relationLoaded('subscriptions')
