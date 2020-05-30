@@ -22,6 +22,10 @@ class UsersAndRolesSeeder extends Seeder
             'name' => 'Сотрудник',
         ]);
 
+        Role::create([
+            'name' => 'Владелец',
+        ]);
+
         $adminUser = User::create([
             'id' => 1,
             'email' => 'admin@mail.ru',

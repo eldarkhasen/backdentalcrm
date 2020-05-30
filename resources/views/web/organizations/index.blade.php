@@ -29,14 +29,13 @@
                         'status' => 'Статус',
                         'email' => 'Email'
                     ],
-                    'actions' => ['edit_form_link' => 'Редактировать'],
+                    'actions' => ['show_item_link'=>'Профиль','edit_form_link' => 'Редактировать'],
                     'items' => $organizations
                 ])
             </div>
         </div>
     </div>
 @endsection
-
 @section('scripts')
     <!-- Page level plugins -->
     <script src="{{ asset('vendor/datatables/jquery.dataTables.min.js') }}"></script>

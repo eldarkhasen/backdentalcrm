@@ -23,6 +23,7 @@ class OrganizationResource extends JsonResource
             'city' => $this->when($city_loaded, $this->city),
             'city_name' => $this->when($city_loaded, $this->city->name),
             'edit_form_link' => route('organizations.edit', ['organization' => $this->id]),
+            'show_item_link' => route('organizations.show', ['organization' => $this->id]),
             'deleted' => $this->deleted,
             'status' => $this->deleted ? 'Удалена' : 'Активна',
         ];

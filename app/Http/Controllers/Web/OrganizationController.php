@@ -7,6 +7,7 @@ use App\Http\Controllers\WebBaseController;
 use App\Http\Resources\OrganizationResource;
 use App\Models\Core\Organization;
 use App\Models\Management\SubscriptionType;
+use App\Models\Role;
 use App\Models\Support\City;
 use App\Models\Support\Country;
 use App\Services\v1\OrganizationLogic\OrganizationService;
@@ -47,7 +48,8 @@ class OrganizationController extends WebBaseController
     public function create()
     {
         $cities = City::with('country')->get();
-        return view('web.organizations.create', compact('cities'));
+        $subscriptionTypes = SubscriptionType::all();
+        return view('web.organizations.create', compact(['cities','subscriptionTypes']));
     }
 
     /**
@@ -59,14 +61,7 @@ class OrganizationController extends WebBaseController
      */
     public function store(Request $request)
     {
-
-        Organization::create([
-            'name'=>$request->name,
-            'phone'=>$request->phone,
-            'address'=>$request->address,
-            'city_id'=>$request->city,
-            'email'=>$request->email
-        ]);
+        $this->organizationService->storeOrganization($request);
         $this->added();
         return redirect()->route('organizations.index');
     }
@@ -79,7 +74,18 @@ class OrganizationController extends WebBaseController
      */
     public function show($id)
     {
-        dd('check');
+        $organization = Organization::with(['subscriptions','city','currentSubscription'])->findOrFail($id);
+        $subscriptionTypes = SubscriptionType::all();
+        $to = \Carbon\Carbon::now();
+        $from = \Carbon\Carbon::createFromFormat('Y-m-d H:s:i', $organization->currentSubscription->end_date);
+        $diff_in_days = $to->diffInDays($from);
+        $percentage = ($diff_in_days/$organization->currentSubscription->subscriptionType->expiration_days)*100;
+        $sum = 0;
+        $roles = Role::where('id','!=',Role::ADMIN_ID)->get();
+        foreach ($organization->subscriptions as $subscription) {
+            $sum+=$subscription->actual_price;
+        }
+        return view('web.organizations.show',compact(['organization','subscriptionTypes','diff_in_days','percentage','sum','roles']));
     }
 
     /**
@@ -122,5 +128,20 @@ class OrganizationController extends WebBaseController
         $this->organizationService->deleteOrganization($id);
         $this->deleted();
         return redirect()->route('organizations.index');
+    }
+
+    public function addSubscription(Request $request){
+        $id = $request->get('organization_id');
+        $this->organizationService->addSubscription($id,$request);
+        $this->edited();
+        return redirect()->route('organizations.show',$id);
+    }
+
+    public function addEmployee(Request $request){
+
+        $id = $request->get('organization_id');
+        $this->organizationService->addEmployee($id,$request);
+        $this->edited();
+        return redirect()->route('organizations.show',$id);
     }
 }

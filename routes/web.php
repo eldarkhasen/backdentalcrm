@@ -37,6 +37,8 @@ Route::group(['namespace' => 'Web'], function () {
 //            ->name('index', 'organizations');
         Route::resource('organizations', 'OrganizationController');
         Route::resource('subscriptiontypes', 'SubscriptionTypeController');
+        Route::post('addSubscription','OrganizationController@addSubscription');
+        Route::post('addEmployee','OrganizationController@addEmployee');
     });
 });
 

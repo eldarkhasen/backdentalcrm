@@ -3,6 +3,7 @@
 namespace App\Models\Core;
 
 use App\Models\Management\Subscription;
+use App\Models\Settings\Employee;
 use App\Models\Support\City;
 use Faker\Provider\DateTime;
 use Illuminate\Database\Eloquent\Model;
@@ -21,6 +22,9 @@ class Organization extends Model
         'email',
     ];
 
+    public function employees(){
+        return $this->hasMany(Employee::class);
+    }
     public function city()
     {
         return $this->belongsTo(City::class, 'city_id', 'id');
