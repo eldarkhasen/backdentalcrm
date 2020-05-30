@@ -19,7 +19,9 @@ class SubscriptionTypeServiceImpl implements SubscriptionTypeService
 
     public function getSubscriptionTypes()
     {
-        $subscriptionTypes = SubscriptionTypeResource::collection(SubscriptionType::all())->resolve();
+        $subscriptionTypes = SubscriptionTypeResource::collection(
+            SubscriptionType::withTrashed()->get()
+        )->resolve();
         return $subscriptionTypes;
     }
 
@@ -30,13 +32,18 @@ class SubscriptionTypeServiceImpl implements SubscriptionTypeService
 
     public function updateSubscriptionType($id, Request $request)
     {
-        $subcrType = SubscriptionType::findOrFail($id);
-        $input = $request->only(['name','price','expiration_days','employees_count','deleted']);
+        $subcrType = SubscriptionType::withTrashed()->findOrFail($id);
+        $input = $request->only(['name','price','expiration_days','employees_count']);
         return $subcrType->update($input);
     }
 
     public function deleteSubscriptionType($id)
     {
-       return SubscriptionType::findOrFail($id)->makeDeleted();;
+       return SubscriptionType::findOrFail($id)->delete();
+    }
+
+    public function restoreSubscriptinType($id)
+    {
+        return SubscriptionType::withTrashed()->findOrFail($id)->restore();
     }
 }

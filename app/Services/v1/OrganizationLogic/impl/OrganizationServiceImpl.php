@@ -34,9 +34,13 @@ class OrganizationServiceImpl implements OrganizationService
         return Organization::paginate($perPage);
     }
 
-    public function getAllOrganizations($withRelations = [])
+    public function getAllOrganizations($withRelations = [], $withTrashed = false)
     {
-        return Organization::with($withRelations)->get();
+        $query = Organization::with($withRelations);
+        if ($withTrashed) {
+           $query = $query->withTrashed();
+        }
+        return $query->get();
     }
 
     public function getAllOrganizationsArray()
@@ -57,7 +61,7 @@ class OrganizationServiceImpl implements OrganizationService
 
     public function getOrganizationById($org_id)
     {
-        $organization = Organization::with('subscriptions')->findOrFail($org_id);
+        $organization = Organization::with('subscriptions')->withTrashed()->findOrFail($org_id);
         return $organization;
     }
 
@@ -83,15 +87,13 @@ class OrganizationServiceImpl implements OrganizationService
 
     public function updateOrganization($org_id, Request $request)
     {
-        $organization = Organization::with('currentSubscription')->findOrFail($org_id);
+        $organization = Organization::findOrFail($org_id);
         $input = $request->only([
             'name',
             'address',
             'phone',
             'city_id',
-            'deleted',
             'email']);
-
 
         return $organization->update($input);
     }
@@ -115,13 +117,17 @@ class OrganizationServiceImpl implements OrganizationService
 
     public function deleteOrganization($org_id)
     {
-        return Organization::findOrFail($org_id)->makeDeleted();
+        return Organization::findOrFail($org_id)->delete();
     }
 
+    public function restoreOrganization($id)
+    {
+        return Organization::withTrashed()->findOrFail($id)->restore();
+    }
 
     public function addSubscription($org_id, Request $request)
     {
-        $organization = Organization::with('currentSubscription')->findOrFail($org_id);
+        $organization = Organization::withTrashed()->with('currentSubscription')->findOrFail($org_id);
         $subscription_type = SubscriptionType::findOrFail($request->get('subscription_type_id'));
         if(isset($organization->currentSubscription)) {
             if ($organization->currentSubscription->end_date >= Carbon::now()) {
@@ -129,7 +135,8 @@ class OrganizationServiceImpl implements OrganizationService
                     'subscription_type_id' => $request->get('subscription_type_id'),
                     'actual_price' => $request->get('actual_price'),
                     'start_date' => $organization->currentSubscription->end_date,
-                    'end_date' => Carbon::createFromFormat('Y-m-d H:s:i', $organization->currentSubscription->end_date)->addDay(intval($subscription_type->expiration_days)),
+                    'end_date' => Carbon::parse($organization->currentSubscription->end_date)
+                            ->addDay(intval($subscription_type->expiration_days)),
                 ]));
             } else {
                 $organization->subscriptions()->save(new Subscription([

@@ -21,8 +21,9 @@ class SubscriptionTypeResource extends JsonResource
             'expiration_days' => $this->expiration_days,
             'employees_count'=> $this->employees_count,
             'edit_form_link' => route('subscriptiontypes.edit', ['subscriptiontype' => $this->id]),
-            'deleted' => $this->deleted,
-            'status' => $this->deleted ? 'Удален' : 'Активен',
+            'deleted' => isset($this->deleted_at),
+            'status' => isset($this->deleted_at) ? 'Удален' : 'Активен',
+            'description' => $this->price . "тг. | На " . $this->expiration_days . " дней"
         ];
     }
 }
