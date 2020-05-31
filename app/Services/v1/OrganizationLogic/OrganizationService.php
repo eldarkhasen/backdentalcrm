@@ -21,7 +21,7 @@ interface OrganizationService
 
     public function searchOrganizationsArray($search_key);
 
-    public function getAllOrganizations($withRelations = []);
+    public function getAllOrganizations($withRelations = [], $withTrashed = false);
 
     public function getOrganizationById($org_id);
 
@@ -38,4 +38,6 @@ interface OrganizationService
     public function addSubscription($org_id, Request $request);
 
     public function addEmployee($org_id, Request $request);
+
+    public function restoreOrganization($id);
 }

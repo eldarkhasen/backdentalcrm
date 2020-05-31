@@ -85,7 +85,12 @@ class SubscriptionTypeController extends WebBaseController
      */
     public function update(Request $request, $id)
     {
-        $this->subscriptionTypeService->updateSubscriptionType($id,$request);
+        if ($request->exists('deleted')
+            && $request->get('deleted') == 0) {
+            $this->subscriptionTypeService->restoreSubscriptinType($id);
+        } else {
+            $this->subscriptionTypeService->updateSubscriptionType($id,$request);
+        }
         $this->edited();
         return redirect()->route('subscriptiontypes.index');
     }

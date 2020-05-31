@@ -18,7 +18,6 @@ class Organization extends Model
         'address',
         'phone',
         'city_id',
-        'deleted',
         'email',
     ];
 
@@ -42,6 +41,7 @@ class Organization extends Model
 
     public function currentSubscription(){
         return $this->hasOne(Subscription::class,'organization_id','id')
+            ->with('subscriptionType')
             ->latest();
     }
 
@@ -55,11 +55,5 @@ class Organization extends Model
         return $query->where('name', 'LIKE', '%'.$search_key.'%')
             ->orWhere('address', 'LIKE', '%'.$search_key.'%')
             ->orWhere('phone', 'LIKE', '%'.$search_key.'%');
-    }
-
-    public function makeDeleted() {
-        return $this->update([
-           'deleted' => 1,
-        ]);
     }
 }

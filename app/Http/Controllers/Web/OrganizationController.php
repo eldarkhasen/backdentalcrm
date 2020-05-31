@@ -32,7 +32,7 @@ class OrganizationController extends WebBaseController
     public function index()
     {
         $organizations = OrganizationResource::collection(
-            $this->organizationService->getAllOrganizations(['city'])
+            $this->organizationService->getAllOrganizations(['city'], true)
         )->resolve();
 
         return view('web.organizations.index', compact('organizations'));
@@ -72,17 +72,29 @@ class OrganizationController extends WebBaseController
      */
     public function show($id)
     {
-        $organization = Organization::with(['subscriptions','city','currentSubscription'])->findOrFail($id);
+        $organization = Organization::with([
+                'subscriptions',
+                'city',
+                'currentSubscription',
+                'employees',
+            ])
+            ->withTrashed()
+            ->findOrFail($id);
         $subscriptionTypes = SubscriptionType::all();
         $to = \Carbon\Carbon::now();
-        $from = \Carbon\Carbon::createFromFormat('Y-m-d H:s:i', $organization->currentSubscription->end_date);
+        $from = isset($organization->currentSubscription)
+            ? \Carbon\Carbon::createFromFormat('Y-m-d H:s:i', $organization->currentSubscription->end_date)
+            : null;
         $diff_in_days = $to->diffInDays($from);
-        $percentage = ($diff_in_days/$organization->currentSubscription->subscriptionType->expiration_days)*100;
+        $percentage = isset($organization->currentSubscription)
+            ? ($diff_in_days/$organization->currentSubscription->subscriptionType->expiration_days)*100
+            : null;
         $sum = 0;
         $roles = Role::where('id','!=',Role::ADMIN_ID)->get();
         foreach ($organization->subscriptions as $subscription) {
             $sum+=$subscription->actual_price;
         }
+        $organization = new OrganizationResource($organization);
         return view('web.organizations.show',compact(['organization','subscriptionTypes','diff_in_days','percentage','sum','roles']));
     }
 
@@ -95,7 +107,9 @@ class OrganizationController extends WebBaseController
     public function edit($id)
     {
         $cities = City::with('country')->get();
-        $organization = Organization::with(['city', 'currentSubscription'])->findOrFail($id);
+        $organization = Organization::with(['city', 'currentSubscription'])
+            ->withTrashed()
+            ->findOrFail($id);
         $subscriptionTypes = SubscriptionType::all();
 
         return view('web.organizations.edit', compact(['cities','organization', 'subscriptionTypes']));
@@ -110,8 +124,15 @@ class OrganizationController extends WebBaseController
      */
     public function update(Request $request, $id)
     {
-        $this->organizationService->updateOrganization($id, $request);
+        if ($request->exists('deleted')
+                && $request->get('deleted') == 0) {
+            $this->organizationService->restoreOrganization($id);
+        } else {
+            $this->organizationService->updateOrganization($id, $request);
+        }
+
         $this->edited();
+
         return redirect()->route('organizations.index');
     }
 

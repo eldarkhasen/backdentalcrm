@@ -17,5 +17,5 @@ interface SubscriptionTypeService
     public function storeSubscriptionType(Request $request);
     public function updateSubscriptionType($id,Request $request);
     public function deleteSubscriptionType($id);
-
+    public function restoreSubscriptinType($id);
 }
