@@ -4,14 +4,14 @@
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1 class="h3 mb-2 text-gray-900">Организация: {{$organization['name']}}</h1>
-                <h1 class="h5 mb-2 text-gray-800">Город: {{$organization['city']['name']}}</h1>
-                <h1 class="h5 mb-2 text-gray-800">Адресс: {{$organization['address']}}</h1>
-                <h1 class="h5 mb-2 text-gray-800">Контактный телефон: {{$organization['phone']}}</h1>
-                <h1 class="h5 mb-2 text-gray-800">Контактный email: {{$organization['email']}}</h1>
+                <h1 class="h3 mb-2 text-gray-900">Организация: {{$organization->name}}</h1>
+                <h1 class="h5 mb-2 text-gray-800">Город: {{$organization->city->name}}</h1>
+                <h1 class="h5 mb-2 text-gray-800">Адресс: {{$organization->address}}</h1>
+                <h1 class="h5 mb-2 text-gray-800">Контактный телефон: {{$organization->phone}}</h1>
+                <h1 class="h5 mb-2 text-gray-800">Контактный email: {{$organization->email}}</h1>
                 <h1 class="h5 mb-2 text-gray-800">
-                    Дата окончания подписки: {{ isset($organization['currentSubscription'])
-                        ? $organization['currentSubscription']['end_date']
+                    Дата окончания подписки: {{ isset($organization->currentSubscription)
+                        ? $organization->resolve()['currentSubscription']->resolve()['end_date']
                         : ""
                     }}
                 </h1>
@@ -36,14 +36,14 @@
                             <div class="col mr-2">
                                 <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Текущая подписка</div>
                                 <div class="h5 mb-1 font-weight-bold text-gray-800">
-                                    {{ $organization['currentSubscription']['subscriptionType']['name'] ?? "Отсутствует" }}
+                                    {{ $organization->currentSubscription->subscriptionType->name ?? "Отсутствует" }}
                                 </div>
                                 <div class="h6 mb-1 font-weight-bold text-gray-800">
-                                    {{ $organization['currentSubscription']['description'] ?? "" }}
+                                    {{ $organization->resolve()['currentSubscription']->resolve()['subscriptionType']->resolve()['description'] ?? ''}}
                                 </div>
                                 <div class="h6 mb-1 font-weight-bold text-gray-800">
-                                    @if(isset($organization['currentSubscription']['subscriptionType']))
-                                        {{ "До " . $organization['currentSubscription']['subscriptionType']['employees_count'] . " врачей"}}
+                                    @if(isset($organization->currentSubscription->subscriptionType))
+                                        {{ "До " . $organization->currentSubscription->subscriptionType->employees_count . " врачей"}}
                                     @endif
                                 </div>
                             </div>
@@ -60,7 +60,7 @@
                         <div class="row no-gutters align-items-center">
                             <div class="col mr-2">
                                 <div class="text-xs font-weight-bold text-success text-uppercase mb-2">Ежемесячный платеж</div>
-                                <div class="h5 mb-2 font-weight-bold text-gray-800">{{$organization['currentSubscription']['actual_price'] ?? 0}}тг</div>
+                                <div class="h5 mb-2 font-weight-bold text-gray-800">{{$organization->currentSubscription->actual_price ?? 0}}тг</div>
                             </div>
                             <div class="col-auto">
                                 <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
@@ -136,7 +136,9 @@
                                             'end_date' => 'Дата окончания',
                                         ],
                                         'actions' => [],
-                                        'items' => $organization['subscriptions']
+                                        'items' => $organization->resolve()['subscriptions']->map(function ($item) {
+                                            return $item->resolve();
+                                        })
                                     ])
                             </div>
                             <div class="tab-pane fade" id="employees" role="tabpanel" aria-labelledby="employees-tab">
@@ -149,7 +151,9 @@
                                          'role_id'=>'Роль'
                                      ],
                                      'actions' => [],
-                                     'items' => $organization['employees']
+                                     'items' => $organization->resolve()['employees']->map(function ($item) {
+                                            return $item->resolve();
+                                        })
                                  ])
                             </div>
                         </div>
@@ -176,14 +180,14 @@
                                     <option value="">Укажите подписку</option>
                                     @foreach($subscriptionTypes as $subscription)
                                         <option
-                                                {{ isset($organization['currentSubscription']['subscriptionType'])
-                                                    && $subscription['id'] == $organization['currentSubscription']['subscription_type_id']
+                                                {{ isset($organization->currentSubscription->subscriptionType)
+                                                    && $subscription->id == $organization->currentSubscription->subscription_type_id
                                                         ? 'selected="selected"' : ''
                                                 }}
-                                                value="{{$subscription['id']}}">
-                                            {{$subscription['name'] . ", " . $subscription['price']
-                                                . "тг., " . $subscription['expiration_days'] . " дней, "
-                                                . $subscription['employees_count'] . " чел." }}
+                                                value="{{$subscription->id}}">
+                                            {{$subscription->name . ", " . $subscription->price
+                                                . "тг., " . $subscription->expiration_days . " дней, "
+                                                . $subscription->employees_count . " чел." }}
                                         </option>
                                     @endforeach
                                 </select>
@@ -196,14 +200,14 @@
                                        id="inputActualPrice"
                                        placeholder="Введите фактическую цену подписки"
                                        name = "actual_price"
-                                       value="{{$organization['currentSubscription']['actual_price'] ?? ""}}">
+                                       value="{{$organization->currentSubscription->actual_price ?? ""}}">
 
 
                             </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-                        <input type="hidden" name = "organization_id" value="{{$organization['id']}}">
+                        <input type="hidden" name = "organization_id" value="{{$organization->id}}">
                         <button type="submit" class="btn btn-primary">Продлить</button>
                     </div>
                 </form>
@@ -292,7 +296,7 @@
                                 <select class="form-control"
                                         name = "role_id">
                                     @foreach($roles as $role)
-                                        <option value = "{{$role['id']}}">{{$role['name']}}</option>
+                                        <option value = "{{$role->id}}">{{$role->name}}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -316,7 +320,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-                        <input type="hidden" name = "organization_id" value="{{$organization['id']}}">
+                        <input type="hidden" name = "organization_id" value="{{$organization->id}}">
                         <button type="submit" class="btn btn-primary">Сохранить</button>
                     </div>
                 </form>

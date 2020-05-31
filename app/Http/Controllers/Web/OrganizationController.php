@@ -97,7 +97,6 @@ class OrganizationController extends WebBaseController
             $sum+=$subscription->actual_price;
         }
         $organization = new OrganizationResource($organization);
-        $organization = $organization->resolve();
         return view('web.organizations.show',compact(['organization','subscriptionTypes','diff_in_days','percentage','sum','roles']));
     }
 

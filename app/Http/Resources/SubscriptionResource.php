@@ -21,11 +21,11 @@ class SubscriptionResource extends JsonResource
 
         return [
             'id' => $this->id,
-            'start_date' => Carbon::parse($this->start_date)->isoFormat('dd.mm.YYYY'),
-            'end_date' => Carbon::parse($this->end_date)->isoFormat('dd.mm.YYYY'),
+            'start_date' => Carbon::parse($this->start_date)->isoFormat('DD.MM.YYYY'),
+            'end_date' => Carbon::parse($this->end_date)->isoFormat('DD.MM.YYYY'),
             'actual_price' => $this->actual_price,
             'subscriptionTypeName' => $this->when(isset($type), $type->name),
-            'subscriptionType' => $this->type,
+            'subscriptionType' => $type,
         ];
     }
 }
