@@ -97,7 +97,7 @@
                     <div class="form-group mt-3">
                         <button type="submit" class="btn btn-primary">Сохранить</button>
 
-                        @if($organization->deleted)
+                        @if($organization['deleted_at'])
                             <a href="" onclick="event.preventDefault();
                                     document.getElementById('recover_org').submit();" class="btn btn-warning">Восстановить</a>
                         @else
