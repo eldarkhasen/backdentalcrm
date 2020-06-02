@@ -28,7 +28,7 @@ class SubscriptionCheckMiddleware
     {
         $this->organizationService = $organizationService;
     }
-
+    //TODO ADD REDIS BECAUSE OF PERFORMANCE ISSUES
     public function handle($request, Closure $next)
     {
         $user = auth()->user();
