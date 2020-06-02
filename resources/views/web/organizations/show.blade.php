@@ -260,7 +260,7 @@
                             <div class="col-4">
                                 <div class="form-group">
                                     <label for="inputEmail">Дата рождения</label>
-                                    <input type="text"
+                                    <input type="date"
                                            id = "birth_date"
                                            class="form-control"
                                            name = "birth_date"

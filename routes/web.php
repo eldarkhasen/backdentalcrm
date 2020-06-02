@@ -37,8 +37,10 @@ Route::group(['namespace' => 'Web'], function () {
 //            ->name('index', 'organizations');
         Route::resource('organizations', 'OrganizationController');
         Route::resource('subscriptiontypes', 'SubscriptionTypeController');
-        Route::post('addSubscription','OrganizationController@addSubscription');
-        Route::post('addEmployee','OrganizationController@addEmployee');
+        Route::post('addSubscription', 'OrganizationController@addSubscription');
+        Route::post('addEmployee', 'OrganizationController@addEmployee');
+
+        Route::get('owners', ['uses' => 'OwnerController@index', 'as' => 'owner.index']);
     });
 });
 

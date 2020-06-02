@@ -28,11 +28,12 @@ class SubscriptionCheckMiddleware
     {
         $this->organizationService = $organizationService;
     }
+
     //TODO ADD REDIS BECAUSE OF PERFORMANCE ISSUES
     public function handle($request, Closure $next)
     {
         $user = auth()->user();
-        if ($user && $user->isEmployee()) {
+        if ($user && ($user->isEmployee() || $user->isOwner())) {
             if ($user->employee && $user->employee->organization_id) {
                 $subscription = $this->organizationService
                     ->getCurrentSubscriptionOfOrganization($user->employee->organization_id);
