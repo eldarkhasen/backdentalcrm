@@ -151,9 +151,7 @@
                                          'role_id'=>'Роль'
                                      ],
                                      'actions' => [],
-                                     'items' => $organization->resolve()['employees']->map(function ($item) {
-                                            return $item->resolve();
-                                        })
+                                     'items' => $organization->resolve()['employees']
                                  ])
                             </div>
                         </div>
