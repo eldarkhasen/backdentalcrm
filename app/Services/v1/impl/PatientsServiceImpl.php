@@ -9,12 +9,13 @@
 namespace App\Services\v1\impl;
 
 
-
-
-
+use App\Exceptions\ApiServiceException;
+use App\Http\Errors\ErrorCode;
 use App\Http\Requests\Api\V1\Patients\StoreAndUpdatePatientApiRequest;
+use App\Models\Core\OrganizationPatient;
 use App\Models\Patients\Patient;
 use App\Services\v1\PatientsService;
+use Illuminate\Support\Facades\DB;
 
 class PatientsServiceImpl implements PatientsService
 {
@@ -31,42 +32,62 @@ class PatientsServiceImpl implements PatientsService
 
     public function searchPaginatedPatients($search_key, $perPage)
     {
-        return Patient::where('name', 'LIKE', '%'.$search_key.'%')
-            ->orWhere('surname', 'LIKE', '%'.$search_key.'%')
-            ->orWhere('patronymic', 'LIKE', '%'.$search_key.'%')
-            ->orWhere('id_card', 'LIKE', '%'.$search_key.'%')
-            ->orWhere('phone', 'LIKE', '%'.$search_key.'%')
+        return Patient::where('name', 'LIKE', '%' . $search_key . '%')
+            ->orWhere('surname', 'LIKE', '%' . $search_key . '%')
+            ->orWhere('patronymic', 'LIKE', '%' . $search_key . '%')
+            ->orWhere('id_card', 'LIKE', '%' . $search_key . '%')
+            ->orWhere('phone', 'LIKE', '%' . $search_key . '%')
             ->paginate($perPage);
     }
 
     public function searchPatientsArray($search_key)
     {
-        return Patient::where('name', 'LIKE', '%'.$search_key.'%')
-            ->orWhere('surname', 'LIKE', '%'.$search_key.'%')
-            ->orWhere('patronymic', 'LIKE', '%'.$search_key.'%')
-            ->orWhere('id_card', 'LIKE', '%'.$search_key.'%')
-            ->orWhere('phone', 'LIKE', '%'.$search_key.'%')->get();
+        return Patient::where('name', 'LIKE', '%' . $search_key . '%')
+            ->orWhere('surname', 'LIKE', '%' . $search_key . '%')
+            ->orWhere('patronymic', 'LIKE', '%' . $search_key . '%')
+            ->orWhere('id_card', 'LIKE', '%' . $search_key . '%')
+            ->orWhere('phone', 'LIKE', '%' . $search_key . '%')->get();
     }
 
-    public function storePatient(StoreAndUpdatePatientApiRequest $request)
+    public function storePatient(StoreAndUpdatePatientApiRequest $request, $currentUser)
     {
-        return Patient::create($request->all());
-//         return Patient::create([
-//            "name" => $request->name,
-//            "surname" => $request->surname,
-//            "patronymic" => $request->patronymic,
-//            'phone' => $request->phone,
-//            'birth_date' => $request->birth_date,
-//            'gender' => $request->gender,
-//            "id_card" => $request->id_card,
-//            "id_number" => $request->id_number,
-//            "city" => $request->city,
-//            "address" => $request->address,
-//            "workplace" => $request->workplace,
-//            "position" => $request->position,
-//            "discount" => $request->discount
-//        ]);
+        DB::beginTransaction();
+        try {
+            if (!($currentUser->isEmployee() || $currentUser->isOwner())) {
+                throw new ApiServiceException(400, false, [
+                    'errors' => [
+                        'You are not allowed to do so'
+                    ],
+                    'errorCode' => ErrorCode::NOT_ALLOWED
+                ]);
+            }
 
+            $currentUser->load(['employee', 'employee.organization']);
+
+            if (!($currentUser->employee && $currentUser->employee->organization)) {
+                throw new ApiServiceException(400, false, [
+                    'errors' => [
+                        'You are not allowed to do so',
+                    ],
+                    'errorCode' => ErrorCode::NOT_ALLOWED
+                ]);
+            }
+
+            $patient = Patient::create($request->all());
+
+            $currentUser->employee->organization->patients()->attach($patient);
+            DB::commit();
+            return $patient;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw new ApiServiceException(400, false, [
+                'errors' => [
+                    'System error',
+                    $e->getMessage()
+                ],
+                'errorCode' => ErrorCode::SYSTEM_ERROR
+            ]);
+        }
     }
 
     public function updatePatient(StoreAndUpdatePatientApiRequest $request, $id)
@@ -84,4 +105,37 @@ class PatientsServiceImpl implements PatientsService
     {
         return Patient::findOrFail($id);
     }
+
+    public function getAllPatientsByOrganization($currentUser)
+    {
+
+        if (!($currentUser->isEmployee() || $currentUser->isOwner())) {
+            throw new ApiServiceException(400, false, [
+                'errors' => [
+                    'You are not allowed to do so'
+                ],
+                'errorCode' => ErrorCode::NOT_ALLOWED
+            ]);
+        }
+
+        $currentUser->load(['employee', 'employee.organization', 'employee.organization.patients']);
+        if (!($currentUser->employee && $currentUser->employee->organization)) {
+            throw new ApiServiceException(400, false, [
+                'errors' => [
+                    'You are not allowed to do so'
+                ],
+                'errorCode' => ErrorCode::NOT_ALLOWED
+            ]);
+        }
+        return $currentUser->employee->organization->patients;
+    }
+
+    public function connectPatientToOrganization($organization_id, $patient_id)
+    {
+        OrganizationPatient::updateOrCreate([
+            'organization_id' => $organization_id,
+            'patient_id' => $patient_id
+        ]);
+    }
+
 }

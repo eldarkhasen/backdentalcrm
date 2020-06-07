@@ -19,6 +19,14 @@ Route::group(['namespace' => 'Auth'], function () {
 });
 
 Route::group(['middleware' => 'auth:api'], function () {
+
+
+    Route::group(['namespace' => 'Support'], function () {
+        Route::post('/check/patient-phone', ['uses' => 'SupportController@checkPatientPhone']);
+        Route::post('/check/patient-id-number', ['uses' => 'SupportController@checkPatientIdNumber']);
+        Route::post('/check/patient-id-card', ['uses' => 'SupportController@checkPatientIdCard']);
+    });
+
     Route::group(['namespace' => 'Auth'], function () {
         Route::post('/me', ['uses' => 'AuthController@me']);
     });
@@ -63,9 +71,10 @@ Route::group(['middleware' => 'auth:api'], function () {
 
         Route::group(['namespace' => 'Patients'], function () {
             Route::get('/patients', 'PatientsController@index');
-            Route::get('/patients/{id}', 'PatientsController@show');
+            Route::get('/patients/{id}', 'PatientsController@show')->where('id', '[0-9]+');;
             Route::post('/patients', 'PatientsController@store');
             Route::put('/patients/{id}', 'PatientsController@update');
+            Route::get('/patients/organization', ['uses' => 'PatientsController@organizationPatients']);
         });
     });
 

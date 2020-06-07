@@ -11,6 +11,7 @@ use App\Services\v1\impl\ServicesServiceImpl;
 use App\Services\v1\OrganizationLogic\impl\OrganizationServiceImpl;
 use App\Services\v1\SubscriptionLogic\impl\SubscriptionServiceImpl;
 use App\Services\v1\SubscriptionLogic\impl\SubscriptionTypeServiceImpl;
+use App\Services\v1\Support\impl\SupportServiceImpl;
 use Illuminate\Support\ServiceProvider;
 
 class SystemServiceProvider extends ServiceProvider
@@ -50,6 +51,9 @@ class SystemServiceProvider extends ServiceProvider
         });
         $this->app->bind('App\Services\v1\ProfileService', function ($app) {
             return (new ProfileServiceImpl());
+        });
+        $this->app->bind('App\Services\v1\Support\SupportService', function ($app) {
+            return (new SupportServiceImpl());
         });
 
 

@@ -10,9 +10,11 @@ interface PatientsService
     public function getAllPatientsArray();
     public function searchPaginatedPatients($searchKey, $perPage);
     public function searchPatientsArray($searchKey);
-    public function storePatient(StoreAndUpdatePatientApiRequest $request);
+    public function storePatient(StoreAndUpdatePatientApiRequest $request, $currentUser);
     public function updatePatient(StoreAndUpdatePatientApiRequest $request,$id);
     public function deletePatient($id);
     public function getPatientById($id);
+    public function getAllPatientsByOrganization( $currentUser);
+    public function connectPatientToOrganization($organization_id, $patient_id);
 
 }
