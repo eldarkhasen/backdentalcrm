@@ -25,14 +25,51 @@ class PatientsServiceImpl implements PatientsService
         return Patient::paginate($perPage);
     }
 
-    public function getAllPatientsArray()
+    public function getAllPatientsArray($currentUser)
     {
-        return Patient::all();
+        if (!($currentUser->isEmployee() || $currentUser->isOwner())) {
+            throw new ApiServiceException(400, false, [
+                'errors' => [
+                    'You are not allowed to do so'
+                ],
+                'errorCode' => ErrorCode::NOT_ALLOWED
+            ]);
+        }
+
+        $currentUser->load(['employee', 'employee.organization', 'employee.organization.patients']);
+        if (!($currentUser->employee && $currentUser->employee->organization)) {
+            throw new ApiServiceException(400, false, [
+                'errors' => [
+                    'You are not allowed to do so'
+                ],
+                'errorCode' => ErrorCode::NOT_ALLOWED
+            ]);
+        }
+        return $currentUser->employee->organization->patients;
     }
 
-    public function searchPaginatedPatients($search_key, $perPage)
+    public function searchPaginatedPatients($currentUser,$search_key, $perPage)
     {
-        return Patient::where('name', 'LIKE', '%' . $search_key . '%')
+        if (!($currentUser->isEmployee() || $currentUser->isOwner())) {
+            throw new ApiServiceException(400, false, [
+                'errors' => [
+                    'You are not allowed to do so'
+                ],
+                'errorCode' => ErrorCode::NOT_ALLOWED
+            ]);
+        }
+
+        $currentUser->load(['employee', 'employee.organization', 'employee.organization.patients']);
+        if (!($currentUser->employee && $currentUser->employee->organization)) {
+            throw new ApiServiceException(400, false, [
+                'errors' => [
+                    'You are not allowed to do so'
+                ],
+                'errorCode' => ErrorCode::NOT_ALLOWED
+            ]);
+        }
+
+        return $currentUser->employee->organization->patients()->where('name', 'LIKE', '%' . $search_key . '%')
             ->orWhere('surname', 'LIKE', '%' . $search_key . '%')
             ->orWhere('patronymic', 'LIKE', '%' . $search_key . '%')
             ->orWhere('id_card', 'LIKE', '%' . $search_key . '%')
@@ -40,9 +77,28 @@ class PatientsServiceImpl implements PatientsService
             ->paginate($perPage);
     }
 
-    public function searchPatientsArray($search_key)
+    public function searchPatientsArray($currentUser,$search_key)
     {
-        return Patient::where('name', 'LIKE', '%' . $search_key . '%')
+        if (!($currentUser->isEmployee() || $currentUser->isOwner())) {
+            throw new ApiServiceException(400, false, [
+                'errors' => [
+                    'You are not allowed to do so'
+                ],
+                'errorCode' => ErrorCode::NOT_ALLOWED
+            ]);
+        }
+
+        $currentUser->load(['employee', 'employee.organization', 'employee.organization.patients']);
+        if (!($currentUser->employee && $currentUser->employee->organization)) {
+            throw new ApiServiceException(400, false, [
+                'errors' => [
+                    'You are not allowed to do so'
+                ],
+                'errorCode' => ErrorCode::NOT_ALLOWED
+            ]);
+        }
+
+        return $currentUser->employee->organization->patients()->where('name', 'LIKE', '%' . $search_key . '%')
             ->orWhere('surname', 'LIKE', '%' . $search_key . '%')
             ->orWhere('patronymic', 'LIKE', '%' . $search_key . '%')
             ->orWhere('id_card', 'LIKE', '%' . $search_key . '%')
@@ -106,9 +162,8 @@ class PatientsServiceImpl implements PatientsService
         return Patient::findOrFail($id);
     }
 
-    public function getAllPatientsByOrganization($currentUser)
+    public function getAllPatientsByOrganization($currentUser,$perPage)
     {
-
         if (!($currentUser->isEmployee() || $currentUser->isOwner())) {
             throw new ApiServiceException(400, false, [
                 'errors' => [
@@ -127,7 +182,8 @@ class PatientsServiceImpl implements PatientsService
                 'errorCode' => ErrorCode::NOT_ALLOWED
             ]);
         }
-        return $currentUser->employee->organization->patients;
+
+        return $currentUser->employee->organization->patients()->paginate($perPage);
     }
 
     public function connectPatientToOrganization($organization_id, $patient_id)

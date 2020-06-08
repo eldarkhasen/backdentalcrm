@@ -30,17 +30,17 @@ class EmployeesController extends ApiBaseController
     {
         $perPage = $request->get('perPage',10);
         if($request->has('search') && !$request->has('position')){
-            return $this->successResponse($this->employeeService->searchEmployee($request->get('search'),$perPage));
+            return $this->successResponse($this->employeeService->searchEmployee(auth()->user(),$request->get('search'),$perPage));
 
         }else if($request->has('position') && !$request->has('search')){
-            return $this->successResponse($this->employeeService->getEmployeeByPosition($request->get('position'),$perPage));
+            return $this->successResponse($this->employeeService->getEmployeeByPosition(auth()->user(),$request->get('position'),$perPage));
 
         }else if($request->has('position') && $request->has('search')){
-            return $this->successResponse($this->employeeService->searchEmployeeByPosition($request->get('search'),$request->get('position'),$perPage));
+            return $this->successResponse($this->employeeService->searchEmployeeByPosition(auth()->user(),$request->get('search'),$request->get('position'),$perPage));
         }else if($request->has('array')){
-            return $this->successResponse($this->employeeService->getEmployeesArray());
+            return $this->successResponse($this->employeeService->getEmployeesArray(auth()->user()));
         } else{
-            return $this->successResponse($this->employeeService->getEmployees($perPage));
+            return $this->successResponse($this->employeeService->getEmployees(auth()->user(),$perPage));
         }
 
     }
@@ -63,7 +63,7 @@ class EmployeesController extends ApiBaseController
      */
     public function store(StoreAndUpdateEmployeeApiRequest $request)
     {
-        return $this->successResponse($this->employeeService->storeEmployee($request));
+        return $this->successResponse($this->employeeService->storeEmployee(auth()->user(),$request));
     }
 
     /**

@@ -28,14 +28,12 @@ class PatientsController extends ApiBaseController
     public function index(Request $request)
     {
         $perPage = $request->get('perPage', 10);
-        if ($request->has('search') && $request->has('array')) {
-            return $this->successResponse($this->patientsService->searchPatientsArray($request->get('search')));
-        } else if ($request->has('search') && !$request->has('array')) {
-            return $this->successResponse($this->patientsService->searchPaginatedPatients($request->get('search'), $perPage));
-        } else if ($request->has('array')) {
-            return $this->successResponse($this->patientsService->getAllPatientsArray());
-        } else {
-            return $this->successResponse($this->patientsService->getAllPaginatedPatients($perPage));
+        if ($request->has('search')) {
+            return $this->successResponse($this->patientsService->searchPaginatedPatients(auth()->user(), $request->get('search'), $perPage));
+        }else {
+            return $this->successResponse(
+                $this->patientsService->getAllPatientsByOrganization(auth()->user(),$perPage)
+            );
         }
     }
 

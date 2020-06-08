@@ -23,22 +23,82 @@ use Illuminate\Support\Facades\DB;
 class EmployeesAndPositionsServiceImpl implements EmployeesAndPositionsService
 {
 
-    public function getEmployees($perPage)
+    public function getEmployees($currentUser,$perPage)
     {
-        return Employee::with('positions', 'account', 'services')->paginate($perPage);
+        if (!($currentUser->isEmployee() || $currentUser->isOwner())) {
+            throw new ApiServiceException(400, false, [
+                'errors' => [
+                    'You are not allowed to do so'
+                ],
+                'errorCode' => ErrorCode::NOT_ALLOWED
+            ]);
+        }
+
+        $currentUser->load(['employee', 'employee.organization', 'employee.organization.patients']);
+        if (!($currentUser->employee && $currentUser->employee->organization)) {
+            throw new ApiServiceException(400, false, [
+                'errors' => [
+                    'You are not allowed to do so'
+                ],
+                'errorCode' => ErrorCode::NOT_ALLOWED
+            ]);
+        }
+
+        $org_id = $currentUser->employee->organization->id;
+        return Employee::where('organization_id',$org_id)->with('positions', 'account', 'services')->paginate($perPage);
     }
 
-    public function getEmployeeByPosition($position, $perPage)
+    public function getEmployeeByPosition($currentUser,$position, $perPage)
     {
+        if (!($currentUser->isEmployee() || $currentUser->isOwner())) {
+            throw new ApiServiceException(400, false, [
+                'errors' => [
+                    'You are not allowed to do so'
+                ],
+                'errorCode' => ErrorCode::NOT_ALLOWED
+            ]);
+        }
+
+        $currentUser->load(['employee', 'employee.organization', 'employee.organization.patients']);
+        if (!($currentUser->employee && $currentUser->employee->organization)) {
+            throw new ApiServiceException(400, false, [
+                'errors' => [
+                    'You are not allowed to do so'
+                ],
+                'errorCode' => ErrorCode::NOT_ALLOWED
+            ]);
+        }
+
+        $org_id = $currentUser->employee->organization->id;
         $pos = Position::findOrFail($position);
-        return $pos->employees()->with('positions')->paginate($perPage);
+        return $pos->employees()->where('organization_id',$org_id)->with('positions')->paginate($perPage);
     }
 
-    public function searchEmployeeByPosition($search_key, $position, $perPage = 10)
+    public function searchEmployeeByPosition($currentUser,$search_key, $position_id, $perPage = 10)
     {
-        return Employee::with(['positions'])
+        if (!($currentUser->isEmployee() || $currentUser->isOwner())) {
+            throw new ApiServiceException(400, false, [
+                'errors' => [
+                    'You are not allowed to do so'
+                ],
+                'errorCode' => ErrorCode::NOT_ALLOWED
+            ]);
+        }
+
+        $currentUser->load(['employee', 'employee.organization', 'employee.organization.patients']);
+        if (!($currentUser->employee && $currentUser->employee->organization)) {
+            throw new ApiServiceException(400, false, [
+                'errors' => [
+                    'You are not allowed to do so'
+                ],
+                'errorCode' => ErrorCode::NOT_ALLOWED
+            ]);
+        }
+
+        $org_id = $currentUser->employee->organization->id;
+        return Employee::where('organization_id',$org_id)->with(['positions'])
             ->leftJoin('employees_has_positions as pos', 'pos.employee_id', '=', 'employees.id')
-            ->where('pos.id', '=', $position)
+            ->where('pos.position_id', '=', $position_id)
             ->where(function ($query) use ($search_key) {
                 $query->where('surname', 'LIKE', '%' . $search_key . '%');
                 $query->Orwhere('name', 'LIKE', '%' . $search_key . '%');
@@ -49,27 +109,108 @@ class EmployeesAndPositionsServiceImpl implements EmployeesAndPositionsService
             ->paginate($perPage);
     }
 
-    public function getPositions()
+    public function getPositions($currentUser)
     {
-        return Position::all();
+        if (!($currentUser->isEmployee() || $currentUser->isOwner())) {
+            throw new ApiServiceException(400, false, [
+                'errors' => [
+                    'You are not allowed to do so'
+                ],
+                'errorCode' => ErrorCode::NOT_ALLOWED
+            ]);
+        }
+
+        $currentUser->load(['employee', 'employee.organization', 'employee.organization.patients']);
+        if (!($currentUser->employee && $currentUser->employee->organization)) {
+            throw new ApiServiceException(400, false, [
+                'errors' => [
+                    'You are not allowed to do so'
+                ],
+                'errorCode' => ErrorCode::NOT_ALLOWED
+            ]);
+        }
+
+        $org_id = $currentUser->employee->organization->id;
+        return Position::where('organization_id',$org_id)->get();
     }
 
-    public function searchEmployee($search_key, $perPage)
+    public function searchEmployee($currentUser, $search_key, $perPage)
     {
+        if (!($currentUser->isEmployee() || $currentUser->isOwner())) {
+            throw new ApiServiceException(400, false, [
+                'errors' => [
+                    'You are not allowed to do so'
+                ],
+                'errorCode' => ErrorCode::NOT_ALLOWED
+            ]);
+        }
+
+        $currentUser->load(['employee', 'employee.organization', 'employee.organization.patients']);
+        if (!($currentUser->employee && $currentUser->employee->organization)) {
+            throw new ApiServiceException(400, false, [
+                'errors' => [
+                    'You are not allowed to do so'
+                ],
+                'errorCode' => ErrorCode::NOT_ALLOWED
+            ]);
+        }
+
+        $org_id = $currentUser->employee->organization->id;
         return Employee::where('name', 'LIKE', '%' . $search_key . '%')
+            ->where('organization_id',$org_id)
             ->orWhere('surname', 'LIKE', '%' . $search_key . '%')
             ->orWhere('patronymic', 'LIKE', '%' . $search_key . '%')
             ->with('positions')
             ->paginate($perPage);
     }
 
-    public function searchPosition($search_key)
+    public function searchPosition($currentUser,$search_key)
     {
-        return Position::where('name', $search_key)->paginate(10);
+        if (!($currentUser->isEmployee() || $currentUser->isOwner())) {
+            throw new ApiServiceException(400, false, [
+                'errors' => [
+                    'You are not allowed to do so'
+                ],
+                'errorCode' => ErrorCode::NOT_ALLOWED
+            ]);
+        }
+
+        $currentUser->load(['employee', 'employee.organization', 'employee.organization.patients']);
+        if (!($currentUser->employee && $currentUser->employee->organization)) {
+            throw new ApiServiceException(400, false, [
+                'errors' => [
+                    'You are not allowed to do so'
+                ],
+                'errorCode' => ErrorCode::NOT_ALLOWED
+            ]);
+        }
+
+        $org_id = $currentUser->employee->organization->id;
+        return Position::where('name', $search_key)->where('organization_id',$org_id)->paginate(10);
     }
 
-    public function storeEmployee(StoreAndUpdateEmployeeApiRequest $request)
+    public function storeEmployee($currentUser,StoreAndUpdateEmployeeApiRequest $request)
     {
+        if (!($currentUser->isEmployee() || $currentUser->isOwner())) {
+            throw new ApiServiceException(400, false, [
+                'errors' => [
+                    'You are not allowed to do so'
+                ],
+                'errorCode' => ErrorCode::NOT_ALLOWED
+            ]);
+        }
+
+        $currentUser->load(['employee', 'employee.organization', 'employee.organization.patients']);
+        if (!($currentUser->employee && $currentUser->employee->organization)) {
+            throw new ApiServiceException(400, false, [
+                'errors' => [
+                    'You are not allowed to do so'
+                ],
+                'errorCode' => ErrorCode::NOT_ALLOWED
+            ]);
+        }
+
+        $org_id = $currentUser->employee->organization->id;
         DB::beginTransaction();
         try {
             $employee = Employee::create([
@@ -79,7 +220,8 @@ class EmployeesAndPositionsServiceImpl implements EmployeesAndPositionsService
                 'phone' => $request->phone,
                 'birth_date' => $request->birth_date,
                 'gender' => $request->gender,
-                'color' => $request->color
+                'color' => $request->color,
+                'organization_id'=>$org_id
             ]);
 
             $positions = $request->positions;
@@ -130,9 +272,33 @@ class EmployeesAndPositionsServiceImpl implements EmployeesAndPositionsService
 
     }
 
-    public function storePosition(StoreAndUpdatePositionApiRequest $request)
+    public function storePosition($currentUser, StoreAndUpdatePositionApiRequest $request)
     {
-        return Position::create($request->all());
+        if (!($currentUser->isEmployee() || $currentUser->isOwner())) {
+            throw new ApiServiceException(400, false, [
+                'errors' => [
+                    'You are not allowed to do so'
+                ],
+                'errorCode' => ErrorCode::NOT_ALLOWED
+            ]);
+        }
+
+        $currentUser->load(['employee', 'employee.organization', 'employee.organization.patients']);
+        if (!($currentUser->employee && $currentUser->employee->organization)) {
+            throw new ApiServiceException(400, false, [
+                'errors' => [
+                    'You are not allowed to do so'
+                ],
+                'errorCode' => ErrorCode::NOT_ALLOWED
+            ]);
+        }
+
+        $org_id = $currentUser->employee->organization->id;
+        return Position::create([
+            'name'=>$request->name,
+            'description'=>$request->description,
+            'organization_id'=>$org_id
+        ]);
     }
 
     public function updatePosition($id, StoreAndUpdatePositionApiRequest $request)
@@ -211,8 +377,28 @@ class EmployeesAndPositionsServiceImpl implements EmployeesAndPositionsService
         return $employee;
     }
 
-    public function getEmployeesArray()
+    public function getEmployeesArray($currentUser)
     {
-        return Employee::all();
+        if (!($currentUser->isEmployee() || $currentUser->isOwner())) {
+            throw new ApiServiceException(400, false, [
+                'errors' => [
+                    'You are not allowed to do so'
+                ],
+                'errorCode' => ErrorCode::NOT_ALLOWED
+            ]);
+        }
+
+        $currentUser->load(['employee', 'employee.organization', 'employee.organization.patients']);
+        if (!($currentUser->employee && $currentUser->employee->organization)) {
+            throw new ApiServiceException(400, false, [
+                'errors' => [
+                    'You are not allowed to do so'
+                ],
+                'errorCode' => ErrorCode::NOT_ALLOWED
+            ]);
+        }
+
+        $org_id = $currentUser->employee->organization->id;
+        return Employee::where('organization_id',$org_id)->get();
     }
 }

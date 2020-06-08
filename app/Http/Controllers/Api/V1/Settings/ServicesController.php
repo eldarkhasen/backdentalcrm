@@ -34,19 +34,19 @@ class ServicesController extends ApiBaseController
     {
         $perPage = $request->get('perPage',10);
         if($request->has('search') && !$request->has('category_id')){
-            return $this->successResponse($this->servicesService->searchServices($request->get('organization_id'),$request->get('search'),$perPage));
+            return $this->successResponse($this->servicesService->searchServices(auth()->user(),$request->get('search'),$perPage));
         }else if($request->has('category_id') && !$request->has('search')){
-            return $this->successResponse($this->servicesService->getAllServicesByCategory($request->get('organization_id'),$request->get('category_id'),$perPage));
+            return $this->successResponse($this->servicesService->getAllServicesByCategory(auth()->user(),$request->get('category_id'),$perPage));
         }else if($request->has('category_id') && $request->has('search')){
-            return $this->successResponse($this->servicesService->searchByCategories($request->get('organization_id'),$request->get('category_id'),$request->get('search'),$perPage));
+            return $this->successResponse($this->servicesService->searchByCategories(auth()->user(),$request->get('category_id'),$request->get('search'),$perPage));
         }else{
-            return $this->successResponse($this->servicesService->getAllServices($request->get('organization_id'),$perPage));
+            return $this->successResponse($this->servicesService->getAllServices(auth()->user(),$perPage));
         }
 
     }
 
     public function getServiceCategories(Request $request){
-        return$this->successResponse($this->servicesService->getServiceCategories($request->get('organization_id')));
+        return$this->successResponse($this->servicesService->getServiceCategories(auth()->user()));
     }
 
     /**
@@ -67,7 +67,7 @@ class ServicesController extends ApiBaseController
      */
     public function store(StoreAndUpdateServiceApiRequest $request)
     {
-        return $this->successResponse(Service::create($request->all()));
+        return $this->successResponse($this->servicesService->storeService(auth()->user(),$request));
     }
 
     /**
@@ -130,21 +130,22 @@ class ServicesController extends ApiBaseController
     }
 
     public function storeCategory(StoreAndUpdateServiceCategoryApiRequest $request){
-        return $this->successResponse(ServiceCategory::create($request->all()));
-
+        return $this->successResponse($this->servicesService->storeServiceCategory(auth()->user(),$request));
     }
 
     public function updateCategory($id,StoreAndUpdateServiceCategoryApiRequest $request){
         $category = ServiceCategory::findOrFail($id);
         $category->update($request->all());
-        return $this->successResponse($this->servicesService->getServiceCategories());
+        return $this->successResponse($this->servicesService->getServiceCategories(auth()->user()));
 
     }
 
     public function deleteCategory($id){
         return $this->successResponse($this->servicesService->deleteCategory($id));
     }
+
     public function getServicesArray(){
-        return $this->successResponse(Service::with(['category','organization'])->all());
+
+        return $this->successResponse($this->servicesService->getAllServicesArray(auth()->user()));
     }
 }

@@ -86,7 +86,7 @@ class OrganizationController extends WebBaseController
             ? \Carbon\Carbon::createFromFormat('Y-m-d H:s:i', $organization->currentSubscription->end_date)
             : null;
         $diff_in_days = $to->diffInDays($from);
-        $percentage = isset($organization->currentSubscription)
+        $percentage = (isset($organization->currentSubscription) && $organization->currentSubscription->subscriptionType->price!=0)
             ? ($diff_in_days/$organization->currentSubscription->subscriptionType->expiration_days)*100
             : null;
         $sum = 0;

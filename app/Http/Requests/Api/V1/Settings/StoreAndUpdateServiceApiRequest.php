@@ -22,8 +22,7 @@ class StoreAndUpdateServiceApiRequest extends ApiBaseRequest
             "duration" =>['required','numeric'],
             "category_id"=>['required','numeric'],
             "price"=>['required','numeric'],
-            "max_price",
-            "organization_id" => ['required', 'exists:organizations,id']
+            "max_price"
         ];
     }
 }
