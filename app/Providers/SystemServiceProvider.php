@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Services\v1\AppointmentsService;
+use App\Services\v1\impl\AppointmentsServiceImpl;
 use App\Services\v1\impl\AuthServiceImpl;
 use App\Services\v1\impl\EmployeesAndPositionsServiceImpl;
 use App\Services\v1\impl\PatientsServiceImpl;
@@ -55,8 +57,9 @@ class SystemServiceProvider extends ServiceProvider
         $this->app->bind('App\Services\v1\Support\SupportService', function ($app) {
             return (new SupportServiceImpl());
         });
-
-
+        $this->app->bind(AppointmentsService::class, function ($app) {
+            return (new AppointmentsServiceImpl());
+        });
     }
 
     /**
