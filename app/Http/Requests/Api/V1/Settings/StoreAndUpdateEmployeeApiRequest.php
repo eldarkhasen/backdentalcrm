@@ -22,7 +22,7 @@ class StoreAndUpdateEmployeeApiRequest extends ApiBaseRequest
             "patronymic",
             "positions",
             "services",
-            "email" => ['unique:users,email'],
+            "email",
             "password",
             "role_id",
             "permissions",
@@ -30,8 +30,7 @@ class StoreAndUpdateEmployeeApiRequest extends ApiBaseRequest
             "birth_date" => ['required', 'string'],
             "gender" => ['required', 'string'],
             "color",
-            "create_account" => ['required', 'boolean'],
-            "organization_id" => ['required', 'exists:organizations,id']
+            "create_account" => ['required', 'boolean']
         ];
     }
 }

@@ -7,11 +7,14 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class TreatmentCourse extends Model
 {
-
     use SoftDeletes;
 
     protected $fillable = [
-        'title',
+        'name',
         'is_finished'
+    ];
+
+    protected $attributes = [
+        'is_finished' => false,
     ];
 }

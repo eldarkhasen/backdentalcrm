@@ -27,15 +27,13 @@ class PatientsController extends ApiBaseController
      */
     public function index(Request $request)
     {
-        $perPage = $request->get('perPage',10);
-        if($request->has('search') && $request->has('array')){
-            return $this->successResponse($this->patientsService->searchPatientsArray($request->get('search')));
-        }else if($request->has('search') && !$request->has('array')){
-            return $this->successResponse($this->patientsService->searchPaginatedPatients($request->get('search'),$perPage));
-        }else if($request->has('array')){
-            return $this->successResponse($this->patientsService->getAllPatientsArray());
-        }else{
-            return $this->successResponse($this->patientsService->getAllPaginatedPatients($perPage));
+        $perPage = $request->get('perPage', 10);
+        if ($request->has('search')) {
+            return $this->successResponse($this->patientsService->searchPaginatedPatients(auth()->user(), $request->get('search'), $perPage));
+        }else {
+            return $this->successResponse(
+                $this->patientsService->getAllPatientsByOrganization(auth()->user(),$perPage)
+            );
         }
     }
 
@@ -52,18 +50,18 @@ class PatientsController extends ApiBaseController
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(StoreAndUpdatePatientApiRequest $request)
     {
-        return $this->successResponse($this->patientsService->storePatient($request));
+        return $this->successResponse($this->patientsService->storePatient($request, auth()->user()));
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -74,7 +72,7 @@ class PatientsController extends ApiBaseController
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -85,23 +83,30 @@ class PatientsController extends ApiBaseController
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \Illuminate\Http\Request $request
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function update(StoreAndUpdatePatientApiRequest $request, $id)
     {
-        return $this->successResponse($this->patientsService->updatePatient($request,$id));
+        return $this->successResponse($this->patientsService->updatePatient($request, $id));
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
         //
+    }
+
+    public function organizationPatients()
+    {
+        return $this->successResponse([
+            'patients' => $this->patientsService->getAllPatientsByOrganization(auth()->user())
+        ]);
     }
 }

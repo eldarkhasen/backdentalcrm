@@ -29,9 +29,9 @@ class PositionsController extends ApiBaseController
     public function index(Request $request)
     {
         if($request->has('search')){
-            return $this->successResponse($this->positionsService->searchPosition($request->get('search')));
+            return $this->successResponse($this->positionsService->searchPosition(auth()->user(),$request->get('search')));
         }
-        return $this->successResponse($this->positionsService->getPositions());
+        return $this->successResponse($this->positionsService->getPositions(auth()->user()));
     }
 
     /**
@@ -52,7 +52,7 @@ class PositionsController extends ApiBaseController
      */
     public function store(StoreAndUpdatePositionApiRequest $request)
     {
-        return $this->successResponse($this->positionsService->storePosition($request));
+        return $this->successResponse($this->positionsService->storePosition(auth()->user(),$request));
     }
 
     /**

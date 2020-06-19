@@ -14,8 +14,8 @@ class Appointment extends Model
 
     protected $fillable = [
         'title',
-        'start_date',
-        'end_date',
+        'starts_at',
+        'ends_at',
         'price',
         'status',
         'color',
@@ -23,6 +23,10 @@ class Appointment extends Model
         'patient_id',
         'treatment_course_id',
         'is_first_visit',
+    ];
+
+    protected $attributes = [
+      'status' => 'pending',
     ];
 
     public function employee()

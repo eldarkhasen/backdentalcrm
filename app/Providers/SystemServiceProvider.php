@@ -2,14 +2,18 @@
 
 namespace App\Providers;
 
+use App\Services\v1\AppointmentsService;
+use App\Services\v1\impl\AppointmentsServiceImpl;
 use App\Services\v1\impl\AuthServiceImpl;
 use App\Services\v1\impl\EmployeesAndPositionsServiceImpl;
 use App\Services\v1\impl\PatientsServiceImpl;
 use App\Services\v1\impl\PermissionsServiceImpl;
+use App\Services\v1\impl\ProfileServiceImpl;
 use App\Services\v1\impl\ServicesServiceImpl;
 use App\Services\v1\OrganizationLogic\impl\OrganizationServiceImpl;
 use App\Services\v1\SubscriptionLogic\impl\SubscriptionServiceImpl;
 use App\Services\v1\SubscriptionLogic\impl\SubscriptionTypeServiceImpl;
+use App\Services\v1\Support\impl\SupportServiceImpl;
 use Illuminate\Support\ServiceProvider;
 
 class SystemServiceProvider extends ServiceProvider
@@ -47,10 +51,15 @@ class SystemServiceProvider extends ServiceProvider
         $this->app->bind('App\Services\v1\OrganizationLogic\OrganizationService', function ($app) {
             return (new OrganizationServiceImpl());
         });
-
-
-
-
+        $this->app->bind('App\Services\v1\ProfileService', function ($app) {
+            return (new ProfileServiceImpl());
+        });
+        $this->app->bind('App\Services\v1\Support\SupportService', function ($app) {
+            return (new SupportServiceImpl());
+        });
+        $this->app->bind(AppointmentsService::class, function ($app) {
+            return (new AppointmentsServiceImpl());
+        });
     }
 
     /**

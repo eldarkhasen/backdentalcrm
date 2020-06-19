@@ -63,8 +63,27 @@ class User extends Authenticatable implements JWTSubject
         return $this->belongsToMany(Permission::class, 'user_has_permissions', 'user_id', 'permission_id');
     }
 
+    public function isEmployee()
+    {
+        return $this->role_id == Role::EMPLOYEE_ID;
+    }
+
+    public function isOwner()
+    {
+        return $this->role_id == Role::OWNER_ID;
+    }
+
     public function employee()
     {
         return $this->hasOne(Employee::class, 'account_id');
+    }
+
+    public function getOrganizationName()
+    {
+        return $this->employee ?
+            $this->employee->organization ?
+                $this->employee->organization->name
+                : 'Нет оранизации'
+            : 'Нет зарегистрированного рабочего';
     }
 }

@@ -151,9 +151,7 @@
                                          'role_id'=>'Роль'
                                      ],
                                      'actions' => [],
-                                     'items' => $organization->resolve()['employees']->map(function ($item) {
-                                            return $item->resolve();
-                                        })
+                                     'items' => $organization->resolve()['employees']
                                  ])
                             </div>
                         </div>
@@ -260,7 +258,7 @@
                             <div class="col-4">
                                 <div class="form-group">
                                     <label for="inputEmail">Дата рождения</label>
-                                    <input type="text"
+                                    <input type="date"
                                            id = "birth_date"
                                            class="form-control"
                                            name = "birth_date"

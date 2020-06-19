@@ -2,14 +2,12 @@
 
 namespace App\Http\Controllers\Web;
 
-use App\Http\Controllers\Controller;
 use App\Http\Controllers\WebBaseController;
 use App\Http\Resources\OrganizationResource;
 use App\Models\Core\Organization;
 use App\Models\Management\SubscriptionType;
 use App\Models\Role;
 use App\Models\Support\City;
-use App\Models\Support\Country;
 use App\Services\v1\OrganizationLogic\OrganizationService;
 use Illuminate\Http\Request;
 
@@ -88,7 +86,7 @@ class OrganizationController extends WebBaseController
             ? \Carbon\Carbon::createFromFormat('Y-m-d H:s:i', $organization->currentSubscription->end_date)
             : null;
         $diff_in_days = $to->diffInDays($from);
-        $percentage = isset($organization->currentSubscription)
+        $percentage = (isset($organization->currentSubscription) && $organization->currentSubscription->subscriptionType->price!=0)
             ? ($diff_in_days/$organization->currentSubscription->subscriptionType->expiration_days)*100
             : null;
         $sum = 0;
