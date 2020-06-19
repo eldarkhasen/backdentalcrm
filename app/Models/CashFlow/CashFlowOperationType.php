@@ -14,6 +14,7 @@ class CashFlowOperationType extends Model
     {
         return $this->belongsTo(
             CashFlowType::class,
-            'cash_flow_type_id');
+            'cash_flow_type_id'
+        );
     }
 }

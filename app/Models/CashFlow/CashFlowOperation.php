@@ -7,19 +7,28 @@ use Illuminate\Database\Eloquent\Model;
 
 class CashFlowOperation extends Model
 {
+    protected $fillable = [
+        'from_cash_box_id',
+        'to_cash_box_id',
+        'type_id',
+        'appointment_id',
+        'amount',
+        'comments'
+    ];
+
     public function type(){
         return $this->belongsTo(
             CashFlowOperationType::class,
             'type_id');
     }
 
-    public function sourceCashBox(){
+    public function fromCashBox(){
         return $this->belongsTo(
             CashBox::class,
             'from_cash_box_id');
     }
 
-    public function destinationCashBox(){
+    public function toCashBox(){
         return $this->belongsTo(
             CashBox::class,
             'to_cash_box_id');
@@ -28,6 +37,9 @@ class CashFlowOperation extends Model
     public function appointment(){
         return $this->belongsTo(
             Appointment::class,
-            'appointment_id');
+            'appointment_id'
+        )->with([
+            'patient', 'employee'
+        ]);
     }
 }

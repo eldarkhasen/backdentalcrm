@@ -45,6 +45,8 @@ class CreateCashFlowOperations extends Migration
 
             $table->string('comments')->nullable();
 
+            $table->boolean('committed')->default(false);
+
             $table->timestamps();
         });
     }
