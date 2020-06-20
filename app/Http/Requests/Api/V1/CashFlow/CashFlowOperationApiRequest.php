@@ -11,12 +11,14 @@ class CashFlowOperationApiRequest extends ApiBaseRequest
     public function injectedRules()
     {
         return [
-            'from   _cash_box' => ['nullable'],
+            'from_cash_box' => ['nullable'],
+            'from_cash_box.id' => ['numeric'],
             'to_cash_box' => ['nullable'],
+            'to_cash_box.id' => ['numeric'],
             'type' => ['required'],
             'appointment' => ['nullable'],
             'amount' => ['numeric'],
-            'comments' => ['max:255'],
+            'comments' => ['nullable', 'max:255'],
         ];
     }
 }

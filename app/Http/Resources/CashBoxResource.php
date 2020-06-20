@@ -12,10 +12,9 @@ class CashBoxResource extends JsonResource
             'id'            => $this->id,
             'name'          => $this->name,
             'balance'       => $this->balance,
-            'organization'  => $this->when(
-                $this->relationLoaded('organization'),
-                new OrganizationResource($this->organization)
-            ),
+            'organization'  => $this->relationLoaded('organization')
+                                ? new OrganizationResource($this->organization)
+                                : null,
         ];
     }
 }

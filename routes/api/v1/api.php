@@ -48,7 +48,9 @@ Route::group(['middleware' => 'auth:api'], function () {
         );
         Route::apiResource('cash-boxes', 'CashBoxController')
             ->except(['index']);
-        Route::apiResource('cash-flow-operation', 'CashFlowController');
+        Route::post('get-cash-flow-operations', 'CashFlowController@index');
+        Route::apiResource('cash-flow-operation', 'CashFlowController')
+            ->except('index');
     });
 
     Route::group(['middleware' => 'subscriptionCheck'], function () {

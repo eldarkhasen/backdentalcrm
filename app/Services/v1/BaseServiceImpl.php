@@ -23,6 +23,11 @@ class BaseServiceImpl
 
     protected function onError($e, $title, $errorCode) {
         DB::rollBack();
+
+        if (get_class($e) == ApiServiceException::class) {
+            throw $e;
+        }
+
         throw new ApiServiceException(400, false, [
             'errors' => [
                 $title,

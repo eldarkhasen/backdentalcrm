@@ -13,7 +13,8 @@ class CashFlowOperation extends Model
         'type_id',
         'appointment_id',
         'amount',
-        'comments'
+        'comments',
+        'committed'
     ];
 
     public function type(){

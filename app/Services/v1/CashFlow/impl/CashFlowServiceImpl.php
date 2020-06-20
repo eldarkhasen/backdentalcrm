@@ -7,6 +7,7 @@ namespace App\Services\v1\CashFlow\impl;
 use App\Exceptions\ApiServiceException;
 use App\Http\Errors\ErrorCode;
 use App\Http\Requests\Api\V1\CashFlow\CashFlowOperationApiRequest;
+use App\Http\Requests\Api\V1\CashFlow\CashFlowOperationFilterApiRequest;
 use App\Models\CashFlow\CashFlowOperation;
 use App\Services\v1\BaseServiceImpl;
 use App\Services\v1\CashFlow\CashFlowService;
@@ -17,6 +18,14 @@ class CashFlowServiceImpl
     extends BaseServiceImpl
     implements CashFlowService {
 
+    public function getOperations(CashFlowOperationFilterApiRequest $request)
+    {
+        // TODO: realize filters
+        return CashFlowOperation::with(['fromCashBox', 'toCashBox', 'type', 'appointment'])
+            ->where('committed', true)
+            ->get();
+    }
+
     public function storeOperation(CashFlowOperationApiRequest $request)
     {
         $operation = null;
@@ -26,19 +35,9 @@ class CashFlowServiceImpl
 
             $operation = new CashFlowOperation();
 
-            $operation->fill($request->only([
-                'amount',
-                'comments'
-            ]));
+            $operation = $this->fillOperation($operation, $request);
 
-            if (!!$request->get('from_cash_box'))
-                $operation->fromCashBox()->attach($request->get('from_cash_box'));
-
-            if (!!$request->get('to_cash_box'))
-                $operation->toCashBox()->attach($request->get('to_cash_box'));
-
-            $operation->type()->attach($request->get('type'));
-            $operation->appointment()->attach($request->get('appointment'));
+            $operation->save();
 
             $this->commitOperation($operation);
 
@@ -61,19 +60,9 @@ class CashFlowServiceImpl
 
             $this->revertOperation($operation);
 
-            $operation->update($request->only([
-                'amount',
-                'comments'
-            ]));
+            $operation = $this->fillOperation($operation, $request);
 
-            if (!!$request->get('from_cash_box'))
-                $operation->fromCashBox()->attach($request->get('from_cash_box'));
-
-            if (!!$request->get('to_cash_box'))
-                $operation->toCashBox()->attach($request->get('to_cash_box'));
-
-            $operation->type()->attach($request->get('type'));
-            $operation->appointment()->attach($request->get('appointment'));
+            $operation->save();
 
             $this->commitOperation($operation);
 
@@ -81,6 +70,28 @@ class CashFlowServiceImpl
         } catch (\Exception $e) {
             $this->onError($e, 'System error', ErrorCode::SYSTEM_ERROR);
         }
+
+        return $operation;
+    }
+
+    private function fillOperation(CashFlowOperation $operation, CashFlowOperationApiRequest $request)
+    {
+        $operation->fill($request->only([
+            'amount',
+            'comments'
+        ]));
+
+        if (!!$request->get('from_cash_box'))
+            $operation->from_cash_box_id = $request->get('from_cash_box')['id'];
+
+        if (!!$request->get('to_cash_box'))
+            $operation->to_cash_box_id = $request->get('to_cash_box')['id'];
+
+        if (!!$request->get('appointment')) {
+            $operation->appointment_id = $request->get('appointment')['id'];
+        }
+
+        $operation->type_id = $request->get('type')['id'];
 
         return $operation;
     }
@@ -170,5 +181,13 @@ class CashFlowServiceImpl
         }
 
         return;
+    }
+
+    public function destroyOperation($id) {
+        $operation = CashFlowOperation::findOrFail($id);
+
+        $this->revertOperation($operation);
+
+        return $operation->delete();
     }
 }
