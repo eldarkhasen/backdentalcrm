@@ -11,5 +11,9 @@ interface CashFlowService
 {
     public function storeOperation(CashFlowOperationApiRequest $request);
 
+    public function updateOperation(CashFlowOperationApiRequest $request, $id);
+
     public function commitOperation(CashFlowOperation $operation);
+
+    public function revertOperation(CashFlowOperation $operation);
 }

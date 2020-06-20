@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1\CashFlow;
 
 use App\Http\Controllers\ApiBaseController;
 use App\Http\Requests\Api\V1\CashFlow\CashFlowOperationApiRequest;
+use App\Http\Resources\CashFlowOperationResource;
 use App\Services\v1\CashFlow\CashFlowService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -29,15 +30,20 @@ class CashFlowController extends ApiBaseController
      */
     public function store(CashFlowOperationApiRequest $request)
     {
-        $operation = $this->service->storeOperation($request);
-        $this->service->commitOperation($operation);
-
-        return $this->successResponse('OK');
+        return $this->successResponse(
+            new CashFlowOperationResource(
+                $this->service->storeOperation($request)
+            )
+        );
     }
 
     public function update(Request $request, $id)
     {
-        //
+        return $this->successResponse(
+            new CashFlowOperationResource(
+                $this->service->updateOperation($request, $id)
+            )
+        );
     }
 
     public function destroy($id)

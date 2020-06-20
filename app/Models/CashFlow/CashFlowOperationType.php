@@ -6,7 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class CashFlowOperationType extends Model
 {
-    protected $fillable = ['name'];
+    protected $fillable = [
+        'name',
+        'cash_flow_type_id'
+    ];
 
     public $timestamps = false;
 
