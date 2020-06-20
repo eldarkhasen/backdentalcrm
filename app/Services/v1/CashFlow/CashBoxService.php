@@ -11,6 +11,8 @@ interface CashBoxService
 {
     public function getCashBoxes(CashBoxFilterApiRequest $request);
 
+    public function getCurrentOrganizationCashBoxes();
+
     public function storeCashBox(CashBoxRequest $request);
 
     public function updateCashBox(CashBoxRequest $request, $id);

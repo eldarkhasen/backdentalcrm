@@ -11,6 +11,10 @@ class CashBoxFilterApiRequest extends ApiBaseRequest
 
     public function injectedRules()
     {
-        // TODO: Implement injectedRules() method.
+        return [
+            'name' => ['nullable', 'max:255'],
+            'balance_positive' => ['nullable', 'boolean'],
+            'organization.id' => ['nullable', 'numeric'],
+        ];
     }
 }

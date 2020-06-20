@@ -27,6 +27,15 @@ class CashBoxController extends ApiBaseController
         );
     }
 
+    public function getOrganizationCashBoxes()
+    {
+        return $this->successResponse(
+            CashBoxResource::collection(
+                $this->service->getCurrentOrganizationCashBoxes()
+            )
+        );
+    }
+
     public function store(CashBoxRequest $request)
     {
         return $this->successResponse(

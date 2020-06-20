@@ -37,7 +37,7 @@ class CashFlowController extends ApiBaseController
         );
     }
 
-    public function update(Request $request, $id)
+    public function update(CashFlowOperationApiRequest $request, $id)
     {
         return $this->successResponse(
             new CashFlowOperationResource(

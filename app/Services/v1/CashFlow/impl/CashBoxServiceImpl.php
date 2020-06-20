@@ -3,14 +3,13 @@
 
 namespace App\Services\v1\CashFlow\impl;
 
-
-use App\Exceptions\ApiServiceException;
 use App\Http\Errors\ErrorCode;
 use App\Http\Requests\Api\V1\CashFlow\CashBoxFilterApiRequest;
 use App\Http\Requests\Api\V1\CashFlow\CashBoxRequest;
 use App\Models\CashFlow\CashBox;
 use App\Services\v1\BaseServiceImpl;
 use App\Services\v1\CashFlow\CashBoxService;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class CashBoxServiceImpl
@@ -20,7 +19,7 @@ class CashBoxServiceImpl
 
     public function getCashBoxes(CashBoxFilterApiRequest $request)
     {
-        // TODO: Implement getCashBoxes() method.
+        return CashBox::with(['organization'])->get();
     }
 
     public function storeCashBox(CashBoxRequest $request)
@@ -41,23 +40,32 @@ class CashBoxServiceImpl
             $this->validateUserAccess($request->user());
 
             if (!!$id) {
-                $cashbox = CashBox::findOrFail($id)
-                    ->update([
-                        $request->only([
-                            'name',
-                            'balance'
-                        ])
-                    ]);
+                $cashbox = CashBox::findOrFail($id);
+                $cashbox->fill([
+                    $request->only([
+                        'name',
+                        'balance',
+                    ])
+                ]);
+                $cashbox->organization_id = $request->get('organization')['id'];
+
+                $cashbox->save();
             } else {
-                $cashbox = CashBox::create($request->only([
+                $cashbox = new CashBox();
+
+                $cashbox->fill($request->only([
                     'name',
                     'balance'
                 ]));
+
+                $cashbox->organization_id = $request->get('organization')['id'];
+
+                $cashbox->save();
             }
 
             DB::commit();
         } catch (\Exception $e) {
-           $this->onError($e);
+           $this->onError($e, 'System Error', ErrorCode::SYSTEM_ERROR);
         }
 
         return $cashbox;
@@ -66,5 +74,16 @@ class CashBoxServiceImpl
     public function destroyCashBox($id)
     {
         return CashBox::destroy($id);
+    }
+
+    public function getCurrentOrganizationCashBoxes()
+    {
+        if ($this->userHasAccess(Auth::user())) {
+            Auth::user()->load('employee.organization.cashBoxes');
+
+            return Auth::user()->employee->organization->cashBoxes;
+        }
+
+        return null;
     }
 }

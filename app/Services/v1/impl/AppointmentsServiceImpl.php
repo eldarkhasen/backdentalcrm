@@ -86,7 +86,7 @@ class AppointmentsServiceImpl
             return $appointment;
 
         } catch (\Exception $e) {
-            $this->onError($e);
+            $this->onError($e, 'System error', ErrorCode::SYSTEM_ERROR);
         }
     }
 
@@ -115,7 +115,7 @@ class AppointmentsServiceImpl
             return $appointment;
 
         } catch (\Exception $e) {
-            $this->onError($e);
+            $this->onError($e, 'System error', ErrorCode::SYSTEM_ERROR);
         }
     }
 

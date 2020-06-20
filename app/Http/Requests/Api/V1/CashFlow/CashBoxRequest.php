@@ -11,6 +11,10 @@ class CashBoxRequest extends ApiBaseRequest
 
     public function injectedRules()
     {
-        // TODO: Implement injectedRules() method.
+        return [
+            'name' => ['required', 'max:255'],
+            'balance' => ['required', 'numeric'],
+            'organization.id' => ['required', 'numeric'],
+        ];
     }
 }

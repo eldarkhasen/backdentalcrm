@@ -3,6 +3,10 @@
 namespace App\Providers;
 
 use App\Services\v1\AppointmentsService;
+use App\Services\v1\CashFlow\CashBoxService;
+use App\Services\v1\CashFlow\CashFlowService;
+use App\Services\v1\CashFlow\impl\CashBoxServiceImpl;
+use App\Services\v1\CashFlow\impl\CashFlowServiceImpl;
 use App\Services\v1\impl\AppointmentsServiceImpl;
 use App\Services\v1\impl\AuthServiceImpl;
 use App\Services\v1\impl\EmployeesAndPositionsServiceImpl;
@@ -59,6 +63,12 @@ class SystemServiceProvider extends ServiceProvider
         });
         $this->app->bind(AppointmentsService::class, function ($app) {
             return (new AppointmentsServiceImpl());
+        });
+        $this->app->bind(CashFlowService::class, function ($app) {
+            return (new CashFlowServiceImpl());
+        });
+        $this->app->bind(CashBoxService::class, function ($app) {
+            return (new CashBoxServiceImpl());
         });
     }
 

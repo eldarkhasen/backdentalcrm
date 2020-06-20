@@ -44,7 +44,7 @@ class CashFlowServiceImpl
 
             DB::commit();
         } catch (\Exception $e) {
-            $this->onError($e);
+            $this->onError($e, 'System error', ErrorCode::SYSTEM_ERROR);
         }
 
         return $operation;
@@ -79,7 +79,7 @@ class CashFlowServiceImpl
 
             DB::commit();
         } catch (\Exception $e) {
-            $this->onError($e);
+            $this->onError($e, 'System error', ErrorCode::SYSTEM_ERROR);
         }
 
         return $operation;
@@ -123,7 +123,7 @@ class CashFlowServiceImpl
             DB::commit();
 
         } catch (\Exception $e) {
-           $this->onError($e);
+            $this->onError($e, 'System error', ErrorCode::SYSTEM_ERROR);
         }
 
         return;
@@ -166,7 +166,7 @@ class CashFlowServiceImpl
 
             DB::commit();
         } catch (\Exception $e) {
-            $this->onError($e);
+            $this->onError($e, 'System error', ErrorCode::SYSTEM_ERROR);
         }
 
         return;
