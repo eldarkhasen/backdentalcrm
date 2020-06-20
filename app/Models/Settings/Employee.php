@@ -38,7 +38,9 @@ class Employee extends Model
 
     public function organization()
     {
-        return $this->belongsTo(Organization::class, 'organization_id', 'id');
+        return $this->belongsTo(
+            Organization::class, 'organization_id', 'id'
+        );
     }
 
 }
