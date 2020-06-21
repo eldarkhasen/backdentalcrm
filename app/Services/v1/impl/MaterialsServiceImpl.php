@@ -122,14 +122,65 @@ class MaterialsServiceImpl
     {
         $materialRest = null;
 
+        DB::beginTransaction();
+        try {
+            $this->validateUserAccess($request->user());
 
+            $usage = new MaterialUsage();
+
+            $usage = $this->fillUsage($usage, $request);
+
+            $usage->save();
+
+            $materialRest = $this->commitUsage($usage);
+
+            DB::commit();
+        } catch (\Exception $e) {
+            $this->onError($e, 'System Error', ErrorCode::SYSTEM_ERROR);
+        }
 
         return $materialRest;
     }
 
     public function updateMaterialUsage(MaterialUsageRequest $request, $id)
     {
-        // TODO: Implement updateMaterialUsage() method.
+        $materialRest = null;
+
+        DB::beginTransaction();
+        try {
+            $this->validateUserAccess($request->user());
+
+            $usage = MaterialUsage::findOrFail($id);
+
+            $this->rollbackUsage($usage);
+
+            $usage = $this->fillUsage($usage, $request);
+
+            $usage->save();
+
+            $materialRest = $this->commitUsage($usage);
+
+            DB::commit();
+        } catch (\Exception $e) {
+            $this->onError($e, 'System Error', ErrorCode::SYSTEM_ERROR);
+        }
+
+        return $materialRest;
+    }
+
+    private function fillUsage(
+        MaterialUsage $usage, MaterialUsageRequest $request
+    )
+    {
+        $usage->fill($request->only([
+            'quantity',
+            'comments',
+        ]));
+
+        $usage->material_rest_id = $request->get('materialRest')['id'];
+        $usage->employee_id = $request->get('employee')['id'];
+
+        return $usage;
     }
 
     public function storeMaterialDelivery(MaterialDeliveryRequest $request)
@@ -200,12 +251,68 @@ class MaterialsServiceImpl
 
     public function commitUsage(MaterialUsage $usage)
     {
-        // TODO: Implement commitUsage() method.
+        DB::beginTransaction();
+        try {
+            $this->validateUserAccess(Auth::user());
+
+            if ($usage->committed) {
+                throw new ApiServiceException(400, false, [
+                    'errors' => [
+                        'Usage had already been committed.'
+                    ],
+                    'errorCode' => ErrorCode::ALREADY_REQUESTED
+                ]);
+            }
+
+            $usage->materialRest->update([
+                'count' => $usage->materialRest->count - $usage->quantity
+            ]);
+
+            $usage->update([
+                'committed' => true
+            ]);
+
+            DB::commit();
+        } catch (\Exception $e) {
+            $this->onError($e, 'System error', ErrorCode::SYSTEM_ERROR);
+        }
+
+        $usage->load('materialRest');
+
+        return $usage->materialRest;
     }
 
     public function rollbackUsage(MaterialUsage $usage)
     {
-        // TODO: Implement rollbackUsage() method.
+        DB::beginTransaction();
+        try {
+            $this->validateUserAccess(Auth::user());
+
+            if (!$usage->committed) {
+                throw new ApiServiceException(400, false, [
+                    'errors' => [
+                        'Usage had not been committed yet.'
+                    ],
+                    'errorCode' => ErrorCode::NOT_ALLOWED
+                ]);
+            }
+
+            $usage->materialRest->update([
+                'count' => $usage->materialRest->count + $usage->quantity
+            ]);
+
+            $usage->update([
+                'committed' => false
+            ]);
+
+            DB::commit();
+        } catch (\Exception $e) {
+            $this->onError($e, 'System error', ErrorCode::SYSTEM_ERROR);
+        }
+
+        $usage->load('materialRest');
+
+        return $usage->materialRest;
     }
 
     public function commitDelivery(MaterialDelivery $delivery)
@@ -277,5 +384,27 @@ class MaterialsServiceImpl
     public function deleteMaterial($id)
     {
         return Material::findOrFail($id)->delete();
+    }
+
+    public function deleteMaterialUsage($id)
+    {
+        $usage = MaterialUsage::findOrFail($id);
+
+        $rest = $this->rollbackUsage($usage);
+
+        $usage->delete();
+
+        return $rest;
+    }
+
+    public function deleteMaterialDelivery($id)
+    {
+        $delivery = MaterialDelivery::findOrFail($id);
+
+        $rest = $this->rollbackDelivery($delivery);
+
+        $delivery->delete();
+
+        return $rest;
     }
 }

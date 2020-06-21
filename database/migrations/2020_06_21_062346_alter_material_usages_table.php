@@ -25,6 +25,7 @@ class AlterMaterialUsagesTable extends Migration
                ->references('id');
 
            $table->boolean('committed')->default(false);
+           $table->timestamp('deleted_at')->nullable();
         });
     }
 
@@ -47,6 +48,7 @@ class AlterMaterialUsagesTable extends Migration
                 ->references('id');
 
             $table->dropColumn('committed');
+            $table->dropColumn('deleted_at');
         });
     }
 }

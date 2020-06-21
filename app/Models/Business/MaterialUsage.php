@@ -4,9 +4,12 @@ namespace App\Models\Business;
 
 use App\Models\Settings\Employee;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class MaterialUsage extends Model
 {
+    use SoftDeletes;
+
     protected $fillable = [
         'material_rest_id',
         'employee_id',

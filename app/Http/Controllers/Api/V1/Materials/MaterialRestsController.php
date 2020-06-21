@@ -65,6 +65,15 @@ class MaterialRestsController extends ApiBaseController
         );
     }
 
+    public function deleteDelivery($id)
+    {
+        return $this->successResponse(
+            new MaterialRestResource(
+                $this->service->deleteMaterialDelivery($id)
+            )
+        );
+    }
+
     public function storeUsage(MaterialUsageRequest $request)
     {
         return $this->successResponse(
@@ -79,6 +88,15 @@ class MaterialRestsController extends ApiBaseController
         return $this->successResponse(
             new MaterialRestResource(
                 $this->service->updateMaterialUsage($request, $id)
+            )
+        );
+    }
+
+    public function deleteUsage($id)
+    {
+        return $this->successResponse(
+            new MaterialRestResource(
+                $this->service->deleteMaterialUsage($id)
             )
         );
     }

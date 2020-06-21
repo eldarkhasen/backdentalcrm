@@ -29,9 +29,13 @@ interface MaterialsService
 
     public function updateMaterialUsage(MaterialUsageRequest $request, $id);
 
+    public function deleteMaterialUsage($id);
+
     public function storeMaterialDelivery(MaterialDeliveryRequest $request);
 
     public function updateMaterialDelivery(MaterialDeliveryRequest $request, $id);
+
+    public function deleteMaterialDelivery($id);
 
     public function commitUsage(MaterialUsage $usage);
 

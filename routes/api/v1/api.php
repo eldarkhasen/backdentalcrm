@@ -98,10 +98,31 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::group(['namespace' => 'Materials'], function () {
             Route::apiResource('materials', 'MaterialsController');
             Route::apiResource('material-rests', 'MaterialRestsController');
-            Route::post('material-rests/delivery', 'MaterialRestsController@storeDelivery');
-            Route::put('material-rests/delivery/{id}', 'MaterialRestsController@updateDelivery');
-            Route::post('material-rests/usage', 'MaterialRestsController@storeUsage');
-            Route::put('material-rests/usage/{id}', 'MaterialRestsController@updateUsage');
+
+            Route::post(
+                'material-rests/delivery',
+                'MaterialRestsController@storeDelivery'
+            );
+            Route::put(
+                'material-rests/delivery/{id}',
+                'MaterialRestsController@updateDelivery'
+            );
+            Route::delete(
+                'material-rests/delivery/{id}',
+                'MaterialRestsController@deleteDelivery'
+            );
+            Route::post(
+                'material-rests/usage',
+                'MaterialRestsController@storeUsage'
+            );
+            Route::put(
+                'material-rests/usage/{id}',
+                'MaterialRestsController@updateUsage'
+            );
+            Route::delete(
+                'material-rests/usage/{id}',
+                'MaterialRestsController@deleteUsage'
+            );
         });
     });
 

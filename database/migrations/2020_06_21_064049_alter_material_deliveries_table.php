@@ -24,6 +24,7 @@ class AlterMaterialDeliveriesTable extends Migration
                 ->on('material_rests')
                 ->references('id');
             $table->boolean('committed')->default(false);
+            $table->timestamp('deleted_at')->nullable();
         });
     }
 
@@ -45,6 +46,7 @@ class AlterMaterialDeliveriesTable extends Migration
                 ->on('materials')
                 ->references('id');
             $table->dropColumn('committed');
+            $table->dropColumn('deleted_at');
         });
     }
 }
