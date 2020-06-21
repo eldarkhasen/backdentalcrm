@@ -91,9 +91,8 @@ Route::group(['middleware' => 'auth:api'], function () {
         });
 
         Route::group(['namespace' => 'Appointments'], function () {
-            Route::post('/appointments', 'AppointmentsController@index');
-            Route::post('/appointments-store', 'AppointmentsController@store');
-            Route::apiResource('/appointments', 'AppointmentsController')->except(['index', 'store']);
+            Route::post('/get-appointments', 'AppointmentsController@index');
+            Route::apiResource('/appointments', 'AppointmentsController')->except(['index']);
         });
     });
 
