@@ -92,8 +92,16 @@ Route::group(['middleware' => 'auth:api'], function () {
 
         Route::group(['namespace' => 'Appointments'], function () {
             Route::post('/appointments', 'AppointmentsController@index');
-            Route::post('/appointments-store', 'AppointmentsController@store');
-            Route::apiResource('/appointments', 'AppointmentsController')->except(['index', 'store']);
+            Route::apiResource('/appointments', 'AppointmentsController')->except(['index']);
+        });
+
+        Route::group(['namespace' => 'Materials'], function () {
+            Route::apiResource('materials', 'MaterialsController');
+            Route::apiResource('material-rests', 'MaterialRestsController');
+            Route::post('material-rests/delivery', 'MaterialRestsController@storeDelivery');
+            Route::put('material-rests/delivery/{id}', 'MaterialRestsController@updateDelivery');
+            Route::post('material-rests/usage', 'MaterialRestsController@storeUsage');
+            Route::put('material-rests/usage/{id}', 'MaterialRestsController@updateUsage');
         });
     });
 
