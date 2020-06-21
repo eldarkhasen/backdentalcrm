@@ -9,7 +9,7 @@ use App\Http\Requests\Api\V1\CashFlow\CashBoxRequest;
 
 interface CashBoxService
 {
-    public function getCashBoxes(CashBoxFilterApiRequest $request);
+    public function getCashBoxes(CashBoxFilterApiRequest $request = null);
 
     public function getCurrentOrganizationCashBoxes();
 

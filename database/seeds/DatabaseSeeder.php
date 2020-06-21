@@ -17,5 +17,6 @@ class DatabaseSeeder extends Seeder
          $this->call(PositionsSeeder::class);
          $this->call(CountriesAndCitiesSeeder::class);
          $this->call(CashFlowSeeder::class);
+         $this->call(OrganizationAndOwnerSeeder::class);
     }
 }

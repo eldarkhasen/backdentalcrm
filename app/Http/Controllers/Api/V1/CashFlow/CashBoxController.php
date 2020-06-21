@@ -18,7 +18,16 @@ class CashBoxController extends ApiBaseController
         $this->service = $service;
     }
 
-    public function index(CashBoxFilterApiRequest $request)
+    public function index()
+    {
+        return $this->successResponse(
+            CashBoxResource::collection(
+                $this->service->getCashBoxes()
+            )
+        );
+    }
+
+    public function indexFiltered(CashBoxFilterApiRequest $request)
     {
         return $this->successResponse(
             CashBoxResource::collection(

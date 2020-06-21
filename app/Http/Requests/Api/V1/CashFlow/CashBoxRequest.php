@@ -13,8 +13,7 @@ class CashBoxRequest extends ApiBaseRequest
     {
         return [
             'name' => ['required', 'max:255'],
-            'balance' => ['required', 'numeric'],
-            'organization.id' => ['required', 'numeric'],
+            'balance' => ['required', 'numeric']
         ];
     }
 }

@@ -17,7 +17,16 @@ class CashFlowController extends ApiBaseController
         $this->service = $service;
     }
 
-    public function index(CashFlowOperationFilterApiRequest $request)
+    public function index()
+    {
+        return $this->successResponse(
+            CashFlowOperationResource::collection(
+                $this->service->getOperations()
+            )
+        );
+    }
+
+    public function indexFiltered(CashFlowOperationFilterApiRequest $request)
     {
         return $this->successResponse(
             CashFlowOperationResource::collection(

@@ -18,7 +18,7 @@ class CashFlowServiceImpl
     extends BaseServiceImpl
     implements CashFlowService {
 
-    public function getOperations(CashFlowOperationFilterApiRequest $request)
+    public function getOperations(CashFlowOperationFilterApiRequest $request = null)
     {
         // TODO: realize filters
         return CashFlowOperation::with(['fromCashBox', 'toCashBox', 'type', 'appointment'])

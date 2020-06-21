@@ -40,18 +40,7 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::get('/permissions', 'PermissionsController@getAllPermissions');
     });
 
-    Route::group(['namespace' => 'CashFlow'], function () {
-        Route::post('/get-cash-boxes', 'CashBoxController@index');
-        Route::post(
-            '/get-organization-cash-boxes',
-            'CashBoxController@getOrganizationCashBoxes'
-        );
-        Route::apiResource('cash-boxes', 'CashBoxController')
-            ->except(['index']);
-        Route::post('get-cash-flow-operations', 'CashFlowController@index');
-        Route::apiResource('cash-flow-operation', 'CashFlowController')
-            ->except('index');
-    });
+
 
     Route::group(['middleware' => 'subscriptionCheck'], function () {
 
@@ -94,6 +83,17 @@ Route::group(['middleware' => 'auth:api'], function () {
             Route::post('/appointments', 'AppointmentsController@index');
             Route::post('/appointments-store', 'AppointmentsController@store');
             Route::apiResource('/appointments', 'AppointmentsController')->except(['index', 'store']);
+        });
+
+        Route::group(['namespace' => 'CashFlow'], function () {
+            Route::post('/get-cash-boxes', 'CashBoxController@indexFiltered');
+            Route::post(
+                '/get-organization-cash-boxes',
+                'CashBoxController@getOrganizationCashBoxes'
+            );
+            Route::apiResource('cash-boxes', 'CashBoxController');
+            Route::post('get-cash-flow-operations', 'CashFlowController@indexFiltered');
+            Route::apiResource('cash-flow-operation', 'CashFlowController');
         });
     });
 

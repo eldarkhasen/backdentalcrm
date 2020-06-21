@@ -39,7 +39,7 @@
                                     {{ $organization->currentSubscription->subscriptionType->name ?? "Отсутствует" }}
                                 </div>
                                 <div class="h6 mb-1 font-weight-bold text-gray-800">
-                                    {{ $organization->resolve()['currentSubscription']->resolve()['subscriptionType']->resolve()['description'] ?? ''}}
+                                    {{ $organization->resolve()['currentSubscription']['subscriptionType']['description'] ?? ''}}
                                 </div>
                                 <div class="h6 mb-1 font-weight-bold text-gray-800">
                                     @if(isset($organization->currentSubscription->subscriptionType))
@@ -327,10 +327,13 @@
     </div>
 @endsection
 
-@section('scripts')
+@section('masks')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
     <script>
-        $('#birth_date').mask('99/99/9999',{placeholder:"ДД/ММ/ГГГГ"});
-        $('#phone').mask("+7(999)999-99-99",{placeholder:"+7(___)___-__-__"});
+        $('document').ready(function() {
+            $('#phone').mask("+7(999)999-99-99",{placeholder:"+7(___)___-__-__"});
+        });
+        // $('#birth_date').mask('99/99/9999',{placeholder:"ДД/ММ/ГГГГ"});
+
     </script>
 @endsection

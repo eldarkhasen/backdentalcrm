@@ -43,6 +43,7 @@
 </div>
 @include('parts.scripts')
 @yield('scripts')
+@yield('masks')
 </body>
 </html>
 

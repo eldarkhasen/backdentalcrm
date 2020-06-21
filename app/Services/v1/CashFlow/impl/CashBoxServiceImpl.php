@@ -17,7 +17,7 @@ class CashBoxServiceImpl
     implements CashBoxService
 {
 
-    public function getCashBoxes(CashBoxFilterApiRequest $request)
+    public function getCashBoxes(CashBoxFilterApiRequest $request = null)
     {
         return CashBox::with(['organization'])->get();
     }

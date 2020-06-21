@@ -10,7 +10,7 @@ use App\Models\CashFlow\CashFlowOperation;
 
 interface CashFlowService
 {
-    public function getOperations(CashFlowOperationFilterApiRequest $request);
+    public function getOperations(CashFlowOperationFilterApiRequest $request = null);
 
     public function storeOperation(CashFlowOperationApiRequest $request);
 
