@@ -2,11 +2,11 @@
 
 namespace App\Models\Core;
 
+use App\Models\CashFlow\CashBox;
 use App\Models\Management\Subscription;
 use App\Models\Patients\Patient;
 use App\Models\Settings\Employee;
 use App\Models\Support\City;
-use Faker\Provider\DateTime;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -39,10 +39,6 @@ class Organization extends Model
             ->orderBy('created_at');
     }
 
-//    public function getCurrentSubscription(){
-//        return $this->subscriptions()->orderBy('created_at','desc')->first()->get();
-//    }
-
     public function currentSubscription()
     {
         return $this->hasOne(Subscription::class, 'organization_id', 'id')
@@ -67,5 +63,10 @@ class Organization extends Model
     public function patients()
     {
         return $this->belongsToMany(Patient::class, 'organization_patients');
+    }
+
+    public function cashBoxes()
+    {
+        return $this->hasMany(CashBox::class);
     }
 }

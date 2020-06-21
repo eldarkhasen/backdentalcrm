@@ -11,10 +11,13 @@ use App\Http\Requests\Api\V1\Appointments\StoreAndUpdateAppointmentApiRequest;
 use App\Models\Business\Appointment;
 use App\Models\Business\TreatmentCourse;
 use App\Services\v1\AppointmentsService;
+use App\Services\v1\BaseServiceImpl;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
-class AppointmentsServiceImpl implements AppointmentsService
+class AppointmentsServiceImpl
+    extends BaseServiceImpl
+    implements AppointmentsService
 {
 
     public function getAppointments(FilterAppointmentsApiRequest $request)
@@ -56,14 +59,7 @@ class AppointmentsServiceImpl implements AppointmentsService
     {
         DB::beginTransaction();
         try {
-            if (!($request->user()->isEmployee() || $request->user()->isOwner())) {
-                throw new ApiServiceException(400, false, [
-                    'errors' => [
-                        'You are not allowed to do so'
-                    ],
-                    'errorCode' => ErrorCode::NOT_ALLOWED
-                ]);
-            }
+            $this->validateUserAccess($request->user());
 
             $appointment = new Appointment();
             $appointment->fill([
@@ -90,14 +86,7 @@ class AppointmentsServiceImpl implements AppointmentsService
             return $appointment;
 
         } catch (\Exception $e) {
-            DB::rollBack();
-            throw new ApiServiceException(400, false, [
-                'errors' => [
-                    'System error',
-                    $e->getMessage()
-                ],
-                'errorCode' => ErrorCode::SYSTEM_ERROR
-            ]);
+            $this->onError($e, 'System error', ErrorCode::SYSTEM_ERROR);
         }
     }
 
@@ -105,14 +94,7 @@ class AppointmentsServiceImpl implements AppointmentsService
     {
         DB::beginTransaction();
         try {
-            if (!($request->user()->isEmployee() || $request->user()->isOwner())) {
-                throw new ApiServiceException(400, false, [
-                    'errors' => [
-                        'You are not allowed to do so'
-                    ],
-                    'errorCode' => ErrorCode::NOT_ALLOWED
-                ]);
-            }
+            $this->validateUserAccess($request->user());
 
             $appointment = Appointment::findOrFail($id);
 
@@ -133,14 +115,7 @@ class AppointmentsServiceImpl implements AppointmentsService
             return $appointment;
 
         } catch (\Exception $e) {
-            DB::rollBack();
-            throw new ApiServiceException(400, false, [
-                'errors' => [
-                    'System error',
-                    $e->getMessage()
-                ],
-                'errorCode' => ErrorCode::SYSTEM_ERROR
-            ]);
+            $this->onError($e, 'System error', ErrorCode::SYSTEM_ERROR);
         }
     }
 
