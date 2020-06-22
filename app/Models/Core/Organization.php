@@ -2,6 +2,7 @@
 
 namespace App\Models\Core;
 
+use App\Models\Business\MaterialRest;
 use App\Models\CashFlow\CashBox;
 use App\Models\Management\Subscription;
 use App\Models\Patients\Patient;
@@ -68,5 +69,11 @@ class Organization extends Model
     public function cashBoxes()
     {
         return $this->hasMany(CashBox::class);
+    }
+
+    public function materialRests()
+    {
+        return $this->hasMany(MaterialRest::class)
+            ->with('material');
     }
 }

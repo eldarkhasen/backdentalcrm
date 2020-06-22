@@ -40,7 +40,18 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::get('/permissions', 'PermissionsController@getAllPermissions');
     });
 
-
+    Route::group(['namespace' => 'CashFlow'], function () {
+        Route::post('/get-cash-boxes', 'CashBoxController@index');
+        Route::post(
+            '/get-organization-cash-boxes',
+            'CashBoxController@getOrganizationCashBoxes'
+        );
+        Route::apiResource('cash-boxes', 'CashBoxController')
+            ->except(['index']);
+        Route::post('get-cash-flow-operations', 'CashFlowController@index');
+        Route::apiResource('cash-flow-operation', 'CashFlowController')
+            ->except('index');
+    });
 
     Route::group(['middleware' => 'subscriptionCheck'], function () {
 
@@ -84,15 +95,34 @@ Route::group(['middleware' => 'auth:api'], function () {
             Route::apiResource('/appointments', 'AppointmentsController')->except(['index']);
         });
 
-        Route::group(['namespace' => 'CashFlow'], function () {
-            Route::post('/get-cash-boxes', 'CashBoxController@indexFiltered');
+        Route::group(['namespace' => 'Materials'], function () {
+            Route::apiResource('materials', 'MaterialsController');
+            Route::apiResource('material-rests', 'MaterialRestsController');
+
             Route::post(
-                '/get-organization-cash-boxes',
-                'CashBoxController@getOrganizationCashBoxes'
+                'material-rests/delivery',
+                'MaterialRestsController@storeDelivery'
             );
-            Route::apiResource('cash-boxes', 'CashBoxController');
-            Route::post('get-cash-flow-operations', 'CashFlowController@indexFiltered');
-            Route::apiResource('cash-flow-operation', 'CashFlowController');
+            Route::put(
+                'material-rests/delivery/{id}',
+                'MaterialRestsController@updateDelivery'
+            );
+            Route::delete(
+                'material-rests/delivery/{id}',
+                'MaterialRestsController@deleteDelivery'
+            );
+            Route::post(
+                'material-rests/usage',
+                'MaterialRestsController@storeUsage'
+            );
+            Route::put(
+                'material-rests/usage/{id}',
+                'MaterialRestsController@updateUsage'
+            );
+            Route::delete(
+                'material-rests/usage/{id}',
+                'MaterialRestsController@deleteUsage'
+            );
         });
     });
 
