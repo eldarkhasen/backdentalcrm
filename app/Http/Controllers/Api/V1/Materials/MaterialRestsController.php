@@ -47,6 +47,11 @@ class MaterialRestsController extends ApiBaseController
         );
     }
 
+    public function getDeliveries()
+    {
+        // todo realize
+    }
+
     public function storeDelivery(MaterialDeliveryRequest $request)
     {
         return $this->successResponse(
@@ -72,6 +77,11 @@ class MaterialRestsController extends ApiBaseController
                 $this->service->deleteMaterialDelivery($id)
             )
         );
+    }
+
+    public function getUsages()
+    {
+        // todo realize
     }
 
     public function storeUsage(MaterialUsageRequest $request)

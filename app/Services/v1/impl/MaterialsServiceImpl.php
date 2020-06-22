@@ -112,8 +112,8 @@ class MaterialsServiceImpl
     private function fillMaterialRest(MaterialRest $rest, MaterialRestRequest $request)
     {
         $rest->count = $request->count;
-        $rest->organization_id = $request->organization['id'];
-        $rest->material_id = $request->material['id'];
+        $rest->organization_id = $request->input('organization.id');
+        $rest->material_id = $request->input('material.id');
 
         return $rest;
     }
@@ -177,8 +177,8 @@ class MaterialsServiceImpl
             'comments',
         ]));
 
-        $usage->material_rest_id = $request->get('materialRest')['id'];
-        $usage->employee_id = $request->get('employee')['id'];
+        $usage->material_rest_id = $request->input('materialRest.id');
+        $usage->employee_id = $request->get('employee.id');
 
         return $usage;
     }
@@ -244,7 +244,7 @@ class MaterialsServiceImpl
             'comments',
         ]));
 
-        $delivery->material_rest_id = $request->get('materialRest')['id'];
+        $delivery->material_rest_id = $request->input('materialRest.id');
 
         return $delivery;
     }
