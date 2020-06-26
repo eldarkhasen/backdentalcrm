@@ -106,7 +106,7 @@ Route::group(['middleware' => 'auth:api'], function () {
             Route::apiResource('materials', 'MaterialsController');
             Route::apiResource('material-rests', 'MaterialRestsController');
 
-            Route::get('material-deliveries', 'MaterialRestsController@getDeliveries');
+            Route::post('material-deliveries', 'MaterialRestsController@getDeliveries');
             Route::post(
                 'material-rests/delivery',
                 'MaterialRestsController@storeDelivery'
@@ -119,7 +119,7 @@ Route::group(['middleware' => 'auth:api'], function () {
                 'material-rests/delivery/{id}',
                 'MaterialRestsController@deleteDelivery'
             );
-            Route::get('material-usages', 'MaterialRestsController@getUsages');
+            Route::post('material-usages', 'MaterialRestsController@getUsages');
             Route::post(
                 'material-rests/usage',
                 'MaterialRestsController@storeUsage'
