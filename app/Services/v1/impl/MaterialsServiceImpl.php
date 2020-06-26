@@ -16,6 +16,7 @@ use App\Models\Business\MaterialRest;
 use App\Models\Business\MaterialUsage;
 use App\Services\v1\BaseServiceImpl;
 use App\Services\v1\MaterialsService;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -408,25 +409,58 @@ class MaterialsServiceImpl
         return $rest;
     }
 
-    public function getCurrentOrgMaterialDeliveries()
+    public function getCurrentOrgMaterialDeliveries(Request $request)
     {
         $this->validateUserAccess(Auth::user());
+
+        $per_page = $request->get('perPage',20);
+        $search_key = $request->get('searchKey',null);
+        $from_date = $request->get('fromDate',null);
+        $to_date = $request->get('toDate',null);
+        $employee_ids = $request->get('employee_ids',null);
 
         return MaterialDelivery::with(['materialRest'])
             ->whereHas('materialRest.organization', function ($query) {
                 $query->where('id', Auth::user()->employee->organization->id);
             })
-            ->get();
+            ->paginate($per_page);
     }
 
-    public function getCurrentOrgMaterialUsages()
+    public function getCurrentOrgMaterialUsages(Request $request)
     {
         $this->validateUserAccess(Auth::user());
 
-        return MaterialUsage::with(['employee', 'materialRest'])
-            ->whereHas('employee.organization', function ($query) {
-                $query->where('id', Auth::user()->employee->organization->id);
-            })
-            ->get();
+        $per_page = $request->input('perPage',1);
+        $search_key = $request->input('searchKey',null);
+        $from_date = $request->get('fromDate',null);
+        $to_date = $request->get('toDate',null);
+        $employee_ids = $request->get('employee_ids',null);
+
+        $query = MaterialUsage::with(['employee', 'materialRest'])
+                    ->whereHas('employee.organization', function ($query) {
+                        $query->where('id', Auth::user()->employee->organization->id);
+                    });
+
+        if (isset($search_key)) {
+            $query->whereHas('materialRest.material', function ($q) use ($search_key) {
+                $q->where('name', 'like', '%' . $search_key . '%');
+            });
+        }
+
+        if (isset($from_date)) {
+            $query->whereDate('created_at', '>=', $from_date);
+        }
+
+        if (isset($to_date)) {
+            $query->whereDate('created_at', '<=', $to_date);
+        }
+
+        if (isset($employee_ids) && count($employee_ids) > 0) {
+            $query->whereHas('employee', function ($q) use ($employee_ids) {
+                $q->whereIn('id', $employee_ids);
+            });
+        }
+
+        return $query->paginate($per_page);
     }
 }

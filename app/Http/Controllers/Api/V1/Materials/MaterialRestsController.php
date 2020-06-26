@@ -11,8 +11,9 @@ use App\Http\Requests\Api\V1\Materials\MaterialUsageRequest;
 use App\Http\Resources\MaterialDeliveryResource;
 use App\Http\Resources\MaterialRestResource;
 use App\Http\Resources\MaterialUsageResource;
-use App\Models\Business\MaterialDelivery;
+use App\Http\Resources\PaginationResource;
 use App\Services\v1\impl\MaterialsServiceImpl;
+use Illuminate\Http\Request;
 
 class MaterialRestsController extends ApiBaseController
 {
@@ -52,9 +53,12 @@ class MaterialRestsController extends ApiBaseController
 
     public function getDeliveries()
     {
+        $items = $this->service->getCurrentOrgMaterialDeliveries();
+
         return $this->successResponse(
-            MaterialDeliveryResource::collection(
-                $this->service->getCurrentOrgMaterialDeliveries()
+            new PaginationResource(
+                $items,
+                MaterialDeliveryResource::collection($items)
             )
         );
     }
@@ -86,11 +90,14 @@ class MaterialRestsController extends ApiBaseController
         );
     }
 
-    public function getUsages()
+    public function getUsages(Request $request)
     {
+        $items = $this->service->getCurrentOrgMaterialUsages($request);
+
         return $this->successResponse(
-            MaterialUsageResource::collection(
-                $this->service->getCurrentOrgMaterialUsages()
+            new PaginationResource(
+                $items,
+                MaterialUsageResource::collection($items)
             )
         );
     }

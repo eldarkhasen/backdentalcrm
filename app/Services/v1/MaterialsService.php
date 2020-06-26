@@ -10,6 +10,7 @@ use App\Http\Requests\Api\V1\Materials\MaterialRestRequest;
 use App\Http\Requests\Api\V1\Materials\MaterialUsageRequest;
 use App\Models\Business\MaterialDelivery;
 use App\Models\Business\MaterialUsage;
+use Illuminate\Http\Request;
 
 interface MaterialsService
 {
@@ -46,4 +47,8 @@ interface MaterialsService
     public function rollbackDelivery(MaterialDelivery $delivery);
 
     public function deleteMaterial($id);
+
+    public function getCurrentOrgMaterialUsages(Request $request);
+
+    public function getCurrentOrgMaterialDeliveries(Request $request);
 }
