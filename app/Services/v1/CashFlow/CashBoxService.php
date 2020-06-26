@@ -13,6 +13,8 @@ interface CashBoxService
 
     public function getCurrentOrganizationCashBoxes();
 
+    public function getCashBoxById($id);
+
     public function storeCashBox(CashBoxRequest $request);
 
     public function updateCashBox(CashBoxRequest $request, $id);

@@ -8,7 +8,8 @@ class CashFlowOperationType extends Model
 {
     protected $fillable = [
         'name',
-        'cash_flow_type_id'
+        'cash_flow_type_id',
+        'organization_id'
     ];
 
     public $timestamps = false;
@@ -19,5 +20,9 @@ class CashFlowOperationType extends Model
             CashFlowType::class,
             'cash_flow_type_id'
         );
+    }
+
+    public function cashFlowOperation(){
+        return $this->hasMany(CashFlowOperation::class,'type_id');
     }
 }

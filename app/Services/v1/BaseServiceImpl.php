@@ -41,4 +41,28 @@ class BaseServiceImpl
     {
         return $user->isEmployee() || $user->isOwner();
     }
+
+    protected function getUserOrganizationId($currentUser){
+        if (!($currentUser->isEmployee() || $currentUser->isOwner())) {
+            throw new ApiServiceException(400, false, [
+                'errors' => [
+                    'You are not allowed to do so'
+                ],
+                'errorCode' => ErrorCode::NOT_ALLOWED
+            ]);
+        }
+
+        $currentUser->load(['employee', 'employee.organization']);
+
+        if (!($currentUser->employee && $currentUser->employee->organization)) {
+            throw new ApiServiceException(400, false, [
+                'errors' => [
+                    'You are not allowed to do so'
+                ],
+                'errorCode' => ErrorCode::NOT_ALLOWED
+            ]);
+        }
+
+        return $currentUser->employee->organization->id;
+    }
 }

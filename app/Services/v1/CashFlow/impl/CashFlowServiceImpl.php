@@ -8,7 +8,10 @@ use App\Exceptions\ApiServiceException;
 use App\Http\Errors\ErrorCode;
 use App\Http\Requests\Api\V1\CashFlow\CashFlowOperationApiRequest;
 use App\Http\Requests\Api\V1\CashFlow\CashFlowOperationFilterApiRequest;
+use App\Http\Requests\Api\V1\CashFlow\OperationTypeApiRequest;
 use App\Models\CashFlow\CashFlowOperation;
+use App\Models\CashFlow\CashFlowOperationType;
+use App\Models\CashFlow\CashFlowType;
 use App\Services\v1\BaseServiceImpl;
 use App\Services\v1\CashFlow\CashFlowService;
 use Illuminate\Support\Facades\Auth;
@@ -16,7 +19,8 @@ use Illuminate\Support\Facades\DB;
 
 class CashFlowServiceImpl
     extends BaseServiceImpl
-    implements CashFlowService {
+    implements CashFlowService
+{
 
     public function getOperations(CashFlowOperationFilterApiRequest $request = null)
     {
@@ -183,11 +187,86 @@ class CashFlowServiceImpl
         return;
     }
 
-    public function destroyOperation($id) {
+    public function destroyOperation($id)
+    {
         $operation = CashFlowOperation::findOrFail($id);
 
         $this->revertOperation($operation);
 
         return $operation->delete();
+    }
+
+    public function getOperationTypes($perPage = 10)
+    {
+        // TODO: fix bag with getting operation types. Operation types, related to organization goes in each paginated page
+        if ($this->userHasAccess(Auth::user())) {
+            Auth::user()->load('employee.organization.cashFlowOperationTypes');
+            $org_id = $this->getUserOrganizationId(Auth::user());
+
+            return CashFlowOperationType::where('organization_id', null)
+                ->orWhere('organization_id', $org_id)
+                ->with('cashFlowType')
+                ->orderBy('id')
+                ->paginate($perPage);
+        }
+        return null;
+    }
+
+    public function searchOperationTypes($perPage, $keyWord)
+    {
+        if ($this->userHasAccess(Auth::user())) {
+            Auth::user()->load('employee.organization.cashFlowOperationTypes');
+            $org_id = $this->getUserOrganizationId(Auth::user());
+            return CashFlowOperationType::where(function ($query) use ($keyWord, $org_id) {
+                $query->where('name', 'LIKE', '%' . $keyWord . '%');
+                $query->where('organization_id', $org_id);
+            })->orWhere(function ($query) use ($keyWord) {
+                $query->where('name', 'LIKE', '%' . $keyWord . '%');
+                $query->where('organization_id', null);
+            })
+                ->with('cashFlowType')
+                ->paginate($perPage);
+        }
+        return null;
+    }
+
+    public function getCashFlowTypes()
+    {
+        if ($this->userHasAccess(Auth::user())) {
+            return CashFlowType::all();
+        }
+
+        return null;
+    }
+
+    public function storeOperationType(OperationTypeApiRequest $request)
+    {
+        $org_id = $this->getUserOrganizationId(auth()->user());
+
+        return CashFlowOperationType::create([
+            'name' => $request->name,
+            'cash_flow_type_id' => $request->cash_flow_type,
+            'organization_id' => $org_id
+        ]);
+    }
+
+    public function updateOperationType(OperationTypeApiRequest $request, $id)
+    {
+        $operationType = CashFlowOperationType::findOrFail($id);
+        return $operationType->update([
+            'name' => $request->name,
+            'cash_flow_type_id' => $request->cash_flow_type
+        ]);
+    }
+
+    public function deleteOperationType($id)
+    {
+        $operationType = CashFlowOperationType::findOrFail($id);
+        if (count($operationType->cashFlowOperation) > 0) {
+            throw new ApiServiceException(400, false,
+                ['message' => 'Нельзя удалить данную статью платежей',
+                    'errorCode' => ErrorCode::NOT_ALLOWED]);
+        }
+        return CashFlowOperationType::destroy($id);
     }
 }

@@ -22,7 +22,7 @@ class CashBoxController extends ApiBaseController
     {
         return $this->successResponse(
             CashBoxResource::collection(
-                $this->service->getCashBoxes()
+                $this->service->getCurrentOrganizationCashBoxes()
             )
         );
     }
@@ -67,5 +67,9 @@ class CashBoxController extends ApiBaseController
     {
         $this->service->destroyCashBox($id);
         return $this->successResponse('OK');
+    }
+
+    public function show($id){
+        return $this->successResponse($this->service->getCashBoxById($id));
     }
 }

@@ -35,9 +35,10 @@ class CashBoxServiceImpl
     private function storeOrUpdateCashBox(CashBoxRequest $request, $id = null)
     {
         $cashbox = null;
+        $currentUser = auth()->user();
         DB::beginTransaction();
         try {
-            $this->validateUserAccess($request->user());
+            $this->validateUserAccess($currentUser);
 
             if (!!$id) {
                 $cashbox = CashBox::findOrFail($id);
@@ -47,7 +48,7 @@ class CashBoxServiceImpl
                         'balance',
                     ])
                 ]);
-                $cashbox->organization_id = $request->get('organization')['id'];
+                $cashbox->organization_id = $currentUser->employee->organization->id;
 
                 $cashbox->save();
             } else {
@@ -58,7 +59,7 @@ class CashBoxServiceImpl
                     'balance'
                 ]));
 
-                $cashbox->organization_id = $request->get('organization')['id'];
+                $cashbox->organization_id = $currentUser->employee->organization->id;
 
                 $cashbox->save();
             }
@@ -82,6 +83,17 @@ class CashBoxServiceImpl
             Auth::user()->load('employee.organization.cashBoxes');
 
             return Auth::user()->employee->organization->cashBoxes;
+        }
+
+        return null;
+    }
+
+    public function getCashBoxById($id)
+    {
+        if ($this->userHasAccess(Auth::user())) {
+            Auth::user()->load('employee.organization.cashBoxes');
+
+            return Auth::user()->employee->organization->cashBoxes()->findOrFail($id);
         }
 
         return null;

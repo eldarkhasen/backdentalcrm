@@ -4,6 +4,7 @@ namespace App\Models\Core;
 
 use App\Models\Business\MaterialRest;
 use App\Models\CashFlow\CashBox;
+use App\Models\CashFlow\CashFlowOperationType;
 use App\Models\Management\Subscription;
 use App\Models\Patients\Patient;
 use App\Models\Settings\Employee;
@@ -71,6 +72,9 @@ class Organization extends Model
         return $this->hasMany(CashBox::class);
     }
 
+    public function cashFlowOperationTypes(){
+        return $this->hasMany(CashFlowOperationType::class);
+    }
     public function materialRests()
     {
         return $this->hasMany(MaterialRest::class)
