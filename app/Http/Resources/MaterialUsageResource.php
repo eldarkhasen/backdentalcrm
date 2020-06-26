@@ -15,6 +15,7 @@ class MaterialUsageResource extends JsonResource
             'employee' => $this->relationLoaded('employee')
                 ? $this->employee
                 : null,
+            'created_at' => $this->created_at->isoFormat('DD.MM.YYYY HH:mm'),
         ]);
     }
 }

@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class MaterialDelivery extends Model
 {
     use SoftDeletes;
-
     protected $fillable = [
         'material_rest_id',
         'invoice_number',
@@ -16,6 +15,10 @@ class MaterialDelivery extends Model
         'comments',
         'delivery_date',
         'committed'
+    ];
+
+    protected $dates = [
+        'delivery_date',
     ];
 
     public function materialRest()

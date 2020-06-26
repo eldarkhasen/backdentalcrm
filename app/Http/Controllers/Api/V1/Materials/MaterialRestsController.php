@@ -8,7 +8,10 @@ use App\Http\Controllers\ApiBaseController;
 use App\Http\Requests\Api\V1\Materials\MaterialDeliveryRequest;
 use App\Http\Requests\Api\V1\Materials\MaterialRestRequest;
 use App\Http\Requests\Api\V1\Materials\MaterialUsageRequest;
+use App\Http\Resources\MaterialDeliveryResource;
 use App\Http\Resources\MaterialRestResource;
+use App\Http\Resources\MaterialUsageResource;
+use App\Models\Business\MaterialDelivery;
 use App\Services\v1\impl\MaterialsServiceImpl;
 
 class MaterialRestsController extends ApiBaseController
@@ -49,7 +52,11 @@ class MaterialRestsController extends ApiBaseController
 
     public function getDeliveries()
     {
-        // todo realize
+        return $this->successResponse(
+            MaterialDeliveryResource::collection(
+                $this->service->getCurrentOrgMaterialDeliveries()
+            )
+        );
     }
 
     public function storeDelivery(MaterialDeliveryRequest $request)
@@ -81,7 +88,11 @@ class MaterialRestsController extends ApiBaseController
 
     public function getUsages()
     {
-        // todo realize
+        return $this->successResponse(
+            MaterialUsageResource::collection(
+                $this->service->getCurrentOrgMaterialUsages()
+            )
+        );
     }
 
     public function storeUsage(MaterialUsageRequest $request)

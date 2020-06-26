@@ -70,6 +70,10 @@ class CashBoxController extends ApiBaseController
     }
 
     public function show($id){
-        return $this->successResponse($this->service->getCashBoxById($id));
+        return $this->successResponse(
+            new CashBoxResource(
+                $this->service->getCashBoxById($id)
+            )
+        );
     }
 }

@@ -407,4 +407,26 @@ class MaterialsServiceImpl
 
         return $rest;
     }
+
+    public function getCurrentOrgMaterialDeliveries()
+    {
+        $this->validateUserAccess(Auth::user());
+
+        return MaterialDelivery::with(['materialRest'])
+            ->whereHas('materialRest.organization', function ($query) {
+                $query->where('id', Auth::user()->employee->organization->id);
+            })
+            ->get();
+    }
+
+    public function getCurrentOrgMaterialUsages()
+    {
+        $this->validateUserAccess(Auth::user());
+
+        return MaterialUsage::with(['employee', 'materialRest'])
+            ->whereHas('employee.organization', function ($query) {
+                $query->where('id', Auth::user()->employee->organization->id);
+            })
+            ->get();
+    }
 }

@@ -12,6 +12,7 @@ class MaterialDeliveryResource extends JsonResource
             'material_rest' => $this->relationLoaded('materialRest')
                 ? $this->materialRest
                 : null,
+            'delivery_date' => $this->delivery_date->isoFormat('DD.MM.YYYY HH:mm'),
         ]);
     }
 }
