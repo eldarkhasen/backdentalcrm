@@ -417,20 +417,35 @@ class MaterialsServiceImpl
         $search_key = $request->get('searchKey',null);
         $from_date = $request->get('fromDate',null);
         $to_date = $request->get('toDate',null);
-        $employee_ids = $request->get('employee_ids',null);
 
-        return MaterialDelivery::with(['materialRest'])
+
+        $query = MaterialDelivery::with(['materialRest'])
             ->whereHas('materialRest.organization', function ($query) {
                 $query->where('id', Auth::user()->employee->organization->id);
-            })
-            ->paginate($per_page);
+            });
+
+        if (isset($search_key)) {
+            $query->whereHas('materialRest.material', function ($q) use ($search_key) {
+                $q->where('name', 'like', '%' . $search_key . '%');
+            });
+        }
+
+        if (isset($from_date)) {
+            $query->whereDate('created_at', '>=', $from_date);
+        }
+
+        if (isset($to_date)) {
+            $query->whereDate('created_at', '<=', $to_date);
+        }
+
+        return $query->paginate($per_page);
     }
 
     public function getCurrentOrgMaterialUsages(Request $request)
     {
         $this->validateUserAccess(Auth::user());
 
-        $per_page = $request->input('perPage',1);
+        $per_page = $request->input('perPage',20);
         $search_key = $request->input('searchKey',null);
         $from_date = $request->get('fromDate',null);
         $to_date = $request->get('toDate',null);

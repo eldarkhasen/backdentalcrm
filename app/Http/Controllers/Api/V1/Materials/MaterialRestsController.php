@@ -51,9 +51,9 @@ class MaterialRestsController extends ApiBaseController
         );
     }
 
-    public function getDeliveries()
+    public function getDeliveries(Request $request)
     {
-        $items = $this->service->getCurrentOrgMaterialDeliveries();
+        $items = $this->service->getCurrentOrgMaterialDeliveries($request);
 
         return $this->successResponse(
             new PaginationResource(
