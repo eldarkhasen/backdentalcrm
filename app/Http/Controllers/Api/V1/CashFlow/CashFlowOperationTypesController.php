@@ -22,8 +22,10 @@ class CashFlowOperationTypesController extends ApiBaseController
     public function index(Request $request)
     {
         $perPage = $request->get('perPage',10);
-        if($request->has('search')){
+        if($request->has('search') && !$request->has('type_id')){
             return $this->successResponse($this->service->searchOperationTypes($perPage,$request->get('search')));
+        }else if ($request->has('array') && !$request->has('search')){
+            return $this->successResponse($this->service->getOperationTypesByType());
         }else{
             return $this->successResponse($this->service->getOperationTypes($perPage));
         }

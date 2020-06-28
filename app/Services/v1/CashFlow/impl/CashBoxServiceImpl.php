@@ -98,4 +98,15 @@ class CashBoxServiceImpl
 
         return null;
     }
+
+    public function getCashBoxesArray()
+    {
+        if ($this->userHasAccess(Auth::user())) {
+            Auth::user()->load('employee.organization.cashBoxes');
+
+            return Auth::user()->employee->organization->cashBoxes;
+        }
+
+        return null;
+    }
 }

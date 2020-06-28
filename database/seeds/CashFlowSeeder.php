@@ -43,8 +43,7 @@ class CashFlowSeeder extends Seeder
             ]);
 
             $transfers->operationTypes()->createMany([
-                [ 'name' => 'Перевод из кассы' ],
-                [ 'name' => 'Перевод в кассу']
+                [ 'name' => 'Перевод между кассами' ],
             ]);
             DB::commit();
         } catch (\Exception $e) {

@@ -103,10 +103,11 @@ class PatientsController extends ApiBaseController
         //
     }
 
-    public function organizationPatients()
+    public function organizationPatients(Request $request)
     {
+        $perPage = $request->get('perPage', 10);
         return $this->successResponse([
-            'patients' => $this->patientsService->getAllPatientsByOrganization(auth()->user())
+            'patients' => $this->patientsService->getAllPatientsByOrganization(auth()->user(),$perPage)
         ]);
     }
 }

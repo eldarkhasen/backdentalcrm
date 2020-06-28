@@ -162,7 +162,7 @@ class PatientsServiceImpl implements PatientsService
         return Patient::findOrFail($id);
     }
 
-    public function getAllPatientsByOrganization($currentUser,$perPage)
+    public function getAllPatientsByOrganization($currentUser,$perPage=10)
     {
         if (!($currentUser->isEmployee() || $currentUser->isOwner())) {
             throw new ApiServiceException(400, false, [

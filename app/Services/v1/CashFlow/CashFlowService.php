@@ -34,4 +34,6 @@ interface CashFlowService
     public function deleteOperationType($id);
 
     public function getCashFlowTypes();
+
+    public function getOperationTypesByType();
 }

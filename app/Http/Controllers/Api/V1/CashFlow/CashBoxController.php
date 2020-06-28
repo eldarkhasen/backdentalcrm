@@ -76,4 +76,12 @@ class CashBoxController extends ApiBaseController
             )
         );
     }
+
+    public function getArray(){
+        return $this->successResponse(
+            CashBoxResource::collection(
+                $this->service->getCashBoxesArray()
+            )
+        );
+    }
 }

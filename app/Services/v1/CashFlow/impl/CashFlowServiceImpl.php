@@ -269,4 +269,19 @@ class CashFlowServiceImpl
         }
         return CashFlowOperationType::destroy($id);
     }
+
+    public function getOperationTypesByType()
+    {
+        if ($this->userHasAccess(Auth::user())) {
+            Auth::user()->load('employee.organization.cashFlowOperationTypes');
+            $org_id = $this->getUserOrganizationId(Auth::user());
+
+            return CashFlowOperationType::where('organization_id', null)
+                ->orWhere('organization_id', $org_id)
+                ->with('cashFlowType')
+                ->orderBy('id')
+                ->get();
+        }
+        return null;;
+    }
 }
