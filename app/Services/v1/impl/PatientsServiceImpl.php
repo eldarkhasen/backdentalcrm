@@ -220,7 +220,7 @@ class PatientsServiceImpl implements PatientsService
             '*',
             DB::raw("CONCAT(COALESCE(name, ''),' ',COALESCE(surname,''),' ',COALESCE(patronymic,'')) as fullName")
         ]);
-        return $query->paginate(10);
+        return $query->limit(5)->get();
     }
 
 
