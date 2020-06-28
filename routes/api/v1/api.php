@@ -41,7 +41,6 @@ Route::group(['middleware' => 'auth:api'], function () {
     });
 
 
-
     Route::group(['middleware' => 'subscriptionCheck'], function () {
 
         Route::group(['namespace' => 'CashFlow'], function () {
@@ -54,9 +53,9 @@ Route::group(['middleware' => 'auth:api'], function () {
             Route::get('cash-boxes/{id}', 'CashBoxController@show');
             Route::get('cash-boxes-array', 'CashBoxController@getArray');
             Route::get('cash-flow-operation-types', 'CashFlowOperationTypesController@index');
-            Route::get('cash-flow-types','CashFlowOperationTypesController@getCashFlowTypes');
+            Route::get('cash-flow-types', 'CashFlowOperationTypesController@getCashFlowTypes');
             Route::post('cash-flow-operation-types', 'CashFlowOperationTypesController@store');
-            Route::get('check-operation-types/{id}','CashFlowOperationTypesController@checkOperationType');
+            Route::get('check-operation-types/{id}', 'CashFlowOperationTypesController@checkOperationType');
             Route::put('cash-flow-operation-types/{id}', 'CashFlowOperationTypesController@update');
             Route::delete('cash-flow-operation-types/{id}', 'CashFlowOperationTypesController@destroy');
 //        Route::post('get-cash-flow-operations', 'CashFlowController@index');
@@ -96,6 +95,7 @@ Route::group(['middleware' => 'auth:api'], function () {
             Route::post('/patients', 'PatientsController@store');
             Route::put('/patients/{id}', 'PatientsController@update');
             Route::get('/patients/organization', ['uses' => 'PatientsController@organizationPatients']);
+            Route::get('/patients/search', 'PatientsController@searchPatient');
         });
 
         Route::group(['namespace' => 'Appointments'], function () {
