@@ -52,6 +52,8 @@ Route::group(['middleware' => 'auth:api'], function () {
             );
             Route::apiResource('cash-boxes', 'CashBoxController');
             Route::get('cash-boxes/{id}', 'CashBoxController@show');
+            Route::get('check-cash-box/{id}', 'CashBoxController@check');
+
             Route::get('cash-boxes-array', 'CashBoxController@getArray');
             Route::get('cash-flow-operation-types', 'CashFlowOperationTypesController@index');
             Route::get('cash-flow-types','CashFlowOperationTypesController@getCashFlowTypes');

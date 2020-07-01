@@ -2,6 +2,7 @@
 
 namespace App\Models\Settings;
 
+use App\Models\CashFlow\CashFlowOperation;
 use App\Models\Core\Organization;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
@@ -41,6 +42,10 @@ class Employee extends Model
         return $this->belongsTo(
             Organization::class, 'organization_id', 'id'
         );
+    }
+
+    public function cashFlowOperation(){
+        return $this->hasMany(CashFlowOperation::class,'user_created_id');
     }
 
 }

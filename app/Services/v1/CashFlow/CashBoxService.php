@@ -22,4 +22,6 @@ interface CashBoxService
     public function updateCashBox(CashBoxRequest $request, $id);
 
     public function destroyCashBox($id);
+
+    public function checkCashBox($id,$amount);
 }

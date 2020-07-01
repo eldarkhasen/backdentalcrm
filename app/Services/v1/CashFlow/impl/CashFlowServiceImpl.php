@@ -14,6 +14,7 @@ use App\Models\CashFlow\CashFlowOperationType;
 use App\Models\CashFlow\CashFlowType;
 use App\Services\v1\BaseServiceImpl;
 use App\Services\v1\CashFlow\CashFlowService;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -22,12 +23,17 @@ class CashFlowServiceImpl
     implements CashFlowService
 {
 
-    public function getOperations(CashFlowOperationFilterApiRequest $request = null)
+    public function getOperations($perPage)
     {
+        $org_id = $this->getUserOrganizationId(auth()->user());
+
         // TODO: realize filters
-        return CashFlowOperation::with(['fromCashBox', 'toCashBox', 'type', 'appointment'])
+        return CashFlowOperation::with(['fromCashBox', 'toCashBox', 'type', 'appointment','employee','type.cashFlowType'])
             ->where('committed', true)
-            ->get();
+            ->whereHas('employee', function ($q) use ($org_id){
+                $q->where('organization_id', $org_id);
+            })
+            ->paginate($perPage);
     }
 
     public function storeOperation(CashFlowOperationApiRequest $request)
@@ -35,7 +41,7 @@ class CashFlowServiceImpl
         $operation = null;
         DB::beginTransaction();
         try {
-            $this->validateUserAccess($request->user());
+            $this->validateUserAccess(auth()->user());
 
             $operation = new CashFlowOperation();
 
@@ -86,16 +92,20 @@ class CashFlowServiceImpl
         ]));
 
         if (!!$request->get('from_cash_box'))
-            $operation->from_cash_box_id = $request->get('from_cash_box')['id'];
+            $operation->from_cash_box_id = $request->get('from_cash_box');
 
         if (!!$request->get('to_cash_box'))
-            $operation->to_cash_box_id = $request->get('to_cash_box')['id'];
+            $operation->to_cash_box_id = $request->get('to_cash_box');
 
         if (!!$request->get('appointment')) {
-            $operation->appointment_id = $request->get('appointment')['id'];
+            $operation->appointment_id = $request->get('appointment');
         }
 
-        $operation->type_id = $request->get('type')['id'];
+        $operation->type_id = $request->get('operation_type');
+
+        $operation->cash_flow_date = $request->get('cash_flow_date');
+
+        $operation->user_created_id = Auth::user()->employee->id;
 
         return $operation;
     }
@@ -105,7 +115,6 @@ class CashFlowServiceImpl
         DB::beginTransaction();
         try {
             $this->validateUserAccess(Auth::user());
-
             if ($operation->committed) {
                 throw new ApiServiceException(400, false, [
                     'errors' => [
@@ -130,7 +139,9 @@ class CashFlowServiceImpl
                     )
                 ]);
             }
-
+            $operation->update([
+                'user_created_id'=> auth()->user()->employee->id
+            ]);
             $operation->update([
                 'committed' => true
             ]);
@@ -282,6 +293,21 @@ class CashFlowServiceImpl
                 ->orderBy('id')
                 ->get();
         }
-        return null;;
+        return null;
+    }
+
+    public function getCurrentWeekOperations($perPage)
+    {
+        $org_id = $this->getUserOrganizationId(auth()->user());
+
+        // TODO: realize filters
+        return CashFlowOperation::with(['fromCashBox', 'toCashBox', 'type', 'appointment','employee','type.cashFlowType'])
+            ->where('committed', true)
+            ->whereHas('employee', function ($q) use ($org_id){
+                $q->where('organization_id', $org_id);
+                $q->whereBetween('cash_flow_date', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()]);
+            })->orderBy('id','desc')
+            ->paginate($perPage);
+
     }
 }
