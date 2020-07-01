@@ -48,7 +48,7 @@ class PatientsServiceImpl implements PatientsService
         return $currentUser->employee->organization->patients;
     }
 
-    public function searchPaginatedPatients($currentUser,$search_key, $perPage)
+    public function searchPaginatedPatients($currentUser, $search_key, $perPage)
     {
         if (!($currentUser->isEmployee() || $currentUser->isOwner())) {
             throw new ApiServiceException(400, false, [
@@ -77,7 +77,7 @@ class PatientsServiceImpl implements PatientsService
             ->paginate($perPage);
     }
 
-    public function searchPatientsArray($currentUser,$search_key)
+    public function searchPatientsArray($currentUser, $search_key)
     {
         if (!($currentUser->isEmployee() || $currentUser->isOwner())) {
             throw new ApiServiceException(400, false, [
@@ -162,7 +162,7 @@ class PatientsServiceImpl implements PatientsService
         return Patient::findOrFail($id);
     }
 
-    public function getAllPatientsByOrganization($currentUser,$perPage=10)
+    public function getAllPatientsByOrganization($currentUser, $perPage = 10)
     {
         if (!($currentUser->isEmployee() || $currentUser->isOwner())) {
             throw new ApiServiceException(400, false, [
@@ -193,5 +193,35 @@ class PatientsServiceImpl implements PatientsService
             'patient_id' => $patient_id
         ]);
     }
+
+    public function searchPatients($phone, $name, $surname, $patronymic)
+    {
+        $query = Patient::query();
+
+        if ($phone) {
+            $phone = strtoupper($phone);
+            $query = $query->whereRaw("UPPER(phone) LIKE '%$phone%'");
+        }
+
+        if ($name) {
+            $name = strtoupper($name);
+            $query = $query->whereRaw("UPPER(name) LIKE '%$name%'");
+        }
+
+        if ($surname) {
+            $surname = strtoupper($surname);
+            $query = $query->whereRaw("UPPER(surname) LIKE '%$surname%'");
+        }
+        if ($patronymic) {
+            $patronymic = strtoupper($patronymic);
+            $query = $query->whereRaw("UPPER(patronymic) LIKE '%$patronymic%'");
+        }
+        $query = $query->select([
+            '*',
+            DB::raw("CONCAT(COALESCE(name, ''),' ',COALESCE(surname,''),' ',COALESCE(patronymic,'')) as fullName")
+        ]);
+        return $query->limit(5)->get();
+    }
+
 
 }
