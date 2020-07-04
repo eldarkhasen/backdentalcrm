@@ -18,6 +18,8 @@ interface MaterialsService
 
     public function getCurrentOrgMaterialRests();
 
+    public function getMaterialById($id);
+
     public function storeMaterial(MaterialRequest $request);
 
     public function updateMaterial(MaterialRequest $request, $id);

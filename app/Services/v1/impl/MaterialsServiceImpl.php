@@ -33,8 +33,12 @@ class MaterialsServiceImpl
     public function getCurrentOrgMaterialRests()
     {
         $this->validateUserAccess(Auth::user());
-
         return Auth::user()->employee->organization->materialRests;
+    }
+
+    public function getMaterialById($id)
+    {
+        return Material::findOrFail($id);
     }
 
     public function storeMaterial(MaterialRequest $request)
@@ -113,7 +117,7 @@ class MaterialsServiceImpl
     private function fillMaterialRest(MaterialRest $rest, MaterialRestRequest $request)
     {
         $rest->count = $request->count;
-        $rest->organization_id = $request->input('organization.id');
+        $rest->organization_id = $request->organization_id;
         $rest->material_id = $request->input('material.id');
 
         return $rest;

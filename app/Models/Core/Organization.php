@@ -75,6 +75,7 @@ class Organization extends Model
     public function cashFlowOperationTypes(){
         return $this->hasMany(CashFlowOperationType::class);
     }
+
     public function materialRests()
     {
         return $this->hasMany(MaterialRest::class)

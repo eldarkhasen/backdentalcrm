@@ -28,6 +28,15 @@ class MaterialsController extends ApiBaseController
         );
     }
 
+    public function show($id)
+    {
+        return $this->successResponse(
+            new MaterialResource(
+                $this->service->getMaterialById($id)
+            )
+        );
+    }
+
     public function store(MaterialRequest $request)
     {
         return $this->successResponse(
