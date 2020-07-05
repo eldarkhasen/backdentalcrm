@@ -63,6 +63,15 @@ class MaterialRestsController extends ApiBaseController
         );
     }
 
+    public function getDelivery($id)
+    {
+        return $this->successResponse(
+            new MaterialDeliveryResource(
+                $this->service->getMaterialDelivery($id)
+            )
+        );
+    }
+
     public function storeDelivery(MaterialDeliveryRequest $request)
     {
         return $this->successResponse(
@@ -98,6 +107,15 @@ class MaterialRestsController extends ApiBaseController
             new PaginationResource(
                 $items,
                 MaterialUsageResource::collection($items)
+            )
+        );
+    }
+
+    public function getUsage($id)
+    {
+        return $this->successResponse(
+            new MaterialUsageResource(
+                $this->service->getMaterialUsage($id)
             )
         );
     }

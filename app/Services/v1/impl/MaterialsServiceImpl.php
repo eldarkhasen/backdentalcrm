@@ -117,7 +117,7 @@ class MaterialsServiceImpl
     private function fillMaterialRest(MaterialRest $rest, MaterialRestRequest $request)
     {
         $rest->count = $request->count;
-        $rest->organization_id = $request->organization_id;
+        $rest->organization_id = $request->user()->employee->organization_id;
         $rest->material_id = $request->input('material.id');
 
         return $rest;
@@ -183,7 +183,7 @@ class MaterialsServiceImpl
         ]));
 
         $usage->material_rest_id = $request->input('materialRest.id');
-        $usage->employee_id = $request->get('employee.id');
+        $usage->employee_id = $request->get('employee.id', $request->user()->employee->id);
 
         return $usage;
     }
@@ -481,5 +481,15 @@ class MaterialsServiceImpl
         }
 
         return $query->paginate($per_page);
+    }
+
+    public function getMaterialUsage($id)
+    {
+        return MaterialUsage::findOrFail($id);
+    }
+
+    public function getMaterialDelivery($id)
+    {
+        return MaterialDelivery::findOrFail($id);
     }
 }
