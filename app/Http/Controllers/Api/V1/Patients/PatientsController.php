@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1\Patients;
 
 use App\Http\Controllers\ApiBaseController;
+use App\Http\Requests\Api\V1\Patients\SearchPatientApiRequest;
 use App\Http\Requests\Api\V1\Patients\StoreAndUpdatePatientApiRequest;
 use App\Services\v1\PatientsService;
 use Illuminate\Http\Request;
@@ -30,9 +31,9 @@ class PatientsController extends ApiBaseController
         $perPage = $request->get('perPage', 10);
         if ($request->has('search')) {
             return $this->successResponse($this->patientsService->searchPaginatedPatients(auth()->user(), $request->get('search'), $perPage));
-        }else {
+        } else {
             return $this->successResponse(
-                $this->patientsService->getAllPatientsByOrganization(auth()->user(),$perPage)
+                $this->patientsService->getAllPatientsByOrganization(auth()->user(), $perPage)
             );
         }
     }
@@ -103,10 +104,23 @@ class PatientsController extends ApiBaseController
         //
     }
 
-    public function organizationPatients()
+    public function organizationPatients(Request $request)
+    {
+        $perPage = $request->get('perPage', 10);
+        return $this->successResponse([
+            'patients' => $this->patientsService->getAllPatientsByOrganization(auth()->user(), $perPage)
+        ]);
+    }
+
+    public function searchPatient(SearchPatientApiRequest $request)
     {
         return $this->successResponse([
-            'patients' => $this->patientsService->getAllPatientsByOrganization(auth()->user())
+            'patients' => $this->patientsService->searchPatients(
+                $request->phone,
+                $request->name,
+                $request->surname,
+                $request->patronymic
+            )
         ]);
     }
 }

@@ -8,10 +8,13 @@ use App\Http\Requests\Api\V1\CashFlow\CashFlowOperationApiRequest;
 use App\Http\Requests\Api\V1\CashFlow\CashFlowOperationFilterApiRequest;
 use App\Http\Requests\Api\V1\CashFlow\OperationTypeApiRequest;
 use App\Models\CashFlow\CashFlowOperation;
+use Illuminate\Http\Request;
 
 interface CashFlowService
 {
-    public function getOperations(CashFlowOperationFilterApiRequest $request = null);
+    public function getOperations( $perPage);
+
+    public function getCurrentWeekOperations($perPage);
 
     public function storeOperation(CashFlowOperationApiRequest $request);
 
@@ -34,4 +37,6 @@ interface CashFlowService
     public function deleteOperationType($id);
 
     public function getCashFlowTypes();
+
+    public function getOperationTypesByType();
 }

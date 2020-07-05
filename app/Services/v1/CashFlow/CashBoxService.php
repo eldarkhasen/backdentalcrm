@@ -11,6 +11,8 @@ interface CashBoxService
 {
     public function getCashBoxes(CashBoxFilterApiRequest $request = null);
 
+    public function getCashBoxesArray();
+
     public function getCurrentOrganizationCashBoxes();
 
     public function getCashBoxById($id);
@@ -20,4 +22,6 @@ interface CashBoxService
     public function updateCashBox(CashBoxRequest $request, $id);
 
     public function destroyCashBox($id);
+
+    public function checkCashBox($id,$amount);
 }

@@ -7,6 +7,7 @@ use App\Http\Requests\Api\V1\CashFlow\CashBoxFilterApiRequest;
 use App\Http\Requests\Api\V1\CashFlow\CashBoxRequest;
 use App\Http\Resources\CashBoxResource;
 use App\Services\v1\CashFlow\CashBoxService;
+use Illuminate\Http\Request;
 
 class CashBoxController extends ApiBaseController
 {
@@ -75,5 +76,17 @@ class CashBoxController extends ApiBaseController
                 $this->service->getCashBoxById($id)
             )
         );
+    }
+
+    public function getArray(){
+        return $this->successResponse(
+            CashBoxResource::collection(
+                $this->service->getCashBoxesArray()
+            )
+        );
+    }
+
+    public function check(Request $request,$id){
+        return $this->successResponse($this->service->checkCashBox($id,$request->get('amount')));
     }
 }

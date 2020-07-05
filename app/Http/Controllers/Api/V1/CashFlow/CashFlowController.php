@@ -8,6 +8,7 @@ use App\Http\Requests\Api\V1\CashFlow\CashFlowOperationFilterApiRequest;
 use App\Http\Resources\CashFlowOperationResource;
 use App\Services\v1\CashFlow\CashFlowService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class CashFlowController extends ApiBaseController
 {
@@ -17,23 +18,29 @@ class CashFlowController extends ApiBaseController
         $this->service = $service;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        return $this->successResponse(
-            CashFlowOperationResource::collection(
-                $this->service->getOperations()
-            )
-        );
+        $perPage = $request->get('perPage',10);
+        if($request->has('week')){
+            return $this->successResponse(
+                $this->service->getCurrentWeekOperations($perPage)
+            );
+        }else{
+            return $this->successResponse(
+                $this->service->getOperations($perPage)
+            );
+        }
+
     }
 
-    public function indexFiltered(CashFlowOperationFilterApiRequest $request)
-    {
-        return $this->successResponse(
-            CashFlowOperationResource::collection(
-                $this->service->getOperations($request)
-            )
-        );
-    }
+//    public function indexFiltered(CashFlowOperationFilterApiRequest $request)
+//    {
+//        return $this->successResponse(
+//            CashFlowOperationResource::collection(
+//                $this->service->getOperations($request)
+//            )
+//        );
+//    }
 
     /**
      * Store a newly created resource in storage.

@@ -82,7 +82,8 @@ class CashBoxServiceImpl
         if ($this->userHasAccess(Auth::user())) {
             Auth::user()->load('employee.organization.cashBoxes');
 
-            return Auth::user()->employee->organization->cashBoxes;
+            $org_id =  Auth::user()->employee->organization->id;
+            return CashBox::where('organization_id',$org_id)->with('organization')->get();
         }
 
         return null;
@@ -97,5 +98,22 @@ class CashBoxServiceImpl
         }
 
         return null;
+    }
+
+    public function getCashBoxesArray()
+    {
+        if ($this->userHasAccess(Auth::user())) {
+            Auth::user()->load('employee.organization.cashBoxes');
+
+            return Auth::user()->employee->organization->cashBoxes;
+        }
+
+        return null;
+    }
+
+    public function checkCashBox($id, $amount)
+    {
+        $cashBox = CashBox::findOrFail($id);
+        return $cashBox->balance >= $amount;
     }
 }

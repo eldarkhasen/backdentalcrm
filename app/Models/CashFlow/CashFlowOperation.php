@@ -3,6 +3,7 @@
 namespace App\Models\CashFlow;
 
 use App\Models\Business\Appointment;
+use App\Models\Settings\Employee;
 use Illuminate\Database\Eloquent\Model;
 
 class CashFlowOperation extends Model
@@ -14,7 +15,8 @@ class CashFlowOperation extends Model
         'appointment_id',
         'amount',
         'comments',
-        'committed'
+        'committed',
+        'user_created_id'
     ];
 
     public function type(){
@@ -42,5 +44,11 @@ class CashFlowOperation extends Model
         )->with([
             'patient', 'employee'
         ]);
+    }
+
+    public function employee(){
+        return $this->belongsTo(
+            Employee::class,
+            'user_created_id');
     }
 }
