@@ -53,4 +53,8 @@ interface MaterialsService
     public function getCurrentOrgMaterialUsages(Request $request);
 
     public function getCurrentOrgMaterialDeliveries(Request $request);
+
+    public function getMaterialUsage($id);
+
+    public function getMaterialDelivery($id);
 }

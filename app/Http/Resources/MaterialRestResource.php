@@ -19,6 +19,10 @@ class MaterialRestResource extends JsonResource
                 ? new MaterialResource($this->material)
                 : null,
 
+            'material_name' => $this->relationLoaded('material')
+                ? $this->material->name
+                : null,
+
             'organization' => $this->relationLoaded('organization')
                 ? new OrganizationResource($this->organization)
                 : null,

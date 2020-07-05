@@ -13,7 +13,7 @@ class MaterialRestRequest extends ApiBaseRequest
     {
         return [
             'material.id' => ['required', 'numeric'],
-            'organization_id' => ['required', 'numeric'],
+//            'organization_id' => ['required', 'numeric'],
             'count' => ['required', 'numeric']
         ];
     }

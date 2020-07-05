@@ -13,7 +13,7 @@ class MaterialUsageRequest extends ApiBaseRequest
     {
         return [
             'materialRest.id' => ['required', 'numeric'],
-            'employee.id' => ['required', 'numeric'],
+            'employee.id' => ['numeric'],
             'quantity' => ['required', 'numeric'],
             'comments' => ['required', 'max:255']
         ];

@@ -114,6 +114,10 @@ Route::group(['middleware' => 'auth:api'], function () {
                 'material-rests/delivery',
                 'MaterialRestsController@storeDelivery'
             );
+            Route::get(
+                'material-rests/delivery/{id}',
+                'MaterialRestsController@getDelivery'
+            );
             Route::put(
                 'material-rests/delivery/{id}',
                 'MaterialRestsController@updateDelivery'
@@ -123,6 +127,10 @@ Route::group(['middleware' => 'auth:api'], function () {
                 'MaterialRestsController@deleteDelivery'
             );
             Route::post('material-usages', 'MaterialRestsController@getUsages');
+            Route::get(
+                'material-rests/usage/{id}',
+                'MaterialRestsController@getUsage'
+            );
             Route::post(
                 'material-rests/usage',
                 'MaterialRestsController@storeUsage'
