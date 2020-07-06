@@ -10,7 +10,7 @@ class MaterialUsageResource extends JsonResource
     {
         return array_merge(parent::toArray($request), [
             'materialRest' => $this->relationLoaded('materialRest')
-                ? $this->materialRest
+                ? new MaterialRestResource($this->materialRest)
                 : null,
             'employee' => $this->relationLoaded('employee')
                 ? $this->employee

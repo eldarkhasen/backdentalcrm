@@ -26,4 +26,9 @@ class Material extends Model
     {
         return $this->hasMany(MaterialDelivery::class);
     }
+
+    public function rests()
+    {
+        return $this->hasMany(MaterialRest::class);
+    }
 }

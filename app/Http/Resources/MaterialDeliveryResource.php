@@ -10,7 +10,7 @@ class MaterialDeliveryResource extends JsonResource
     {
         return array_merge(parent::toArray($request), [
             'materialRest' => $this->relationLoaded('materialRest')
-                ? $this->materialRest
+                ? new MaterialRestResource($this->materialRest)
                 : null,
             'delivery_date' => $this->delivery_date->isoFormat('DD.MM.YYYY HH:mm'),
         ]);
