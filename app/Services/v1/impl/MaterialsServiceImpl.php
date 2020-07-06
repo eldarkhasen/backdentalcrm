@@ -388,7 +388,11 @@ class MaterialsServiceImpl
 
     public function deleteMaterial($id)
     {
-        return Material::findOrFail($id)->delete();
+        $material = Material::findOrFail($id);
+
+        $material->rest()->delete();
+
+        return $material->delete();
     }
 
     public function deleteMaterialUsage($id)
@@ -485,11 +489,11 @@ class MaterialsServiceImpl
 
     public function getMaterialUsage($id)
     {
-        return MaterialUsage::findOrFail($id);
+        return MaterialUsage::with('materialRest')->findOrFail($id);
     }
 
     public function getMaterialDelivery($id)
     {
-        return MaterialDelivery::findOrFail($id);
+        return MaterialDelivery::with('materialRest')->findOrFail($id);
     }
 }
