@@ -24,6 +24,7 @@ class StoreAndUpdateAppointmentApiRequest extends ApiBaseRequest
             'employee.color' => ['required'],
             'treatment_course' => ['nullable'],
             'is_first_visit' => ['required', 'boolean'],
+            'services'=>['nullable','array']
         ];
     }
 }

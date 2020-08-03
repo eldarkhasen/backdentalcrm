@@ -71,7 +71,12 @@ class AppointmentsServiceImpl
                 : TreatmentCourse::create(['name' => $appointment->title])->id;
 
             $appointment->treatment_course_id = $course_id;
-
+            $services = $request->services;
+            if (isset($services)) {
+                foreach ($services as $serv) {
+                    $appointment->services()->attach($serv['id']);
+                }
+            }
             $appointment->save();
             DB::commit();
             return $appointment;
@@ -88,7 +93,11 @@ class AppointmentsServiceImpl
             $this->validateUserAccess($request->user());
 
             $appointment = Appointment::findOrFail($id);
-
+            $services = $request->services;
+            $all_services = $appointment->services;
+            foreach ($all_services as $service){
+                $appointment->services()->detach($service->id);
+            }
             $appointment->update([
                 'title'          => $request->get('title'),
                 'starts_at'      => Carbon::parse($request->get('starts_at')),
@@ -100,6 +109,10 @@ class AppointmentsServiceImpl
                 'status'         => $request->get('status'),
                 'treatment_course_id' => data_get($request,'treatment_course.id'),
             ]);
+
+            foreach ($services as $service){
+                $appointment->services()->attach($service['id']);
+            }
 
             DB::commit();
 
