@@ -30,7 +30,12 @@ class AppointmentsController extends ApiBaseController
      */
     public function index(FilterAppointmentsApiRequest $request)
     {
-        $appointments = $this->appointmentsService->getAppointments($request);
+        if($request->has('employee_id')){
+            $appointments = $this->appointmentsService->getAppointmentsByEmployee($request);
+        }else{
+            $appointments = $this->appointmentsService->getAppointments($request);
+        }
+
         return $this->successResponse(
             AppointmentResource::collection($appointments)
         );

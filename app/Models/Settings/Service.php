@@ -2,6 +2,7 @@
 
 namespace App\Models\Settings;
 
+use App\Models\Business\Appointment;
 use App\Models\Core\Organization;
 use Illuminate\Database\Eloquent\Model;
 
@@ -21,5 +22,9 @@ class Service extends Model
     public function organization()
     {
         return $this->belongsTo(Organization::class, 'organization_id', 'id');
+    }
+
+    public function appointments(){
+        return $this->belongsToMany(Appointment::class,'service_id','id');
     }
 }

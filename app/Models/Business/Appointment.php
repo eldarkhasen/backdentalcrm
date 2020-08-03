@@ -4,6 +4,7 @@ namespace App\Models\Business;
 
 use App\Models\Patients\Patient;
 use App\Models\Settings\Employee;
+use App\Models\Settings\Service;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -44,4 +45,7 @@ class Appointment extends Model
         return $this->belongsTo(TreatmentCourse::class, 'treatment_course_id', 'id');
     }
 
+    public function services(){
+        return $this->belongsToMany(Service::class,'appointment_id','id');
+    }
 }

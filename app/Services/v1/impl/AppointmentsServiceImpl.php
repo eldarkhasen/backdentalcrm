@@ -25,9 +25,6 @@ class AppointmentsServiceImpl
         $time_from = $request->get('time_from', null);
         $time_to = $request->get('time_to', null);
 
-        $employee_ids = $request->get('employee_ids', null);
-        $patient_ids = $request->get('patient_ids', null);
-
         $search_key = $request->get('search_key', null);
 
         $query = Appointment::with(['employee', 'patient', 'treatmentCourse']);
@@ -37,12 +34,6 @@ class AppointmentsServiceImpl
 
         if (!!$time_to)
             $query = $query->whereDate('ends_at', '<=', Carbon::parse($time_to));
-
-        if (!!$employee_ids and count($employee_ids) > 0)
-            $query = $query->whereIn('employee_id', $employee_ids);
-
-        if (!!$patient_ids and count($patient_ids) > 0)
-            $query = $query->whereIn('patient_id', $patient_ids);
 
         if (!!$search_key and $search_key != '')
             $query = $query->where('title', 'like', '%' . $search_key . '%');
@@ -122,5 +113,25 @@ class AppointmentsServiceImpl
     public function deleteAppointment($id)
     {
         return Appointment::findOrFail($id)->delete();
+    }
+
+    public function getAppointmentsByEmployee(FilterAppointmentsApiRequest $request)
+    {
+        $time_from = $request->get('time_from', null);
+        $time_to = $request->get('time_to', null);
+        $employee_id = $request->get('employee_id', null);
+        $search_key = $request->get('search_key', null);
+        $query = Appointment::with(['employee', 'patient', 'treatmentCourse','services']);
+
+        if (!!$time_from)
+            $query = $query->whereDate('starts_at', '>=', Carbon::parse($time_from));
+
+        if (!!$time_to)
+            $query = $query->whereDate('ends_at', '<=', Carbon::parse($time_to));
+
+        if(!!$employee_id)
+            $query = $query->where('employee_id',$employee_id);
+
+        return $query->get();
     }
 }

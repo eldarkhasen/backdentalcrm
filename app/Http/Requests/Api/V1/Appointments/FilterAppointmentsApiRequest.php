@@ -13,8 +13,7 @@ class FilterAppointmentsApiRequest extends ApiBaseRequest
         return [
             'time_from' => ['date', 'nullable'],
             'time_to' => ['date', 'nullable'],
-            'employee_ids' => ['array', 'nullable'],
-            'patient_ids' => ['array', 'nullable'],
+            'employee_id' => ['numeric', 'nullable'],
             'search_key'=> ['nullable', 'max:255']
         ];
     }

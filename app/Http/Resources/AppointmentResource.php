@@ -35,6 +35,10 @@ class AppointmentResource extends JsonResource
                 $this->relationLoaded('treatmentCourse'),
                 new TreatmentCourseResource($this->treatmentCourse)
             ),
+            'services' => $this->when(
+                $this->relationLoaded('services'),
+                new ServicesResource($this->services)
+            ),
             'is_first_visit' => $this->is_first_visit == 1,
         ];
     }
