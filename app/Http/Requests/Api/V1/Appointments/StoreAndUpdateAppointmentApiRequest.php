@@ -15,16 +15,12 @@ class StoreAndUpdateAppointmentApiRequest extends ApiBaseRequest
             'starts_at' => ['required', 'date', 'after:today'],
             'ends_at' => ['required', 'date', 'after:today'],
             'price' => ['required', 'numeric', 'digits_between:0,1000000'],
-            'patient.id' => ['required', 'numeric'],
-            'patient.surname' => ['required'],
-            'patient.name' => ['required'],
-            'patient.patronymic' => ['required'],
-            'patient.phone' => ['required'],
-            'employee.id' => ['required', 'numeric'],
-            'employee.color' => ['required'],
+            'patient' => ['required'],
+            'employee' => ['required'],
             'treatment_course' => ['nullable'],
             'is_first_visit' => ['required', 'boolean'],
-            'services'=>['nullable','array']
+            'services'=>['nullable','array'],
+            'status' =>['required']
         ];
     }
 }
