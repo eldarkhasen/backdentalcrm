@@ -12,8 +12,8 @@ class StoreAndUpdateAppointmentApiRequest extends ApiBaseRequest
     {
         return [
             'title' => ['nullable'],
-            'starts_at' => ['required', 'date', 'after:today'],
-            'ends_at' => ['required', 'date', 'after:today'],
+            'starts_at' => ['required', 'date'],
+            'ends_at' => ['required', 'date'],
             'price' => ['required', 'numeric', 'digits_between:0,1000000'],
             'patient' => ['required'],
             'employee' => ['required'],

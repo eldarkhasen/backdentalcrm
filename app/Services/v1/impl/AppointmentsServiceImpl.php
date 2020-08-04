@@ -53,13 +53,16 @@ class AppointmentsServiceImpl
             $this->validateUserAccess($request->user());
 
             $appointment = new Appointment();
+            $patient = $request->get('patient');
+            $employee = $request->get('employee');
             $appointment->fill([
-                'starts_at'   => Carbon::parse($request->get('starts_at')),
-                'ends_at'     => Carbon::parse($request->get('ends_at')),
-                'employee_id' => data_get($request, 'employee.id'),
-                'patient_id'  =>  data_get($request,'patient.id'),
-                'color'       => data_get($request, 'employee.color'),
-                'is_first_visit' =>  data_get($request,'is_first_visit')
+                'starts_at' => Carbon::parse($request->get('starts_at')),
+                'ends_at' => Carbon::parse($request->get('ends_at')),
+                'employee_id' => $employee['id'],
+                'patient_id' => $patient['id'],
+                'color' => $employee['color'],
+                'price' => data_get($request, 'price'),
+                'is_first_visit' => data_get($request, 'is_first_visit')
             ]);
 
             $patient = $request->get('patient');
@@ -71,13 +74,15 @@ class AppointmentsServiceImpl
                 : TreatmentCourse::create(['name' => $appointment->title])->id;
 
             $appointment->treatment_course_id = $course_id;
+            $appointment->save();
             $services = $request->services;
+
             if (isset($services)) {
                 foreach ($services as $serv) {
-                    $appointment->services()->attach($serv['id']);
+                    $appointment->services()->attach($serv['service']['id'], ['amount'=>$serv['quantity']]);
                 }
             }
-            $appointment->save();
+
             DB::commit();
             return $appointment;
 
@@ -95,22 +100,22 @@ class AppointmentsServiceImpl
             $appointment = Appointment::findOrFail($id);
             $services = $request->services;
             $all_services = $appointment->services;
-            foreach ($all_services as $service){
+            foreach ($all_services as $service) {
                 $appointment->services()->detach($service->id);
             }
             $appointment->update([
-                'title'          => $request->get('title'),
-                'starts_at'      => Carbon::parse($request->get('starts_at')),
-                'ends_at'        => Carbon::parse($request->get('ends_at')),
-                'employee_id'    => data_get($request, 'employee.id'),
-                'patient_id'     => data_get($request,'patient.id'),
-                'color'          => data_get($request, 'employee.color'),
-                'is_first_visit' => data_get($request,'is_first_visit'),
-                'status'         => $request->get('status'),
-                'treatment_course_id' => data_get($request,'treatment_course.id'),
+                'title' => $request->get('title'),
+                'starts_at' => Carbon::parse($request->get('starts_at')),
+                'ends_at' => Carbon::parse($request->get('ends_at')),
+                'employee_id' => data_get($request, 'employee.id'),
+                'patient_id' => data_get($request, 'patient.id'),
+                'color' => data_get($request, 'employee.color'),
+                'is_first_visit' => data_get($request, 'is_first_visit'),
+                'status' => $request->get('status'),
+                'treatment_course_id' => data_get($request, 'treatment_course.id'),
             ]);
 
-            foreach ($services as $service){
+            foreach ($services as $service) {
                 $appointment->services()->attach($service['id']);
             }
 
@@ -134,7 +139,7 @@ class AppointmentsServiceImpl
         $time_to = $request->get('time_to', null);
         $employee_id = $request->get('employee_id', null);
         $search_key = $request->get('search_key', null);
-        $query = Appointment::with(['employee', 'patient', 'treatmentCourse','services']);
+        $query = Appointment::with(['employee', 'patient', 'treatmentCourse', 'services']);
 
         if (!!$time_from)
             $query = $query->whereDate('starts_at', '>=', Carbon::parse($time_from));
@@ -142,8 +147,8 @@ class AppointmentsServiceImpl
         if (!!$time_to)
             $query = $query->whereDate('ends_at', '<=', Carbon::parse($time_to));
 
-        if(!!$employee_id)
-            $query = $query->where('employee_id',$employee_id);
+        if (!!$employee_id)
+            $query = $query->where('employee_id', $employee_id);
 
         return $query->get();
     }
