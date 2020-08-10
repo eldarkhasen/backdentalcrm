@@ -100,6 +100,8 @@ class AppointmentsServiceImpl
             $appointment = Appointment::findOrFail($id);
             $services = $request->services;
             $all_services = $appointment->services;
+            $patient = $request->get('patient');
+            $employee = $request->get('employee');
             foreach ($all_services as $service) {
                 $appointment->services()->detach($service->id);
             }
@@ -107,16 +109,17 @@ class AppointmentsServiceImpl
                 'title' => $request->get('title'),
                 'starts_at' => Carbon::parse($request->get('starts_at')),
                 'ends_at' => Carbon::parse($request->get('ends_at')),
-                'employee_id' => data_get($request, 'employee.id'),
-                'patient_id' => data_get($request, 'patient.id'),
-                'color' => data_get($request, 'employee.color'),
+                'employee_id' => $employee['id'],
+                'patient_id' => $patient['id'],
+                'color' => $employee['color'],
                 'is_first_visit' => data_get($request, 'is_first_visit'),
                 'status' => $request->get('status'),
+                'price' => data_get($request, 'price'),
                 'treatment_course_id' => data_get($request, 'treatment_course.id'),
             ]);
 
             foreach ($services as $service) {
-                $appointment->services()->attach($service['id']);
+                $appointment->services()->attach($service['service']['id'], ['amount'=>$service['quantity']]);
             }
 
             DB::commit();
@@ -138,8 +141,8 @@ class AppointmentsServiceImpl
         $time_from = $request->get('time_from', null);
         $time_to = $request->get('time_to', null);
         $employee_id = $request->get('employee_id', null);
-        $search_key = $request->get('search_key', null);
-        $query = Appointment::with(['employee', 'patient', 'treatmentCourse', 'services']);
+
+        $query = Appointment::with(['employee', 'patient', 'treatmentCourse']);
 
         if (!!$time_from)
             $query = $query->whereDate('starts_at', '>=', Carbon::parse($time_from));
@@ -147,9 +150,11 @@ class AppointmentsServiceImpl
         if (!!$time_to)
             $query = $query->whereDate('ends_at', '<=', Carbon::parse($time_to));
 
+
         if (!!$employee_id)
             $query = $query->where('employee_id', $employee_id);
 
         return $query->get();
+
     }
 }
