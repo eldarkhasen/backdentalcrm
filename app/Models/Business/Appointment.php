@@ -12,7 +12,9 @@ class Appointment extends Model
 {
 
     use SoftDeletes;
-
+    public const STATUS_PENDING  ='pending';
+    public const STATUS_CLIENT_MISS = 'client_miss';
+    public const STATUS_SUCCESS = 'success';
     protected $fillable = [
         'title',
         'starts_at',

@@ -90,4 +90,10 @@ class AppointmentsController extends ApiBaseController
             $this->appointmentsService->deleteAppointment($id)
         );
     }
+
+    public function getPatientLastAppointment($patient_id){
+        return $this->successResponse(
+            $this->appointmentsService->getPatientLastAppointments($patient_id)
+        );
+    }
 }

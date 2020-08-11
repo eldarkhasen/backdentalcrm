@@ -15,4 +15,5 @@ interface AppointmentsService
     public function storeAppointment(StoreAndUpdateAppointmentApiRequest $request);
     public function updateAppointment(StoreAndUpdateAppointmentApiRequest $request, $id);
     public function deleteAppointment($id);
+    public function getPatientLastAppointments($patient_id);
 }

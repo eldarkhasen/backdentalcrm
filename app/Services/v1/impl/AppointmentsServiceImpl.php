@@ -157,4 +157,12 @@ class AppointmentsServiceImpl
         return $query->get();
 
     }
+
+    public function getPatientLastAppointments($patient_id)
+    {
+        $query = Appointment::with(['employee', 'patient', 'treatmentCourse'])
+            ->where('patient_id',$patient_id)
+            ->where('status',Appointment::STATUS_SUCCESS);
+        return $query->get();
+    }
 }
