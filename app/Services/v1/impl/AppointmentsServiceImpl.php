@@ -20,14 +20,33 @@ class AppointmentsServiceImpl
     implements AppointmentsService
 {
 
-    public function getAppointments(FilterAppointmentsApiRequest $request)
+    public function getAppointments(FilterAppointmentsApiRequest $request, $currentUser)
     {
+        if (!($currentUser->isEmployee() || $currentUser->isOwner())) {
+            throw new ApiServiceException(400, false, [
+                'errors' => [
+                    'You are not allowed to do so'
+                ],
+                'errorCode' => ErrorCode::NOT_ALLOWED
+            ]);
+        }
+
+        $currentUser->load(['employee', 'employee.organization', 'employee.organization.patients']);
+        if (!($currentUser->employee && $currentUser->employee->organization)) {
+            throw new ApiServiceException(400, false, [
+                'errors' => [
+                    'You are not allowed to do so'
+                ],
+                'errorCode' => ErrorCode::NOT_ALLOWED
+            ]);
+        }
+
         $time_from = $request->get('time_from', null);
         $time_to = $request->get('time_to', null);
 
         $search_key = $request->get('search_key', null);
 
-        $query = Appointment::with(['employee', 'patient', 'treatmentCourse']);
+        $query = Appointment::with(['employee', 'patient', 'treatmentCourse', 'employee.organization']);
 
         if (!!$time_from)
             $query = $query->whereDate('starts_at', '>=', Carbon::parse($time_from));
@@ -38,6 +57,9 @@ class AppointmentsServiceImpl
         if (!!$search_key and $search_key != '')
             $query = $query->where('title', 'like', '%' . $search_key . '%');
 
+        $query = $query->whereHas('employee', function($query) use ($currentUser){
+            $query->where('organization_id',$currentUser->employee->organization->id);
+        });
         return $query->get();
     }
 
@@ -158,11 +180,33 @@ class AppointmentsServiceImpl
 
     }
 
-    public function getPatientLastAppointments($patient_id)
+    public function getPatientLastAppointments($patient_id, $currentUser)
     {
+        if (!($currentUser->isEmployee() || $currentUser->isOwner())) {
+            throw new ApiServiceException(400, false, [
+                'errors' => [
+                    'You are not allowed to do so'
+                ],
+                'errorCode' => ErrorCode::NOT_ALLOWED
+            ]);
+        }
+
+        $currentUser->load(['employee', 'employee.organization', 'employee.organization.patients']);
+        if (!($currentUser->employee && $currentUser->employee->organization)) {
+            throw new ApiServiceException(400, false, [
+                'errors' => [
+                    'You are not allowed to do so'
+                ],
+                'errorCode' => ErrorCode::NOT_ALLOWED
+            ]);
+        }
         $query = Appointment::with(['employee', 'patient', 'treatmentCourse'])
             ->where('patient_id',$patient_id)
             ->where('status',Appointment::STATUS_SUCCESS);
+
+        $query = $query->whereHas('employee', function($query) use ($currentUser){
+            $query->where('organization_id',$currentUser->employee->organization->id);
+        });
         return $query->get();
     }
 }
