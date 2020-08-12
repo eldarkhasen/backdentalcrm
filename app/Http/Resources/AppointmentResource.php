@@ -18,8 +18,8 @@ class AppointmentResource extends JsonResource
         return [
             'id' => $this->id,
             'title' => $this->title,
-            'starts_at' => Carbon::parse($this->starts_at)->isoFormat('DD.MM.YYYY HH:mm'),
-            'ends_at' => Carbon::parse($this->ends_at)->isoFormat('DD.MM.YYYY HH:mm'),
+            'starts_at' => Carbon::parse($this->starts_at)->isoFormat('MM-DD-YYYY HH:mm'),
+            'ends_at' => Carbon::parse($this->ends_at)->isoFormat('MM-DD-YYYY HH:mm'),
             'price' => $this->price,
             'status' => $this->status,
             'color' => $this->color,
