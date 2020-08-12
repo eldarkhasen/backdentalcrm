@@ -42,9 +42,7 @@ Route::group(['namespace' => 'Web'], function () {
 
         Route::get('owners', ['uses' => 'OwnerController@index', 'as' => 'owner.index']);
 
-        Route::get('/apidoc', function() {
-            return view('apidoc.index');
-        });
+        Route::get('/apidoc', ['uses' => 'ConfigController@apiDoc']);
     });
 });
 

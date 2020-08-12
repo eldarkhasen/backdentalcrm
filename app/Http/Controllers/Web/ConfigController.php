@@ -22,4 +22,8 @@ class ConfigController extends WebBaseController
         }
         return "fail";
     }
+
+    public function apiDoc(){
+        return view('apidoc.index');
+    }
 }

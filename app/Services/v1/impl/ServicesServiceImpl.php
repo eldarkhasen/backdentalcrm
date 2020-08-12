@@ -271,7 +271,6 @@ class ServicesServiceImpl implements ServicesService
                 'errorCode' => ErrorCode::NOT_ALLOWED
             ]);
         }
-
         $currentUser->load(['employee', 'employee.organization', 'employee.organization.patients']);
         if (!($currentUser->employee && $currentUser->employee->organization)) {
             throw new ApiServiceException(400, false, [
