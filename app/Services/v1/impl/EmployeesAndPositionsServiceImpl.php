@@ -13,6 +13,7 @@ use App\Exceptions\ApiServiceException;
 use App\Http\Errors\ErrorCode;
 use App\Http\Requests\Api\V1\Settings\StoreAndUpdateEmployeeApiRequest;
 use App\Http\Requests\Api\V1\Settings\StoreAndUpdatePositionApiRequest;
+use App\Models\Business\Appointment;
 use App\Models\Permission;
 use App\Models\Settings\Employee;
 use App\Models\Settings\Position;
@@ -374,6 +375,7 @@ class EmployeesAndPositionsServiceImpl implements EmployeesAndPositionsService
                 //delete account
             }
         }
+        Appointment::where('employee_id','=',$employee->id)->update(['color'=>$employee->color]);
         return $employee;
     }
 
