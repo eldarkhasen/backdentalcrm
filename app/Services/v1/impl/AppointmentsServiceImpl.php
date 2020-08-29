@@ -200,7 +200,7 @@ class AppointmentsServiceImpl
                 'errorCode' => ErrorCode::NOT_ALLOWED
             ]);
         }
-        $query = Appointment::with(['employee', 'patient', 'treatmentCourse'])
+        $query = Appointment::with(['employee', 'patient', 'treatmentCourse' , 'services'])
             ->where('patient_id',$patient_id)
             ->where('status',Appointment::STATUS_SUCCESS);
 
