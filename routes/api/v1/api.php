@@ -103,7 +103,7 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::group(['namespace' => 'Appointments'], function () {
 //            Route::post('/get-appointments', 'AppointmentsController@index');
             Route::apiResource('/appointments', 'AppointmentsController');
-            Route::put('/update_appointment_time/{id}','updateAppointmentTime');
+            Route::put('/update_appointment_time/{id}','AppointmentsController@updateAppointmentTime');
             Route::get('/get_patient_last_appointments/{patient_id}','AppointmentsController@getPatientLastAppointment');
         });
 
