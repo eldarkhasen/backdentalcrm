@@ -7,6 +7,7 @@ use App\Http\Requests\Api\V1\Appointments\FilterAppointmentsApiRequest;
 use App\Http\Requests\Api\V1\Appointments\StoreAndUpdateAppointmentApiRequest;
 use App\Http\Resources\AppointmentResource;
 use App\Services\v1\AppointmentsService;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
