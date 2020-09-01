@@ -13,6 +13,7 @@ use App\Models\Business\TreatmentCourse;
 use App\Services\v1\AppointmentsService;
 use App\Services\v1\BaseServiceImpl;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class AppointmentsServiceImpl
@@ -208,5 +209,26 @@ class AppointmentsServiceImpl
             $query->where('organization_id',$currentUser->employee->organization->id);
         });
         return $query->get();
+    }
+
+    public function updateAppointmentTime($id, $starts_at, $ends_at)
+    {
+        DB::beginTransaction();
+        try{
+            $appointment = Appointment::findOrFail($id);
+            $appointment->update([
+                'starts_at' => $starts_at,
+                'ends_at' => $ends_at,
+            ]);
+
+            DB::commit();
+
+            return $appointment;
+
+        } catch (\Exception $e) {
+            $this->onError($e, 'System error', ErrorCode::SYSTEM_ERROR);
+        }
+
+
     }
 }

@@ -8,6 +8,7 @@ use App\Http\Requests\Api\V1\Appointments\StoreAndUpdateAppointmentApiRequest;
 use App\Http\Resources\AppointmentResource;
 use App\Services\v1\AppointmentsService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class AppointmentsController extends ApiBaseController
@@ -95,6 +96,15 @@ class AppointmentsController extends ApiBaseController
     public function getPatientLastAppointment($patient_id){
         return $this->successResponse(
             $this->appointmentsService->getPatientLastAppointments($patient_id, Auth::user())
+        );
+    }
+
+    public function updateAppointmentTime($id, Request $request){
+        $starts_at = Carbon::parse($request->get('starts_at'));
+        $ends_at = Carbon::parse($request->get('ends_at'));
+
+        return $this->successResponse(
+            $this->appointmentsService->updateAppointmentTime($id,$starts_at,$ends_at)
         );
     }
 }
