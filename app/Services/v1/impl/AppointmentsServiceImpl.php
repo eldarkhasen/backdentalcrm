@@ -44,9 +44,7 @@ class AppointmentsServiceImpl
 
         $time_from = $request->get('time_from', null);
         $time_to = $request->get('time_to', null);
-
         $search_key = $request->get('search_key', null);
-
         $query = Appointment::with(['employee', 'patient', 'treatmentCourse', 'employee.organization']);
 
         if (!!$time_from)
