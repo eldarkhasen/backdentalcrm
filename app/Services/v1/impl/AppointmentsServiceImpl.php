@@ -45,7 +45,8 @@ class AppointmentsServiceImpl
         $time_from = $request->get('time_from', null);
         $time_to = $request->get('time_to', null);
         $search_key = $request->get('search_key', null);
-        $query = Appointment::with(['employee', 'patient', 'treatmentCourse', 'employee.organization']);
+
+        $query = Appointment::with(['employee', 'patient','treatmentCourse', 'employee.organization','services']);
 
         if (!!$time_from)
             $query = $query->whereDate('starts_at', '>=', Carbon::parse($time_from));
@@ -90,9 +91,9 @@ class AppointmentsServiceImpl
             $appointment->title = $patient['surname'] . " " .
                 $patient['name'] . " " . $patient['patronymic'] . ", " . $patient['phone'];
 
-            $course_id = !!$request->treatment_course['id']
+            $course_id = !!$request->treatment_course
                 ? $request->treatment_course['id']
-                : TreatmentCourse::create(['name' => $appointment->title])->id;
+                : TreatmentCourse::create(['name' => $appointment->title, 'is_finished' => false])->id;
 
             $appointment->treatment_course_id = $course_id;
             $appointment->save();
@@ -103,8 +104,8 @@ class AppointmentsServiceImpl
                     $appointment->services()->attach($serv['service']['id'], ['amount'=>$serv['quantity']]);
                 }
             }
-
             DB::commit();
+
             return $appointment;
 
         } catch (\Exception $e) {
@@ -163,7 +164,7 @@ class AppointmentsServiceImpl
         $time_to = $request->get('time_to', null);
         $employee_id = $request->get('employee_id', null);
 
-        $query = Appointment::with(['employee', 'patient', 'treatmentCourse']);
+        $query = Appointment::with(['employee', 'patient', 'treatmentCourse','services']);
 
         if (!!$time_from)
             $query = $query->whereDate('starts_at', '>=', Carbon::parse($time_from));

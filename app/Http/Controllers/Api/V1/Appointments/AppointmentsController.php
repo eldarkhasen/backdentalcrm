@@ -39,9 +39,7 @@ class AppointmentsController extends ApiBaseController
             $appointments = $this->appointmentsService->getAppointments($request, Auth::user());
         }
 
-        return $this->successResponse(
-            AppointmentResource::collection($appointments)
-        );
+        return $this->successResponse($appointments);
     }
 
     /**
