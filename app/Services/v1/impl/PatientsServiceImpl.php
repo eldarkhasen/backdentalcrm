@@ -14,6 +14,7 @@ use App\Http\Errors\ErrorCode;
 use App\Http\Requests\Api\V1\Patients\StoreAndUpdatePatientApiRequest;
 use App\Models\Core\OrganizationPatient;
 use App\Models\Patients\Patient;
+use App\Models\User;
 use App\Services\v1\PatientsService;
 use Illuminate\Support\Facades\DB;
 
@@ -126,6 +127,15 @@ class PatientsServiceImpl implements PatientsService
                         'You are not allowed to do so',
                     ],
                     'errorCode' => ErrorCode::NOT_ALLOWED
+                ]);
+            }
+
+            if (Patient::where('phone', $request->phone)->first()) {
+                throw new ApiServiceException(400, false, [
+                    'errors' => [
+                        'Such user already exists',
+                    ],
+                    'errorCode' => ErrorCode::ALREADY_EXISTS
                 ]);
             }
 
