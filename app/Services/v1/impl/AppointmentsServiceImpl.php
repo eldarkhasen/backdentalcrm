@@ -65,7 +65,7 @@ class AppointmentsServiceImpl
 
     public function getAppointmentById($id)
     {
-        return Appointment::with(['employee', 'patient', 'treatmentCourse'])->findOrfail($id);
+        return Appointment::with(['employee', 'patient', 'treatmentCourse', 'services'])->findOrfail($id);
     }
 
     public function storeAppointment(StoreAndUpdateAppointmentApiRequest $request)
