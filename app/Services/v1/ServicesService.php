@@ -13,7 +13,9 @@ interface ServicesService
 {
     public function getAllServices($currentUser, $perPage);
 
-    public function getAllServicesArray($currentUser, $except_services);
+    public function getAllServicesArray($currentUser);
+
+    public function getServicesArrayExceptAppointments($currentUser, $appointment_id);
 
     public function getAllServicesByCategory($currentUser, $category_id, $perPage);
 

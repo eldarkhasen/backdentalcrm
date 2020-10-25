@@ -11,6 +11,7 @@ namespace App\Services\v1\impl;
 
 use App\Exceptions\ApiServiceException;
 use App\Http\Errors\ErrorCode;
+use App\Models\Business\Appointment;
 use App\Models\Settings\Service;
 use App\Models\Settings\ServiceCategory;
 use App\Services\v1\ServicesService;
@@ -261,7 +262,7 @@ class ServicesServiceImpl implements ServicesService
         // TODO: Implement updateService() method.
     }
 
-    public function getAllServicesArray($currentUser, $except_services=null)
+    public function getAllServicesArray($currentUser)
     {
         if (!($currentUser->isEmployee() || $currentUser->isOwner())) {
             throw new ApiServiceException(400, false, [
@@ -282,11 +283,34 @@ class ServicesServiceImpl implements ServicesService
         }
 
         $org_id = $currentUser->employee->organization->id;
-        if($except_services){
-            return Service::where('organization_id',$org_id)->with(['category'])->except($except_services)->get();
-        }else{
-            return Service::where('organization_id',$org_id)->with(['category'])->get();
+        return Service::where('organization_id',$org_id)->with(['category'])->get();
+
+
+    }
+
+    public function getServicesArrayExceptAppointments($currentUser, $appointment_id)
+    {
+        if (!($currentUser->isEmployee() || $currentUser->isOwner())) {
+            throw new ApiServiceException(400, false, [
+                'errors' => [
+                    'You are not allowed to do so'
+                ],
+                'errorCode' => ErrorCode::NOT_ALLOWED
+            ]);
         }
+        $currentUser->load(['employee', 'employee.organization', 'employee.organization.patients']);
+        if (!($currentUser->employee && $currentUser->employee->organization)) {
+            throw new ApiServiceException(400, false, [
+                'errors' => [
+                    'You are not allowed to do so'
+                ],
+                'errorCode' => ErrorCode::NOT_ALLOWED
+            ]);
+        }
+        $org_id = $currentUser->employee->organization->id;
+        $appointment = Appointment::find($appointment_id);
+        $exceptServices = $appointment->servicesOnlyId();
+        return Service::where('organization_id',$org_id)->whereNotIn($exceptServices)->get();
 
     }
 }

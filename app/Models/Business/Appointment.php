@@ -50,4 +50,9 @@ class Appointment extends Model
     public function services(){
         return $this->belongsToMany(Service::class,'appointment_has_services','appointment_id', 'service_id')->withPivot(['amount','service_id','appointment_id', 'actual_price', 'discount']);
     }
+
+    public function servicesOnlyId()
+    {
+        return $this->services->pluck('id');
+    }
 }
