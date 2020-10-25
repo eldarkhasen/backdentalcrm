@@ -145,8 +145,8 @@ class ServicesController extends ApiBaseController
     }
 
     public function getServicesArray(Request $request){
-        if($request->has('id')){
-            return $this->successResponse($this->servicesService->getAllServicesArray(auth()->user(), $request->get('id',null)));
+        if($request->has('ids')){
+            return $this->successResponse($this->servicesService->getAllServicesArray(auth()->user(), $request->get('ids',null)));
         }else{
             return $this->successResponse($this->servicesService->getAllServicesArray(auth()->user(), null));
         }

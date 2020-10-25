@@ -13,7 +13,7 @@ interface ServicesService
 {
     public function getAllServices($currentUser, $perPage);
 
-    public function getAllServicesArray($currentUser, $except_id);
+    public function getAllServicesArray($currentUser, $except_services);
 
     public function getAllServicesByCategory($currentUser, $category_id, $perPage);
 
