@@ -102,7 +102,7 @@ class AppointmentsServiceImpl
 
             if (isset($services)) {
                 foreach ($services as $serv) {
-                    $appointment->services()->attach($serv['service']['id'], ['amount'=>$serv['quantity']]);
+                    $appointment->services()->attach($serv['service']['id'], ['amount'=>$serv['quantity'],'actual_price'=>$serv['overallPrice'], 'discount'=>$serv['discount']]);
                 }
             }
             DB::commit();
@@ -142,7 +142,7 @@ class AppointmentsServiceImpl
             ]);
 
             foreach ($services as $service) {
-                $appointment->services()->attach($service['service']['id'], ['amount'=>$service['quantity']]);
+                $appointment->services()->attach($service['service']['id'], ['amount'=>$service['quantity'],'actual_price'=>$service['overallPrice'], 'discount'=>$service['discount']]);
             }
 
             DB::commit();
