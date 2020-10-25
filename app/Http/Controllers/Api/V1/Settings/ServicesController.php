@@ -144,8 +144,12 @@ class ServicesController extends ApiBaseController
         return $this->successResponse($this->servicesService->deleteCategory($id));
     }
 
-    public function getServicesArray(){
+    public function getServicesArray(Request $request){
+        if($request->has('id')){
+            return $this->successResponse($this->servicesService->getAllServicesArray(auth()->user(), $request->get('id',null)));
+        }else{
+            return $this->successResponse($this->servicesService->getAllServicesArray(auth()->user(), null));
+        }
 
-        return $this->successResponse($this->servicesService->getAllServicesArray(auth()->user()));
     }
 }

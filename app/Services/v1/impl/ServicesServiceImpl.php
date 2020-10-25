@@ -261,7 +261,7 @@ class ServicesServiceImpl implements ServicesService
         // TODO: Implement updateService() method.
     }
 
-    public function getAllServicesArray($currentUser)
+    public function getAllServicesArray($currentUser, $except_id=null)
     {
         if (!($currentUser->isEmployee() || $currentUser->isOwner())) {
             throw new ApiServiceException(400, false, [
@@ -282,6 +282,11 @@ class ServicesServiceImpl implements ServicesService
         }
 
         $org_id = $currentUser->employee->organization->id;
-        return Service::where('organization_id',$org_id)->with(['category'])->get();
+        if($except_id){
+            return Service::where('organization_id',$org_id)->with(['category'])->except($except_id)->get();
+        }else{
+            return Service::where('organization_id',$org_id)->with(['category'])->get();
+        }
+
     }
 }
