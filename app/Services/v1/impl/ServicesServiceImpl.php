@@ -310,7 +310,7 @@ class ServicesServiceImpl implements ServicesService
         $org_id = $currentUser->employee->organization->id;
         $appointment = Appointment::find($appointment_id);
         $exceptServices = $appointment->servicesOnlyId();
-        return Service::where('organization_id',$org_id)->whereNotIn($exceptServices)->get();
+        return Service::where('organization_id',$org_id)->whereNotIn('id',$exceptServices)->get();
 
     }
 }
