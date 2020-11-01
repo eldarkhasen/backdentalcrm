@@ -20,8 +20,7 @@ class DropPatientIdFromAppointmentHasServicesTable extends Migration
                 ->nullable(false);
             $table->foreign('appointment_id')
                 ->on('appointments')
-                ->references('id')
-                ->onDelete('RESTRICT');
+                ->references('id')->onDelete('CASCADE');
         });
     }
 
@@ -39,8 +38,7 @@ class DropPatientIdFromAppointmentHasServicesTable extends Migration
                 ->nullable(false);
             $table->foreign('patient_id')
                 ->on('patients')
-                ->references('id')
-                ->onDelete('RESTRICT');
+                ->references('id')->onDelete('CASCADE');
         });
     }
 }

@@ -9,13 +9,13 @@ use Illuminate\Database\Eloquent\Model;
 class AppointmentHasService extends Model
 {
     protected $fillable = [
-        'patient_id',
+        'appointment_id',
         'service_id',
     ];
 
-    public function patient()
+    public function appointment()
     {
-        return $this->belongsTo(Patient::class, 'patient_id', 'id');
+        return $this->belongsTo(Appointment::class, 'appointment_id', 'id');
     }
 
     public function service()
