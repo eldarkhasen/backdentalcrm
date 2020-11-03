@@ -42,6 +42,12 @@ Route::group(['namespace' => 'Web'], function () {
 
         Route::get('owners', ['uses' => 'OwnerController@index', 'as' => 'owner.index']);
 
+//        Route::get('initialInspectionType', ['uses' => 'InitialInspectionTypeController@index', 'as' => 'initInspectionType.index']);
+////        Route::get('initialInspectionType/{id}', ['uses' => 'InitialInspectionTypeController@show', 'as' => 'initInspectionType.show']);
+////        Route::get('initialInspectionType/{id}', ['uses' => 'InitialInspectionTypeController@show', 'as' => 'initInspectionType.show']);
+////        Route::post('addInitInspectionType', ['uses' => 'InitialInspectionTypeController@store']);
+        Route::resource('initialInspectionTypes', 'InitialInspectionTypeController');
+
         Route::get('/apidoc', ['uses' => 'ConfigController@apiDoc']);
     });
 });
