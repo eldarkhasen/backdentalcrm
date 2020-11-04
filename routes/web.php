@@ -39,7 +39,10 @@ Route::group(['namespace' => 'Web'], function () {
         Route::resource('subscriptiontypes', 'SubscriptionTypeController');
         Route::post('addSubscription', 'OrganizationController@addSubscription');
         Route::post('addEmployee', 'OrganizationController@addEmployee');
-
+        Route::post('addInspectionOption', 'InitialInspectionTypeController@addOption');
+        Route::get('editInspectionOption/{id}', ['uses'=>'InitialInspectionTypeController@editOption', 'as'=>'inspectionOptions.edit']);
+        Route::patch('updateInspectionOption/{id}', ['uses'=>'InitialInspectionTypeController@updateOption', 'as'=>'inspectionOptions.update']);
+        Route::delete('destroyInspectionOption/{id}', ['uses'=>'InitialInspectionTypeController@destroyOption', 'as'=>'inspectionOptions.destroy']);
         Route::get('owners', ['uses' => 'OwnerController@index', 'as' => 'owner.index']);
 
 //        Route::get('initialInspectionType', ['uses' => 'InitialInspectionTypeController@index', 'as' => 'initInspectionType.index']);

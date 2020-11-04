@@ -9,4 +9,8 @@ class InitInspectionType extends Model
 {
     protected $guarded = [];
 
+
+    public function options(){
+        return $this->hasMany(InitInspectionTypeOption::class);
+    }
 }

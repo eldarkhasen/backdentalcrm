@@ -8,7 +8,7 @@
                 <h1 class="h3 mb-4 text-gray-800">Тип первичного осмотра: {{$item->name}}</h1>
             </div>
             <div class="col-sm-3 offset-lg-3">
-                <a href="" role = "button" class = "btn btn-block btn-outline-primary btn-md" data-toggle="modal" data-target="#addNewType"> Добавить тип первичного осмотра</a>
+                <a href="" role = "button" class = "btn btn-block btn-outline-primary btn-md" data-toggle="modal" data-target="#addNewOption">Добавить новое поле</a>
             </div>
         </div>
     </div>
@@ -17,18 +17,18 @@
         <!-- DataTales Example -->
         <div class="card shadow mb-4">
             <div class="card-body">
-                {{--@include('components.datatable', [--}}
-                    {{--'headers' => [--}}
-                        {{--'id' => 'ID',--}}
-                        {{--'name' => 'Название',--}}
-                      {{--],--}}
-                    {{--'actions' => ['show_item_link'=>'Просмотр','edit_form_link' => 'Редактировать'],--}}
-                    {{--'items' => $items--}}
-                {{--])--}}
+                @include('components.datatable', [
+                    'headers' => [
+                        'id' => 'ID',
+                        'value' => 'Название',
+                      ],
+                    'actions' => ['edit_form_link' => 'Редактировать'],
+                    'items' => $type_options
+                ])
             </div>
         </div>
     </div>
-    <div class="modal fade" id="addNewType" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="addNewOption" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -37,7 +37,7 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form method="POST" action="{{ URL::to('initialInspectionTypes') }}" >
+                <form method="POST" action="{{ URL::to('addInspectionOption') }}" >
                     @csrf
                     <div class="modal-body">
                         <div class="form-group">
@@ -46,11 +46,12 @@
                                    class="form-control"
                                    id="inputName"
                                    placeholder="Введите название"
-                                   name = "name">
+                                   name = "value">
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                        <input type="hidden" name = "inspection_type_id" value="{{$item->id}}">
                         <button type="submit" class="btn btn-primary">Сохранить</button>
                     </div>
                 </form>

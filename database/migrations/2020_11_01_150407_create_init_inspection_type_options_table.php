@@ -21,7 +21,7 @@ class CreateInitInspectionTypeOptionsTable extends Migration
                 ->on('init_inspection_types')
                 ->references('id')
                 ->onDelete('cascade');
-            $table->boolean('is_custom');
+            $table->boolean('is_custom')->default(false);
             $table->timestamps();
         });
     }
