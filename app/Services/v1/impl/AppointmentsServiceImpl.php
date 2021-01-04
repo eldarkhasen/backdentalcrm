@@ -9,6 +9,7 @@ use App\Http\Errors\ErrorCode;
 use App\Http\Requests\Api\V1\Appointments\FilterAppointmentsApiRequest;
 use App\Http\Requests\Api\V1\Appointments\StoreAndUpdateAppointmentApiRequest;
 use App\Models\Business\Appointment;
+use App\Models\Business\Treatment;
 use App\Models\Business\TreatmentCourse;
 use App\Services\v1\AppointmentsService;
 use App\Services\v1\BaseServiceImpl;
@@ -230,5 +231,11 @@ class AppointmentsServiceImpl
         }
 
 
+    }
+
+    public function getAppointmentTreatments($id)
+    {
+        $treatments = Treatment::where('appointment_id',$id)->get();
+        return $treatments;
     }
 }

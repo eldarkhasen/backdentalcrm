@@ -104,4 +104,8 @@ class AppointmentsController extends ApiBaseController
             $this->appointmentsService->updateAppointmentTime($id,$starts_at,$ends_at)
         );
     }
+
+    public function getAppointmentTreatments($id){
+        return $this->successResponse($this->appointmentsService->getAppointmentTreatments($id));
+    }
 }
