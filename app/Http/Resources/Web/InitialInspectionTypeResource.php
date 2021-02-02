@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Resources;
+namespace App\Http\Resources\Web;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -17,10 +17,10 @@ class InitialInspectionTypeResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'options'=> $this->when(
-                $this->relationLoaded('services'),
-                new InitialInspectionTypeOptionResource($this->options)
-            )
+            'edit_form_link' => route('initialInspectionTypes.edit', ['initialInspectionType' => $this->id]),
+            'show_item_link' => route('initialInspectionTypes.show', ['initialInspectionType' => $this->id]),
+            'deleted' => isset($this->deleted_at),
+            'status' => isset($this->deleted_at) ? 'Удален' : 'Активен',
         ];
     }
 }

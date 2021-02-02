@@ -19,4 +19,5 @@ interface AppointmentsService
     public function getPatientLastAppointments($patient_id, $currentUser);
     public function updateAppointmentTime($id, $starts_at,$ends_at);
     public function getAppointmentTreatments($id);
+    public function getAppointmentInitialInspections($id);
 }

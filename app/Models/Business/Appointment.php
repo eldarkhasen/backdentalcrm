@@ -55,4 +55,7 @@ class Appointment extends Model
     {
         return $this->services->pluck('id');
     }
+    public function initialInspections(){
+        return $this->hasMany(InitialInspection::class);
+    }
 }

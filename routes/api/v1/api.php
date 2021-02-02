@@ -107,6 +107,9 @@ Route::group(['middleware' => 'auth:api'], function () {
             Route::put('/update_appointment_time/{id}','AppointmentsController@updateAppointmentTime');
             Route::get('/get_patient_last_appointments/{patient_id}','AppointmentsController@getPatientLastAppointment');
             Route::get('/appointments/{id}/treatments', 'AppointmentsController@getAppointmentTreatments');
+            Route::get('/appointments/{id}/initial-inspections', 'AppointmentsController@getAppointmentInitialInspections');
+            Route::get('/initial_inspection_types', 'InitialInspectionsController@getInitialInspectionTypes');
+
         });
 
         Route::group(['namespace' => 'Materials'], function () {
