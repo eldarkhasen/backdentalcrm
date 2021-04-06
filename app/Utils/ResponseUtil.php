@@ -6,7 +6,7 @@
  * Time: 14:50
  */
 
-namespace App\Http\Utils;
+namespace App\Utils;
 
 
 class ResponseUtil

@@ -2,7 +2,7 @@
 
 namespace App\Exceptions;
 
-use App\Http\Utils\ResponseUtil;
+use App\Utils\ResponseUtil;
 use Exception;
 
 class ApiServiceException extends Exception

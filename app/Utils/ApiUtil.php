@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Http\Utils;
+namespace App\Utils;
 
 
 use Carbon\Carbon;

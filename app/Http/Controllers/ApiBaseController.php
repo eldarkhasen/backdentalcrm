@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 
 use App\Core\Interfaces\WithUser;
-use App\Http\Utils\ResponseUtil;
+use App\Utils\ResponseUtil;
 use Illuminate\Support\Facades\Auth;
 
 

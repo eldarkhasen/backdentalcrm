@@ -108,4 +108,8 @@ class AppointmentsController extends ApiBaseController
     public function getAppointmentTreatments($id){
         return $this->successResponse($this->appointmentsService->getAppointmentTreatments($id));
     }
+
+    public function getAppointmentInspections($id){
+        return $this->successResponse($this->appointmentsService->getAppointmentInspections($id));
+    }
 }
