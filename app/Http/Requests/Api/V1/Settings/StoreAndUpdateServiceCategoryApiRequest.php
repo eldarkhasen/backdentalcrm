@@ -9,7 +9,7 @@
 namespace App\Http\Requests\Api\V1\Settings;
 
 
-use App\Http\Requests\Api\ApiBaseRequest;
+use App\Http\Requests\ApiBaseRequest;
 
 class StoreAndUpdateServiceCategoryApiRequest extends ApiBaseRequest
 {
