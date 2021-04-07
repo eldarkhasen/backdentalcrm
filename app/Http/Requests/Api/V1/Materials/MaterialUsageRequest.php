@@ -4,7 +4,7 @@
 namespace App\Http\Requests\Api\V1\Materials;
 
 
-use App\Http\Requests\Api\ApiBaseRequest;
+use App\Http\Requests\ApiBaseRequest;
 
 class MaterialUsageRequest extends ApiBaseRequest
 {

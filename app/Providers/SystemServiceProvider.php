@@ -10,11 +10,13 @@ use App\Services\v1\CashFlow\impl\CashFlowServiceImpl;
 use App\Services\v1\impl\AppointmentsServiceImpl;
 use App\Services\v1\impl\AuthServiceImpl;
 use App\Services\v1\impl\EmployeesAndPositionsServiceImpl;
+use App\Services\v1\impl\InitialInspectionServiceImpl;
 use App\Services\v1\impl\MaterialsServiceImpl;
 use App\Services\v1\impl\PatientsServiceImpl;
 use App\Services\v1\impl\PermissionsServiceImpl;
 use App\Services\v1\impl\ProfileServiceImpl;
 use App\Services\v1\impl\ServicesServiceImpl;
+use App\Services\v1\InitialInspectionsService;
 use App\Services\v1\MaterialsService;
 use App\Services\v1\OrganizationLogic\impl\OrganizationServiceImpl;
 use App\Services\v1\SubscriptionLogic\impl\SubscriptionServiceImpl;
@@ -74,6 +76,9 @@ class SystemServiceProvider extends ServiceProvider
         });
         $this->app->bind(MaterialsService::class, function ($app) {
             return (new MaterialsServiceImpl());
+        });
+        $this->app->bind(InitialInspectionsService::class, function ($app) {
+            return (new InitialInspectionServiceImpl());
         });
     }
 

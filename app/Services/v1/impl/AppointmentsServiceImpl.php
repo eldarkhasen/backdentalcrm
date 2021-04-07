@@ -240,8 +240,8 @@ class AppointmentsServiceImpl
         return $treatments;
     }
 
-    public function getAppointmentInspections($id){
-        $inspections = InitialInspection::where('appointment_id',$id)->get();
-        return $inspections;
+    public function getAppointmentInitialInspections($id)
+    {
+        return InitialInspection::where('appointment_id',$id)->with(['inspectionType','inspectionTypeOption','appointment'])->get();
     }
 }

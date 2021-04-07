@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\InitialInspectionTypeOptionResource;
-use App\Http\Resources\InitialInspectionTypeResource;
+use App\Http\Resources\Web\InitialInspectionTypeOptionResource;
+use App\Http\Resources\Web\InitialInspectionTypeResource;
 use App\Models\Business\InitInspectionType;
 use App\Models\Business\InitInspectionTypeOption;
 use Illuminate\Http\Request;

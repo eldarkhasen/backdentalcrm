@@ -9,7 +9,7 @@
 namespace App\Http\Requests\Api\V1\Patients;
 
 
-use App\Http\Requests\Api\ApiBaseRequest;
+use App\Http\Requests\ApiBaseRequest;
 
 class SearchPatientApiRequest extends ApiBaseRequest
 {
