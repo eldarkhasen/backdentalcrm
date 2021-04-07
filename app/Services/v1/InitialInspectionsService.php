@@ -11,5 +11,5 @@ use Illuminate\Http\Request;
 interface InitialInspectionsService
 {
     public function getInitialInspectionTypes();
-
+    public function store(Request $request);
 }

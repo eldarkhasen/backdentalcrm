@@ -8,11 +8,8 @@ class InitialInspection extends Model
 {
     protected $fillable = [
         'appointment_id',
-        'anamnesis_vitae',
-        'anamnesis_morbi',
-        'visual_inspection',
-        'bite',
-        'mucosal_conditions'
+        'inspection_type_id',
+        'inspection_option_id'
     ];
 
     public function appointment()
