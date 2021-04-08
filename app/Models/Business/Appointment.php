@@ -61,6 +61,6 @@ class Appointment extends Model
     }
 
     public function initialInspectionTypes(){
-        return $this->belongsToMany(InitInspectionType::class, 'initial_inspections', 'appointment_id', 'inspection_type_id');
+        return $this->belongsToMany(InitInspectionType::class, 'initial_inspections', 'appointment_id', 'inspection_type_id')->distinct();
     }
 }

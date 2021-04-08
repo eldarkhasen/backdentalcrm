@@ -243,12 +243,14 @@ class AppointmentsServiceImpl
 
     public function getAppointmentInitialInspections($id)
     {
-//        return Appointment::with([
+        return Appointment::with([
 //            'initialInspections.inspectionType',
 //            'initialInspections.inspectionTypeOption',
-////            'initialInspectionTypes.options'
-//            ])
-//            ->findOrFail($id);
+            'initialInspectionTypes.options'  => function($q){
+                $q->with(['initialInspections'])->has('initialInspections');
+            }
+            ])
+            ->findOrFail($id);
         return InitInspectionType::with([
             'options' => function($q){
                 $q->with(['initialInspections'])->has('initialInspections');
