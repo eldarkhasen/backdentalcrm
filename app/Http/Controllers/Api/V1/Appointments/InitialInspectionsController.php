@@ -34,4 +34,10 @@ class InitialInspectionsController extends ApiBaseController
             $this->initialInspectionService->store($request)
         );
     }
+
+    public function delete($id){
+        return $this->successResponse(
+            $this->initialInspectionService->delete($id)
+        );
+    }
 }

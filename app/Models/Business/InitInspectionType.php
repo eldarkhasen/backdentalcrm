@@ -13,4 +13,8 @@ class InitInspectionType extends Model
     public function options(){
         return $this->hasMany(InitInspectionTypeOption::class);
     }
+
+    public function customOptions(){
+        return $this->hasMany(InitInspectionTypeOption::class)->where('is_custom', true);
+    }
 }

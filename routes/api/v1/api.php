@@ -111,6 +111,7 @@ Route::group(['middleware' => 'auth:api'], function () {
             Route::get('/appointments/{id}/initial-inspections', 'AppointmentsController@getAppointmentInitialInspections');
             Route::get('/initial_inspection_types', 'InitialInspectionsController@getInitialInspectionTypes');
             Route::post('/initial-inspections', 'InitialInspectionsController@store');
+            Route::delete('/initial-inspections/{id}', 'InitialInspectionsController@delete');
 
         });
 

@@ -12,4 +12,5 @@ interface InitialInspectionsService
 {
     public function getInitialInspectionTypes();
     public function store(Request $request);
+    public function delete($id);
 }

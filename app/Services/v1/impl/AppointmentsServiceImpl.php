@@ -243,21 +243,34 @@ class AppointmentsServiceImpl
 
     public function getAppointmentInitialInspections($id)
     {
-        return Appointment::with([
-//            'initialInspections.inspectionType',
-//            'initialInspections.inspectionTypeOption',
-            'initialInspectionTypes.options'  => function($q){
-                $q->with(['initialInspections'])->has('initialInspections');
-            }
-            ])
-            ->findOrFail($id);
+//        return Appointment::with([
+//            'initialInspectionTypes.options'  => function($q){
+//                $q->where('is_custom', false)
+//                    ->with(['initialInspections']);
+//            },
+//            'initialInspectionTypes.customOptions'=> function($q){
+//                $q->when('is_custom', function ($qq){
+//                    $qq->with(['initialInspections'])
+//                        ->has('initialInspections');
+//                });
+//            },
+//            ])
+//            ->findOrFail($id);
+        // version 3
         return InitInspectionType::with([
-            'options' => function($q){
-                $q->with(['initialInspections'])->has('initialInspections');
-            }
+            'options'  => function($q){
+                $q->where('is_custom', false)
+                    ->with(['initialInspections']);
+            },
+            'customOptions'=> function($q){
+                $q->when('is_custom', function ($qq){
+                    $qq->with(['initialInspections'])
+                        ->has('initialInspections');
+                });
+            },
             ])
             ->get();
-
+        //version 2
 //        return InitialInspection::where('appointment_id',$id)->with(['inspectionType','inspectionTypeOption','appointment'])->get();
     }
 }

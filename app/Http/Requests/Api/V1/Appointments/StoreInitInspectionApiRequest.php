@@ -13,8 +13,15 @@ class StoreInitInspectionApiRequest extends ApiBaseRequest
     {
         return [
             'appointment_id' => ['required',],
-            'options' => ['required',],
-            'customs' =>['nullable',],
+            'inspection_type_id' => ['required',],
+            'inspection_option_id' => ['required_without:is_custom',],
+            'is_custom' =>['nullable',],
+            'value' => ['required_with:is_custom',],
+            'is_checked' => 'required',
+//            'appointment_id' => ['required',],   // for bigStore
+//            'options' => ['required', 'array'],
+//            'options.*'  => ['required', 'array'],
+//            'customs' =>['nullable', 'array'],
         ];
 
     }

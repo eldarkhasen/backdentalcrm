@@ -34,32 +34,44 @@ class InitialInspectionServiceImpl
         }])->get();
     }
 
-    public function create(Request $request){
-        if($request->is_custom == true && !is_null($request->value)){
-            $initInspectionType = InitInspectionTypeOption::create([
-                'init_inspection_type_id'   =>$request->inspection_type_id,
-                'is_custom'                 => true,
-                'value' => $request->value
-            ]);
+    public function store(Request $request){
+        if($request->is_checked == true){
+            if($request->is_custom == true && !is_null($request->value)){
+                $initInspectionType = InitInspectionTypeOption::updateOrCreate([
+                    'id' => $request->custom_id,
+                ],[
+                    'init_inspection_type_id'   =>$request->inspection_type_id,
+                    'is_custom'                 => true,
+                    'value' => $request->value
+                ]);
 
-            return InitialInspection::updateOrCreate([
-                'appointment_id'        => $request->appointment_id,
-                'inspection_type_id'    => $request->inspection_type_id,
-                'inspection_option_id'  => $initInspectionType->id
-            ],[]);
+                return InitialInspection::updateOrCreate([
+                    'appointment_id'        => $request->appointment_id,
+                    'inspection_type_id'    => $request->inspection_type_id,
+                    'inspection_option_id'  => $initInspectionType->id
+                ],[]);
 
-        } else {
+            } else {
 
-            return InitialInspection::updateOrCreate([
-                'appointment_id'        => $request->appointment_id,
-                'inspection_type_id'    => $request->inspection_type_id,
-                'inspection_option_id'  => $request->inspection_option_id
-            ], []);
+                return InitialInspection::updateOrCreate([
+                    'appointment_id'        => $request->appointment_id,
+                    'inspection_type_id'    => $request->inspection_type_id,
+                    'inspection_option_id'  => $request->inspection_option_id
+                ], []);
 
+            }
+        } elseif ($request->is_checked == false){
+            return InitialInspection::where('appointment_id',$request->appointment_id)
+                ->where('inspection_option_id', $request->inspection_option_id)
+                ->delete();
         }
     }
 
-    public function store(Request $request){
+    public function delete($id){
+        return InitialInspection::with(['inspectionTypeOption'])->findOrFail($id);
+    }
+
+    public function bigStore(Request $request){
         $inspection_type_ids = $request->options;
         $custom_type_ids = $request->customs;
 
