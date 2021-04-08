@@ -10,6 +10,7 @@ use App\Http\Requests\Api\V1\Appointments\FilterAppointmentsApiRequest;
 use App\Http\Requests\Api\V1\Appointments\StoreAndUpdateAppointmentApiRequest;
 use App\Models\Business\Appointment;
 use App\Models\Business\InitialInspection;
+use App\Models\Business\InitInspectionType;
 use App\Models\Business\Treatment;
 use App\Models\Business\TreatmentCourse;
 use App\Services\v1\AppointmentsService;
@@ -242,11 +243,19 @@ class AppointmentsServiceImpl
 
     public function getAppointmentInitialInspections($id)
     {
-        return Appointment::with([
-            'initialInspections.inspectionType',
-            'initialInspections.inspectionTypeOption',
+//        return Appointment::with([
+//            'initialInspections.inspectionType',
+//            'initialInspections.inspectionTypeOption',
+////            'initialInspectionTypes.options'
+//            ])
+//            ->findOrFail($id);
+        return InitInspectionType::with([
+            'options' => function($q){
+                $q->with(['initialInspections'])->has('initialInspections');
+            }
             ])
-            ->findOrFail($id);
+            ->get();
+
 //        return InitialInspection::where('appointment_id',$id)->with(['inspectionType','inspectionTypeOption','appointment'])->get();
     }
 }
