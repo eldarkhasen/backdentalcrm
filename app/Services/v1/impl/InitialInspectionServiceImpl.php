@@ -38,7 +38,7 @@ class InitialInspectionServiceImpl
         if($request->is_checked == true){
             if($request->is_custom == true && !is_null($request->value)){
                 $initInspectionType = InitInspectionTypeOption::updateOrCreate([
-                    'id' => $request->custom_id,
+                    'id' => $request->inspection_option_id,
                 ],[
                     'init_inspection_type_id'   =>$request->inspection_type_id,
                     'is_custom'                 => true,
@@ -67,7 +67,7 @@ class InitialInspectionServiceImpl
         }
     }
 
-    public function delete($id){
+    public function delete($id){  //todo delete
         return InitialInspection::with(['inspectionTypeOption'])->findOrFail($id);
     }
 

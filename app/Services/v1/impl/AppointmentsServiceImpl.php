@@ -258,14 +258,19 @@ class AppointmentsServiceImpl
 //            ->findOrFail($id);
         // version 3
         return InitInspectionType::with([
-            'options'  => function($q){
+            'options'  => function($q)use($id){
                 $q->where('is_custom', false)
-                    ->with(['initialInspections']);
+                    ->with([
+                        'initialInspections' => function($qq)use($id){
+                            $qq->where('appointment_id', $id);
+                        }
+                    ]);
             },
-            'customOptions'=> function($q){
-                $q->when('is_custom', function ($qq){
-                    $qq->with(['initialInspections'])
-                        ->has('initialInspections');
+            'customOptions'=> function($q)use($id){
+                $q->when('is_custom', function ($qq)use($id){
+                    $qq->whereHas('initialInspections',  function($qqq)use($id) {
+                        $qqq->where('appointment_id', $id);
+                    });
                 });
             },
             ])
