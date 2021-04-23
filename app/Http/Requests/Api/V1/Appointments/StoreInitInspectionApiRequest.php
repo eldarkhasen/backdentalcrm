@@ -16,7 +16,7 @@ class StoreInitInspectionApiRequest extends ApiBaseRequest
             'inspection_type_id' => ['required',],
             'inspection_option_id' => ['required_without:is_custom',],
             'is_custom' =>['nullable',],
-            'value' => ['required_with:is_custom',],
+//            'value' => ['required_with:is_custom',],
             'is_checked' => 'required',
 //            'appointment_id' => ['required',],   // for bigStore
 //            'options' => ['required', 'array'],

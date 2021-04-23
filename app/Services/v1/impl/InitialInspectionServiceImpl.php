@@ -36,7 +36,7 @@ class InitialInspectionServiceImpl
 
     public function store(Request $request){
         if($request->is_checked == true){
-            if($request->is_custom == true && !is_null($request->value)){
+            if($request->is_custom == true){
                 $initInspectionType = InitInspectionTypeOption::updateOrCreate([
                     'id' => $request->inspection_option_id,
                 ],[
@@ -61,9 +61,11 @@ class InitialInspectionServiceImpl
 
             }
         } elseif ($request->is_checked == false){
-            return InitialInspection::where('appointment_id',$request->appointment_id)
+            InitialInspection::where('appointment_id',$request->appointment_id)
                 ->where('inspection_option_id', $request->inspection_option_id)
                 ->delete();
+
+            return InitInspectionTypeOption::where('is_custom', true)->where('id', $request->inspection_option_id)->delete();
         }
     }
 
