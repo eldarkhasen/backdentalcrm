@@ -112,7 +112,7 @@ class InitialInspectionTypeController extends Controller
         $type_options = InitialInspectionTypeOptionResource::collection(
             InitInspectionTypeOption::where('init_inspection_type_id', $request->inspection_type_id)->get()
         )->resolve();
-        dd($type_options);
+
         return view('web.initialInspectionTypes.show', compact(['item', 'type_options']));
 
 
