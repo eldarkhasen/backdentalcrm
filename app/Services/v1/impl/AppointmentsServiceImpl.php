@@ -68,7 +68,14 @@ class AppointmentsServiceImpl
 
     public function getAppointmentById($id)
     {
-        return Appointment::with(['employee', 'patient','treatmentCourse','services'])->find($id);
+        return Appointment::with([
+            'employee',
+            'patient',
+            'treatmentCourse',
+            'services',
+            'initialInspection'
+        ])
+            ->findOrFail($id);
 
     }
 

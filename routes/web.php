@@ -51,6 +51,10 @@ Route::group(['namespace' => 'Web'], function () {
 ////        Route::post('addInitInspectionType', ['uses' => 'InitialInspectionTypeController@store']);
         Route::resource('initialInspectionTypes', 'InitialInspectionTypeController');
 
+        Route::group(['prefix'=> 'treatment', 'as' => 'treatment.'] , function (){
+            Route::resource('template', 'TreatmentTemplatesController');
+        });
+
         Route::get('/apidoc', ['uses' => 'ConfigController@apiDoc']);
     });
 });

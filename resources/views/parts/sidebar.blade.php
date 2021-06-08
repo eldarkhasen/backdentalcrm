@@ -50,6 +50,12 @@
             <span>Типы первичного осмотра</span></a>
     </li>
 
+    <li class="nav-item">
+        <a class="nav-link" href="{{route('treatment.template.index')}}">
+            <i class="fas fa-arrow-alt-circle-down"></i>
+            <span>Treat. Template</span></a>
+    </li>
+
     <!-- Nav Item - Pages Collapse Menu -->
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true"

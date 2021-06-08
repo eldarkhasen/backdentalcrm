@@ -60,6 +60,10 @@ class Appointment extends Model
         return $this->hasMany(InitialInspection::class);
     }
 
+    public function initialInspection(){
+        return $this->hasOne(InitialInspection::class);
+    }
+
     public function initialInspectionTypes(){
         return $this->belongsToMany(InitInspectionType::class, 'initial_inspections', 'appointment_id', 'inspection_type_id')->distinct();
     }
