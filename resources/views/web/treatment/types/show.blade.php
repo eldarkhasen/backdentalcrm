@@ -5,7 +5,7 @@
         <div class="row mb-2">
             <div class="col-sm-6">
                 <!-- Page Heading -->
-                <h1 class="h3 mb-4 text-gray-800">Шаблоны протоколов : {{$template->name}}</h1>
+                <h1 class="h3 mb-4 text-gray-800">Шаблоны протоколов : {{$type->name}}</h1>
             </div>
             <div class="row" style="clear: both;">
                 <div class="col-12 text-right">
@@ -19,10 +19,10 @@
             <thead>
             <tr>
                 <th width="5%">ID</th>
-                <th width="65%">Название</th>
-{{--                <th width="30%">Код</th>--}}
+                <th width="35%">Название</th>
+                {{--                <th width="30%">Код</th>--}}
                 <th width="15%"></th>
-                <th width="15%"></th>
+                {{--                <th width="15%"></th>--}}
             </tr>
             </thead>
         </table>
@@ -39,7 +39,7 @@
                 <form class="form-horizontal">
                     @csrf
                     <div class="modal-body">
-                        <input type="hidden" name="type_id" id="type_id">
+                        <input type="hidden" name="option_id" id="option_id">
                         <div class="form-group">
                             <label for="inputName">Наименование</label>
                             <input type="text"
@@ -72,10 +72,11 @@
     {{--<!-- Page level custom scripts -->--}}
     {{--<script src="{{ asset('js/demo/datatables-demo.js') }}"></script>--}}
     <script>
+        console.log('{{data_get($type->templates->first(), 'id')}}');
         function add() {
             $('#form-errors').html("");
             $('#staticBackdropLabel').text("Новый вопрос");
-            $("#type_id").val('');
+            $("#option_id").val('');
             $("#inputName").val('');
             $('#addNewTemplate').modal('show');
         }
@@ -83,7 +84,7 @@
         function editType (event) {
             $('#form-errors').html("");
             var id  = $(event).data("id");
-            let _url = `/treatment/types/${id}/edit`;
+            let _url = `/treatment/options/${id}/edit`;
             $.ajax({
                 url: _url,
                 type: "GET",
@@ -91,8 +92,8 @@
                     if(response) {
                         console.log(response);
                         $('#staticBackdropLabel').text("Редактировать вопрос");
-                        $("#type_id").val(response.id);
-                        $("#inputName").val(response.name);
+                        $("#option_id").val(response.id);
+                        $("#inputName").val(response.value);
                         $('#addNewTemplate').modal('show');
                     }
                 }
@@ -101,16 +102,18 @@
 
         function save() {
             var name = $('#inputName').val();
-            var id = $('#type_id').val();
+            var id = $('#option_id').val();
+
             let _token   = $('meta[name="csrf-token"]').attr('content');
 
             $.ajax({
-                url: "{{ route('treatment.types.store') }}",
+                url: "{{ route('treatment.options.store') }}",
                 type: "POST",
                 data: {
                     id: id,
-                    name: name,
-                    template_id: '{{$template->id}}',
+                    value: name,
+                    template_id: '{{data_get($type->templates->first(), 'id')}}',
+                    type_id: '{{$type->id}}',
                     _token: _token
                 },
                 success: function(response) {
@@ -147,7 +150,7 @@
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: "{{ route('treatment.templates.show' , $template->id) }}",
+                    url: "{{ route('treatment.types.show' , $type->id) }}",
                 },
                 columns: [
                     {
@@ -155,19 +158,19 @@
                         name: 'id'
                     },
                     {
-                        data: 'name',
-                        name: 'name'
+                        data: 'value',
+                        name: 'value'
                     },
                     {
                         data: 'edit',
                         name: 'edit',
                         orderable: false
                     },
-                    {
-                        data: 'more',
-                        name: 'more',
-                        orderable: false
-                    },
+                    // {
+                    //     data: 'more',
+                    //     name: 'more',
+                    //     orderable: false
+                    // },
                 ]
             });
         });

@@ -58,6 +58,9 @@ Route::group(['namespace' => 'Web'], function () {
             Route::get('/types/{id}/edit', 'TreatmentTemplatesController@editType')->name('types.edit');
             Route::get('/types/{id}', 'TreatmentTemplatesController@showType')->name('types.show');
 
+            Route::post('/options', 'TreatmentTemplatesController@storeOption')->name('options.store');
+            Route::get('/options/{id}/edit', 'TreatmentTemplatesController@editOption')->name('options.edit');
+
         });
 
         Route::get('/apidoc', ['uses' => 'ConfigController@apiDoc']);

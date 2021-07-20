@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use App\Models\Business\TemplateOption;
+use App\Models\Business\TreatmentOption;
 use App\Models\Business\TreatmentTemplate;
 use App\Models\Business\TreatmentType;
 use App\Services\v1\TreatmentTemplatesService;
@@ -65,7 +66,7 @@ class TreatmentTemplatesController extends Controller
                     return '<button class="btn btn-primary btn-sm btn-block " data-id="'.$data->id.'" onclick="editType(event.target)" ><i class="fas fa-edit" data-id="'.$data->id.'"></i> Изменить</button>';
                 })
                 ->addColumn('more', function ($data){
-                    return '<a class="text-decoration-none" href="'.route('treatment.templates.show', $data->id).'"><button class="btn btn-primary btn-sm btn-block ">Подробнее</button></a>';
+                    return '<a class="text-decoration-none" href="'.route('treatment.types.show', $data->id).'"><button class="btn btn-primary btn-sm btn-block ">Подробнее</button></a>';
                 })
                 ->rawColumns(['more','edit'])
                 ->make(true);
@@ -101,6 +102,53 @@ class TreatmentTemplatesController extends Controller
 
     public function editType($id){
         return response()->json(TreatmentType::findOrFail($id));
+    }
+
+    public function showType($id){
+        $type = TreatmentType::with('templates')->findOrFail($id);
+        if(request()->ajax())
+        {
+            return datatables()->of($type->options()->latest()->get())
+                ->addColumn('edit', function($data){
+                    return '<button class="btn btn-primary btn-sm btn-block " data-id="'.$data->id.'" onclick="editType(event.target)" ><i class="fas fa-edit" data-id="'.$data->id.'"></i> Изменить</button>';
+                })
+                ->addColumn('more', function ($data){
+                    return '<a class="text-decoration-none" href="'.route('treatment.types.show', $data->id).'"><button class="btn btn-primary btn-sm btn-block ">Подробнее</button></a>';
+                })
+                ->rawColumns(['more','edit'])
+                ->make(true);
+        }
+        return view('web.treatment.types.show', compact('type'));
+    }
+
+    public function storeOption(Request $request){
+        $error = Validator::make($request->all(), array(
+            'value'=> 'required',
+            'type_id'=> 'required',
+            'template_id' => 'required',
+        ));
+
+        if($error->fails()) {
+            return response()->json(['errors' => $error->errors()->all()]);
+        }
+
+        $option = TreatmentOption::updateOrCreate([
+            'id' => $request->id,
+        ],[
+            'value' => $request->value,
+        ]);
+
+        TemplateOption::updateOrCreate([
+            'template_id' => $request->template_id,
+            'type_id' => $request->type_id,
+            'option_id' => $option->id,
+        ],[]);
+
+        return response()->json(['code'=>200, 'message'=>'Template option saved successfully','data' => $option], 200);
+    }
+
+    public function editOption($id){
+        return response()->json(TreatmentOption::findOrFail($id));
     }
 
 }
