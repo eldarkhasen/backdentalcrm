@@ -113,6 +113,11 @@ Route::group(['middleware' => 'auth:api'], function () {
             Route::post('/initial-inspections', 'InitialInspectionsController@store');
             Route::delete('/initial-inspections/{id}', 'InitialInspectionsController@delete');
 
+            Route::group(['prefix' => 'treatments'], function (){
+                Route::get('/templates', 'TreatmentsController@indexTemplates');
+                Route::get('/templates/{id}', 'TreatmentsController@showTemplate');
+            });
+
         });
 
         Route::group(['namespace' => 'Materials'], function () {
