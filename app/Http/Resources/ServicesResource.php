@@ -25,7 +25,11 @@ class ServicesResource extends JsonResource
                $this->relationLoaded('category'),
                new ServiceCategoriesResource($this->category)
            ),
-           'organization_id'=>$this->organization_id
+           'organization_id'=>$this->organization_id,
+           'pivot' => $this->when(
+               $this->pivot,
+               $this->pivot
+           )
        ];
     }
 }

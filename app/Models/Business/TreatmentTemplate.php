@@ -12,4 +12,8 @@ class TreatmentTemplate extends Model
         'name', 'code',
     ];
 
+    public function types(){
+        return $this->belongsToMany(TreatmentType::class, 'template_options', 'template_id', 'type_id')->distinct();
+    }
+
 }

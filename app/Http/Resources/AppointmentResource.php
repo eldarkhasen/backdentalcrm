@@ -7,12 +7,6 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class AppointmentResource extends JsonResource
 {
-    /**
-     * Transform the resource into an array.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return array
-     */
     public function toArray($request)
     {
         return [
@@ -37,9 +31,14 @@ class AppointmentResource extends JsonResource
             ),
             'services' => $this->when(
                 $this->relationLoaded('services'),
-                new ServicesResource($this->services)
+                ServicesResource::collection($this->services)
             ),
             'is_first_visit' => $this->is_first_visit == 1,
+            'init_inspection' =>$this->when(
+                $this->relationLoaded('initialInspection'),
+                $this->initialInspection
+//                Carbon::parse(data_get($this, 'initialInspection.created_at'))->isoFormat('MM-DD-YYYY HH:mm')
+            )
         ];
     }
 }

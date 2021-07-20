@@ -27,7 +27,7 @@ class TreatmentTemplatesController extends Controller
                     return '<button class="btn btn-primary btn-sm btn-block " data-id="'.$data->id.'" onclick="editTemplate(event.target)" ><i class="fas fa-edit" data-id="'.$data->id.'"></i> Изменить</button>';
                 })
                 ->addColumn('more', function ($data){
-                    return '<a class="text-decoration-none" href="'.route('courses.show', $data->id).'"><button class="btn btn-primary btn-sm btn-block ">Подробнее</button></a>';
+                    return '<a class="text-decoration-none" href="'.route('treatment.template.show', $data->id).'"><button class="btn btn-primary btn-sm btn-block ">Подробнее</button></a>';
                 })
                 ->rawColumns(['more','edit'])
                 ->make(true);
@@ -55,6 +55,23 @@ class TreatmentTemplatesController extends Controller
 
     public function edit($id){
         return response()->json(TreatmentTemplate::findOrFail($id));
+    }
+
+    public function show($id){
+        $template = TreatmentTemplate::findOrFail($id);
+        if(request()->ajax())
+        {
+            return datatables()->of($template->types()->latest()->get())
+//                ->addColumn('edit', function($data){
+//                    return '<button class="btn btn-primary btn-sm btn-block " data-id="'.$data->id.'" onclick="editTemplate(event.target)" ><i class="fas fa-edit" data-id="'.$data->id.'"></i> Изменить</button>';
+//                })
+//                ->addColumn('more', function ($data){
+//                    return '<a class="text-decoration-none" href="'.route('treatment.template.show', $data->id).'"><button class="btn btn-primary btn-sm btn-block ">Подробнее</button></a>';
+//                })
+//                ->rawColumns(['more','edit'])
+                ->make(true);
+        }
+        return view('web.treatment.templates.show', compact('template'));
     }
 
 }

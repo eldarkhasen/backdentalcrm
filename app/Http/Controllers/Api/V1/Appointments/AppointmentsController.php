@@ -48,7 +48,8 @@ class AppointmentsController extends ApiBaseController
      */
     public function show($id)
     {
-        return $this->successResponse($this->appointmentsService->getAppointmentById($id));
+        $appointment = $this->appointmentsService->getAppointmentById($id);
+        return $this->successResponse(AppointmentResource::make($appointment));
     }
 
     /**

@@ -25,11 +25,11 @@ class CreateTemplateOptionsTable extends Migration
                 ->on('treatment_types')
                 ->references('id')
                 ->onDelete('cascade');
-            $table->unsignedBigInteger('option_id')->index();
-            $table->foreign('option_id')
-                ->on('treatment_options')
-                ->references('id')
-                ->onDelete('cascade');
+            $table->unsignedBigInteger('option_id')->nullable();
+//            $table->foreign('option_id')
+//                ->on('treatment_options')
+//                ->references('id')
+//                ->onDelete('cascade');
 
             $table->timestamps();
         });
