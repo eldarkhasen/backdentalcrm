@@ -21,7 +21,7 @@
                 <th width="5%">ID</th>
                 <th width="35%">Название</th>
 {{--                <th width="30%">Код</th>--}}
-{{--                <th width="15%"></th>--}}
+                <th width="15%"></th>
 {{--                <th width="15%"></th>--}}
             </tr>
             </thead>
@@ -31,7 +31,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Новый тип осмотра</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Новый вопрос</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -39,7 +39,7 @@
                 <form class="form-horizontal">
                     @csrf
                     <div class="modal-body">
-                        <input type="hidden" name="template_id" id="template_id">
+                        <input type="hidden" name="type_id" id="type_id">
                         <div class="form-group">
                             <label for="inputName">Наименование</label>
                             <input type="text"
@@ -47,14 +47,6 @@
                                    id="inputName"
                                    placeholder="Введите название"
                                    name = "inputName">
-                        </div>
-                        <div class="form-group">
-                            <label for="inputName">Код</label>
-                            <input type="number"
-                                   class="form-control"
-                                   id="code"
-                                   placeholder="Введите Код"
-                                   name = "code">
                         </div>
                         <div class="form-group" id="form-errors">
                             <div class="alert alert-danger">
@@ -82,23 +74,25 @@
     <script>
         function add() {
             $('#form-errors').html("");
+            $('#staticBackdropLabel').text("Новый вопрос");
+            $("#type_id").val('');
+            $("#inputName").val('');
             $('#addNewTemplate').modal('show');
         }
 
-        function editTemplate (event) {
+        function editType (event) {
             $('#form-errors').html("");
             var id  = $(event).data("id");
-            let _url = `/treatment/template/${id}/edit`;
+            let _url = `/treatment/types/${id}/edit`;
             $.ajax({
                 url: _url,
                 type: "GET",
                 success: function(response) {
                     if(response) {
                         console.log(response);
-                        $('#staticBackdropLabel').text("Редактировать шаблон");
-                        $("#template_id").val(response.id);
+                        $('#staticBackdropLabel').text("Редактировать вопрос");
+                        $("#type_id").val(response.id);
                         $("#inputName").val(response.name);
-                        $("#code").val(response.code);
                         $('#addNewTemplate').modal('show');
                     }
                 }
@@ -107,17 +101,16 @@
 
         function save() {
             var name = $('#inputName').val();
-            var code = $('#code').val();
-            var id = $('#template_id').val();
+            var id = $('#type_id').val();
             let _token   = $('meta[name="csrf-token"]').attr('content');
 
             $.ajax({
-                url: "{{ route('treatment.template.store') }}",
+                url: "{{ route('treatment.types.store') }}",
                 type: "POST",
                 data: {
                     id: id,
                     name: name,
-                    code: code,
+                    template_id: '{{$template->id}}',
                     _token: _token
                 },
                 success: function(response) {
@@ -154,7 +147,7 @@
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: "{{ route('treatment.template.show' , $template->id) }}",
+                    url: "{{ route('treatment.templates.show' , $template->id) }}",
                 },
                 columns: [
                     {
@@ -169,11 +162,11 @@
                     //     data: 'code',
                     //     name: 'code'
                     // },
-                    // {
-                    //     data: 'edit',
-                    //     name: 'edit',
-                    //     orderable: false
-                    // },
+                    {
+                        data: 'edit',
+                        name: 'edit',
+                        orderable: false
+                    },
                     // {
                     //     data: 'more',
                     //     name: 'more',

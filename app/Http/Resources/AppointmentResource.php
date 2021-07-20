@@ -34,7 +34,7 @@ class AppointmentResource extends JsonResource
                 ServicesResource::collection($this->services)
             ),
             'is_first_visit' => $this->is_first_visit == 1,
-            'init_inspection' =>$this->when(
+            'initial_inspection' =>$this->when(
                 $this->relationLoaded('initialInspection'),
                 $this->initialInspection
 //                Carbon::parse(data_get($this, 'initialInspection.created_at'))->isoFormat('MM-DD-YYYY HH:mm')

@@ -52,7 +52,12 @@ Route::group(['namespace' => 'Web'], function () {
         Route::resource('initialInspectionTypes', 'InitialInspectionTypeController');
 
         Route::group(['prefix'=> 'treatment', 'as' => 'treatment.'] , function (){
-            Route::resource('template', 'TreatmentTemplatesController');
+            Route::resource('templates', 'TreatmentTemplatesController');
+
+            Route::post('/types', 'TreatmentTemplatesController@storeType')->name('types.store');
+            Route::get('/types/{id}/edit', 'TreatmentTemplatesController@editType')->name('types.edit');
+            Route::get('/types/{id}', 'TreatmentTemplatesController@showType')->name('types.show');
+
         });
 
         Route::get('/apidoc', ['uses' => 'ConfigController@apiDoc']);

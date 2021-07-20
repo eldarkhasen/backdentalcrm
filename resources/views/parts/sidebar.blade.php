@@ -51,7 +51,7 @@
     </li>
 
     <li class="nav-item">
-        <a class="nav-link" href="{{route('treatment.template.index')}}">
+        <a class="nav-link" href="{{route('treatment.templates.index')}}">
             <i class="fas fa-arrow-alt-circle-down"></i>
             <span>Treat. Template</span></a>
     </li>

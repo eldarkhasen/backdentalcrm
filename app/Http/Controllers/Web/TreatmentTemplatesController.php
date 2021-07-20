@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Web;
 
 
 use App\Http\Controllers\Controller;
+use App\Models\Business\TemplateOption;
 use App\Models\Business\TreatmentTemplate;
+use App\Models\Business\TreatmentType;
 use App\Services\v1\TreatmentTemplatesService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -27,7 +29,7 @@ class TreatmentTemplatesController extends Controller
                     return '<button class="btn btn-primary btn-sm btn-block " data-id="'.$data->id.'" onclick="editTemplate(event.target)" ><i class="fas fa-edit" data-id="'.$data->id.'"></i> Изменить</button>';
                 })
                 ->addColumn('more', function ($data){
-                    return '<a class="text-decoration-none" href="'.route('treatment.template.show', $data->id).'"><button class="btn btn-primary btn-sm btn-block ">Подробнее</button></a>';
+                    return '<a class="text-decoration-none" href="'.route('treatment.templates.show', $data->id).'"><button class="btn btn-primary btn-sm btn-block ">Подробнее</button></a>';
                 })
                 ->rawColumns(['more','edit'])
                 ->make(true);
@@ -36,15 +38,12 @@ class TreatmentTemplatesController extends Controller
     }
 
     public function store(Request $request){
-        $rules = array(
+        $error = Validator::make($request->all(), array(
             'name'=> 'required',
             'code' => 'required|numeric|unique:treatment_templates,code,'. $request->id,
-        );
+        ));
 
-        $error = Validator::make($request->all(), $rules);
-
-        if($error->fails())
-        {
+        if($error->fails()) {
             return response()->json(['errors' => $error->errors()->all()]);
         }
 
@@ -62,16 +61,46 @@ class TreatmentTemplatesController extends Controller
         if(request()->ajax())
         {
             return datatables()->of($template->types()->latest()->get())
-//                ->addColumn('edit', function($data){
-//                    return '<button class="btn btn-primary btn-sm btn-block " data-id="'.$data->id.'" onclick="editTemplate(event.target)" ><i class="fas fa-edit" data-id="'.$data->id.'"></i> Изменить</button>';
-//                })
-//                ->addColumn('more', function ($data){
-//                    return '<a class="text-decoration-none" href="'.route('treatment.template.show', $data->id).'"><button class="btn btn-primary btn-sm btn-block ">Подробнее</button></a>';
-//                })
-//                ->rawColumns(['more','edit'])
+                ->addColumn('edit', function($data){
+                    return '<button class="btn btn-primary btn-sm btn-block " data-id="'.$data->id.'" onclick="editType(event.target)" ><i class="fas fa-edit" data-id="'.$data->id.'"></i> Изменить</button>';
+                })
+                ->addColumn('more', function ($data){
+                    return '<a class="text-decoration-none" href="'.route('treatment.templates.show', $data->id).'"><button class="btn btn-primary btn-sm btn-block ">Подробнее</button></a>';
+                })
+                ->rawColumns(['more','edit'])
                 ->make(true);
         }
         return view('web.treatment.templates.show', compact('template'));
+    }
+
+    public function storeType(Request $request){
+        $error = Validator::make($request->all(), array(
+            'name'=> 'required',
+            'template_id'=> 'required',
+        ));
+
+        if($error->fails()) {
+            return response()->json(['errors' => $error->errors()->all()]);
+        }
+
+        $type = TreatmentType::updateOrCreate([
+            'id' => $request->id,
+        ],[
+            'name' => $request->name,
+        ]);
+
+        TemplateOption::where('template_id', $request->template_id)
+            ->where('type_id', $type->id)
+            ->firstOrCreate([
+                'template_id' => $request->template_id,
+                'type_id' => $type->id,
+            ]);
+
+        return response()->json(['code'=>200, 'message'=>'Template type saved successfully','data' => $type], 200);
+    }
+
+    public function editType($id){
+        return response()->json(TreatmentType::findOrFail($id));
     }
 
 }

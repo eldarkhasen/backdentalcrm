@@ -31,7 +31,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Новый тип осмотра</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Новый шаблон</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -82,13 +82,17 @@
     <script>
         function add() {
             $('#form-errors').html("");
+            $('#staticBackdropLabel').text("Новый шаблон");
+            $("#template_id").val('');
+            $("#inputName").val('');
+            $("#code").val('');
             $('#addNewTemplate').modal('show');
         }
 
         function editTemplate (event) {
             $('#form-errors').html("");
             var id  = $(event).data("id");
-            let _url = `/treatment/template/${id}/edit`;
+            let _url = `/treatment/templates/${id}/edit`;
             $.ajax({
                 url: _url,
                 type: "GET",
@@ -112,7 +116,7 @@
             let _token   = $('meta[name="csrf-token"]').attr('content');
 
             $.ajax({
-                url: "{{ route('treatment.template.store') }}",
+                url: "{{ route('treatment.templates.store') }}",
                 type: "POST",
                 data: {
                     id: id,
@@ -154,7 +158,7 @@
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: "{{ route('treatment.template.index') }}",
+                    url: "{{ route('treatment.templates.index') }}",
                 },
                 columns: [
                     {
