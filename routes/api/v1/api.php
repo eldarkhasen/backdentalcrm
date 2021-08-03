@@ -113,9 +113,17 @@ Route::group(['middleware' => 'auth:api'], function () {
             Route::post('/initial-inspections', 'InitialInspectionsController@store');
             Route::delete('/initial-inspections/{id}', 'InitialInspectionsController@delete');
 
+            Route::group(['prefix' => 'diagnosis'], function (){
+                Route::get('/', 'DiagnosisController@index');
+            });
+
             Route::group(['prefix' => 'treatments'], function (){
                 Route::get('/templates', 'TreatmentsController@indexTemplates');
                 Route::get('/templates/{id}', 'TreatmentsController@showTemplate');
+
+                Route::post('/store', 'TreatmentsController@store');
+
+                Route::post('/store/list', 'TreatmentsController@storeTreatmentDataList');
             });
 
         });

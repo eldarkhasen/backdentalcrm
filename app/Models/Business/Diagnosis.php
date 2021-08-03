@@ -21,4 +21,8 @@ class Diagnosis extends Model
     {
         return $this->belongsTo(Organization::class, 'organization_id', 'id');
     }
+
+    public function types(){
+        return $this->hasMany(DiagnosisType::class, 'diagnosis_id');
+    }
 }
