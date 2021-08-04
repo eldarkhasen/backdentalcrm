@@ -8,11 +8,14 @@ use App\Exceptions\ApiServiceException;
 use App\Http\Errors\ErrorCode;
 use App\Http\Requests\Api\V1\Appointments\FilterAppointmentsApiRequest;
 use App\Http\Requests\Api\V1\Appointments\StoreAndUpdateAppointmentApiRequest;
+use App\Http\Resources\Treatment\TreatmentResource;
 use App\Models\Business\Appointment;
 use App\Models\Business\InitialInspection;
 use App\Models\Business\InitInspectionType;
 use App\Models\Business\Treatment;
 use App\Models\Business\TreatmentCourse;
+use App\Models\Business\TreatmentData;
+use App\Models\Business\TreatmentTemplate;
 use App\Services\v1\AppointmentsService;
 use App\Services\v1\BaseServiceImpl;
 use Carbon\Carbon;
@@ -244,8 +247,31 @@ class AppointmentsServiceImpl
 
     public function getAppointmentTreatments($id)
     {
-        $treatments = Treatment::where('appointment_id',$id)->get();
-        return $treatments;
+        $treatments = Treatment::with([
+            'templates.types.options'
+        ])->where('appointment_id',$id)->get();
+
+        $treatments->load([
+            'templates.types.options.treatmentData' => function($q) use ($treatments) {
+                $q->whereIn('treatment_id', $treatments->pluck('id'));
+            },
+            'templates.types.treatmentData' => function($q) use ($treatments) {
+                $q->whereIn('treatment_id', $treatments->pluck('id'));
+            },
+        ]);
+//        $templates = TreatmentTemplate::whereIn(
+//            'id',
+//            TreatmentData::where('treatment_id', $treatments->pluck('id'))
+//                ->select('template_id')
+//                ->distinct()
+//                ->get()
+//                ->pluck('template_id')
+//        )->get();
+//        $result = [
+//            'treatments' => $treatments,
+//            'templates' => $templates
+//        ];
+        return TreatmentResource::collection($treatments);
     }
 
     public function getAppointmentInitialInspections($id)

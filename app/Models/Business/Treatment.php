@@ -35,4 +35,12 @@ class Treatment extends Model
     {
         return $this->belongsTo(DiagnosisType::class, 'diagnosis_type_id', 'id');
     }
+
+    public function treatmentDates(){
+        return $this->hasMany(TreatmentData::class, 'treatment_id');
+    }
+
+    public function templates(){
+        return $this->belongsToMany(TreatmentTemplate::class, TreatmentData::class, 'treatment_id', 'template_id')->distinct();
+    }
 }

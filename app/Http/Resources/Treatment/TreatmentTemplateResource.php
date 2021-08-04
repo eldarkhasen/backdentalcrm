@@ -16,7 +16,7 @@ class TreatmentTemplateResource extends JsonResource
             'code' => $this->code,
             'types' => $this->when(
                 $this->relationLoaded('types'),
-                $this->types
+                TreatmentTypeResource::collection($this->types)
             ),
         ];
     }

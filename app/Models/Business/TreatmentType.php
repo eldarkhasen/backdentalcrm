@@ -23,4 +23,8 @@ class TreatmentType extends Model
     public function options(){
         return $this->belongsToMany(TreatmentOption::class, 'template_options', 'type_id', 'option_id');
     }
+
+    public function treatmentData(){
+        return $this->hasOne(TreatmentData::class, 'type_id')->whereNotNull('value');
+    }
 }

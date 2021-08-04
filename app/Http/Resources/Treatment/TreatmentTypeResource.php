@@ -17,6 +17,10 @@ class TreatmentTypeResource extends JsonResource
                 $this->relationLoaded('options'),
                 TreatmentOptionResource::collection($this->options)
             ),
+            'value' => $this->when(
+                $this->relationLoaded('treatmentData'),
+                data_get($this, 'treatmentData.value')
+            ),
         ];
     }
 }

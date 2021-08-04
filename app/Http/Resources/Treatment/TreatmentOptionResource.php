@@ -14,6 +14,10 @@ class TreatmentOptionResource extends JsonResource
             'id' => $this->id,
             'value' => $this->value,
             'is_custom' => $this->is_custom,
+            'is_checked' => $this->when(
+                $this->relationLoaded('treatmentData'),
+                !is_null($this->treatmentData)
+            ),
         ];
     }
 }

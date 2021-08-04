@@ -11,4 +11,8 @@ class TreatmentOption extends Model
     protected $fillable = [
         'value', 'is_custom'
     ];
+
+    public function treatmentData(){
+        return $this->hasOne(TreatmentData::class, 'option_id');
+    }
 }
