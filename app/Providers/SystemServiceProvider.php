@@ -16,6 +16,7 @@ use App\Services\v1\impl\PatientsServiceImpl;
 use App\Services\v1\impl\PermissionsServiceImpl;
 use App\Services\v1\impl\ProfileServiceImpl;
 use App\Services\v1\impl\ServicesServiceImpl;
+use App\Services\v1\impl\TreatmentServiceImpl;
 use App\Services\v1\impl\TreatmentTemplatesServiceImpl;
 use App\Services\v1\InitialInspectionsService;
 use App\Services\v1\MaterialsService;
@@ -62,6 +63,9 @@ class SystemServiceProvider extends ServiceProvider
         });
         $this->app->bind('App\Services\v1\TreatmentTemplatesService', function ($app) {
             return (new TreatmentTemplatesServiceImpl());
+        });
+        $this->app->bind('App\Services\v1\TreatmentService', function ($app) {
+            return (new TreatmentServiceImpl());
         });
         $this->app->bind('App\Services\v1\ProfileService', function ($app) {
             return (new ProfileServiceImpl());

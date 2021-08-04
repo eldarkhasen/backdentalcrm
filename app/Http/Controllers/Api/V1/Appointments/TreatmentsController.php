@@ -13,10 +13,18 @@ use App\Models\Business\Treatment;
 use App\Models\Business\TreatmentData;
 use App\Models\Business\TreatmentTemplate;
 use App\Models\Business\TreatmentType;
+use App\Services\v1\TreatmentService;
 use Illuminate\Http\Request;
 
 class TreatmentsController extends ApiBaseController
 {
+    private $treatmentService;
+
+    public function __construct(TreatmentService $treatmentService)
+    {
+        $this->treatmentService = $treatmentService;
+    }
+
     public function indexTemplates(){
         $templates = TreatmentTemplate::all();
         return $this->successResponse(TreatmentTemplateResource::collection($templates));
@@ -29,15 +37,17 @@ class TreatmentsController extends ApiBaseController
 
     public function store(StoreTreatmentApiRequest $request){
         return $this->successResponse(
-            Treatment::updateOrCreate(['id' => $request->id,], $request->toArray())
+            $this->treatmentService->store($request)
         );
     }
 
     public function storeTreatmentDataList(TreatmentDataStoreListApiRequest $request){
+        $treatment = $this->treatmentService->store($request);
+
         foreach ($request->data as $data){
             if(data_get($data, 'is_checked', false)){
                 TreatmentData::updateOrCreate([
-                    'treatment_id' => $request->treatment_id,
+                    'treatment_id' => $treatment->id,
                     'template_id' => $request->template_id,
                     'type_id'=> data_get($data, 'type_id'),
                     'option_id' => data_get($data, 'option_id'),

@@ -6,6 +6,8 @@ use App\Http\Controllers\ApiBaseController;
 use App\Http\Requests\Api\V1\Appointments\FilterAppointmentsApiRequest;
 use App\Http\Requests\Api\V1\Appointments\StoreAndUpdateAppointmentApiRequest;
 use App\Http\Resources\AppointmentResource;
+use App\Http\Resources\Treatment\TreatmentResource;
+use App\Models\Business\Treatment;
 use App\Services\v1\AppointmentsService;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
@@ -108,6 +110,25 @@ class AppointmentsController extends ApiBaseController
 
     public function getAppointmentTreatments($id){
         return $this->successResponse($this->appointmentsService->getAppointmentTreatments($id));
+    }
+
+    public function editTreatments($id, $treatment_id){
+        $treatments = Treatment::with([
+            'templates.types.options',
+            'diagnosis',
+            'diagnosisType',
+        ])->where('appointment_id',$id)->findOrFail($treatment_id);
+
+        $treatments->load([
+            'templates.types.options.treatmentData' => function($q) use ($treatments) {
+                $q->whereIn('treatment_id', $treatments->pluck('id'));
+            },
+            'templates.types.treatmentData' => function($q) use ($treatments) {
+                $q->whereIn('treatment_id', $treatments->pluck('id'));
+            },
+        ]);
+
+        return $this->successResponse(TreatmentResource::make($treatments));
     }
 
     public function getAppointmentInitialInspections($id){

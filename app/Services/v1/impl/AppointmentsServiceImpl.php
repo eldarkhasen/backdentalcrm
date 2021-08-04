@@ -248,29 +248,20 @@ class AppointmentsServiceImpl
     public function getAppointmentTreatments($id)
     {
         $treatments = Treatment::with([
-            'templates.types.options'
+//            'templates.types.options',
+            'diagnosis',
+            'diagnosisType',
         ])->where('appointment_id',$id)->get();
 
-        $treatments->load([
-            'templates.types.options.treatmentData' => function($q) use ($treatments) {
-                $q->whereIn('treatment_id', $treatments->pluck('id'));
-            },
-            'templates.types.treatmentData' => function($q) use ($treatments) {
-                $q->whereIn('treatment_id', $treatments->pluck('id'));
-            },
-        ]);
-//        $templates = TreatmentTemplate::whereIn(
-//            'id',
-//            TreatmentData::where('treatment_id', $treatments->pluck('id'))
-//                ->select('template_id')
-//                ->distinct()
-//                ->get()
-//                ->pluck('template_id')
-//        )->get();
-//        $result = [
-//            'treatments' => $treatments,
-//            'templates' => $templates
-//        ];
+//        $treatments->load([
+//            'templates.types.options.treatmentData' => function($q) use ($treatments) {
+//                $q->whereIn('treatment_id', $treatments->pluck('id'));
+//            },
+//            'templates.types.treatmentData' => function($q) use ($treatments) {
+//                $q->whereIn('treatment_id', $treatments->pluck('id'));
+//            },
+//        ]);
+
         return TreatmentResource::collection($treatments);
     }
 

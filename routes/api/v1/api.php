@@ -118,6 +118,7 @@ Route::group(['middleware' => 'auth:api'], function () {
             });
 
             Route::get('/appointments/{id}/treatments', 'AppointmentsController@getAppointmentTreatments');
+            Route::get('/appointments/{id}/treatments/{treatment_id}/edit', 'AppointmentsController@editTreatments');
 //            Route::get('/appointments/{id}/treatments', 'AppointmentsController@getAppointmentTreatments');
 
             Route::group(['prefix' => 'treatments'], function (){

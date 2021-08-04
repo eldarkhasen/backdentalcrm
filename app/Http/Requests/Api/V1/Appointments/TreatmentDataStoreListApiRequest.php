@@ -12,7 +12,11 @@ class TreatmentDataStoreListApiRequest extends ApiBaseRequest
     public function injectedRules()
     {
         return [
-            'treatment_id' => 'required',
+            'appointment_id'    => 'required',
+            'tooth_number'      => 'required',
+            'diagnosis_id'      => 'required',
+            'is_finished'       => 'required',
+//            'treatment_id' => 'required',
             'template_id' => 'required',
             'data' => 'array|required',
             'data.*.type_id' => 'required',
