@@ -120,11 +120,11 @@ class AppointmentsController extends ApiBaseController
         ])->where('appointment_id',$id)->findOrFail($treatment_id);
 
         $treatments->load([
-            'templates.types.options.treatmentData' => function($q) use ($treatments) {
-                $q->whereIn('treatment_id', $treatments->pluck('id'));
+            'templates.types.options.treatmentData' => function($q) use ($treatment_id, $treatments) {
+                $q->where('treatment_id', $treatment_id);
             },
-            'templates.types.treatmentData' => function($q) use ($treatments) {
-                $q->whereIn('treatment_id', $treatments->pluck('id'));
+            'templates.types.treatmentData' => function($q) use ($treatment_id, $treatments) {
+                $q->where('treatment_id', $treatment_id);
             },
         ]);
 
