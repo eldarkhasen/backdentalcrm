@@ -119,6 +119,7 @@ Route::group(['middleware' => 'auth:api'], function () {
 
             Route::get('/appointments/{id}/treatments', 'AppointmentsController@getAppointmentTreatments');
             Route::get('/appointments/{id}/treatments/{treatment_id}/edit', 'AppointmentsController@editTreatments');
+
 //            Route::get('/appointments/{id}/treatments', 'AppointmentsController@getAppointmentTreatments');
 
             Route::group(['prefix' => 'treatments'], function (){
@@ -128,6 +129,7 @@ Route::group(['middleware' => 'auth:api'], function () {
                 Route::post('/store', 'TreatmentsController@store');
 
                 Route::post('/store/list', 'TreatmentsController@storeTreatmentDataList');
+                Route::post('/update/list', 'TreatmentsController@updateTreatmentDataList');
             });
 
         });

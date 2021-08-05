@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Api\V1\Appointments;
 use App\Http\Controllers\ApiBaseController;
 use App\Http\Requests\Api\V1\Appointments\StoreTreatmentApiRequest;
 use App\Http\Requests\Api\V1\Appointments\TreatmentDataStoreListApiRequest;
+use App\Http\Requests\Api\V1\Appointments\UpdateTreatmentDataListApiRequest;
 use App\Http\Resources\Treatment\TreatmentTemplateResource;
 use App\Http\Resources\Treatment\TreatmentTypeResource;
 use App\Models\Business\Treatment;
@@ -67,5 +68,42 @@ class TreatmentsController extends ApiBaseController
 
         }
         return $this->successResponse(['message' => 'Data successfully stored']);
+    }
+
+    public function updateTreatmentDataList(UpdateTreatmentDataListApiRequest $request){
+        $treatment = $this->treatmentService->store($request);
+        foreach ($request->types as $type){
+
+            TreatmentData::updateOrCreate([
+                'treatment_id' => $treatment->id,
+                'template_id' => $request->template_id,
+                'type_id'=> data_get($type, 'id'),
+                'option_id' => null,
+            ],[
+                'value' => data_get($type, 'value'),
+            ]);
+            if(data_get($type, 'options')){
+                foreach ($type['options'] as $option){
+                    if(data_get($option, 'is_checked', false)){
+                        TreatmentData::updateOrCreate([
+                            'treatment_id' => $treatment->id,
+                            'template_id' => $request->template_id,
+                            'type_id'=> data_get($type, 'id'),
+                            'option_id' => data_get($option, 'id'),
+                        ],[
+
+                        ]);
+                    } else {
+                        TreatmentData::where('treatment_id', $treatment->id)
+                            ->where('template_id', $request->template_id)
+                            ->where('type_id', data_get($type, 'id'))
+                            ->where('option_id', data_get($option, 'id'))
+                            ->delete();
+                    }
+                }
+            }
+        }
+
+        return $this->successResponse(['message' => 'Data successfully updated']);
     }
 }
