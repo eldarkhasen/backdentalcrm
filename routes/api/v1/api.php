@@ -126,7 +126,9 @@ Route::group(['middleware' => 'auth:api'], function () {
                 Route::get('/templates', 'TreatmentsController@indexTemplates');
                 Route::get('/templates/{id}', 'TreatmentsController@showTemplate');
 
-                Route::post('/store', 'TreatmentsController@store');
+                Route::post('/templates', 'TreatmentsController@storeTemplate');
+                Route::post('/types', 'TreatmentsController@storeType');
+                Route::post('/types/list', 'TreatmentsController@storeTypeList');
 
                 Route::post('/store/list', 'TreatmentsController@storeTreatmentDataList');
                 Route::post('/update/list', 'TreatmentsController@updateTreatmentDataList');

@@ -6,6 +6,9 @@ namespace App\Http\Controllers\Api\V1\Appointments;
 
 use App\Http\Controllers\ApiBaseController;
 use App\Http\Requests\Api\V1\Appointments\StoreTreatmentApiRequest;
+use App\Http\Requests\Api\V1\Appointments\StoreTreatmentTemplateApiRequest;
+use App\Http\Requests\Api\V1\Appointments\StoreTreatmentTypeApiRequest;
+use App\Http\Requests\Api\V1\Appointments\StoreTreatmentTypeListApiRequest;
 use App\Http\Requests\Api\V1\Appointments\TreatmentDataStoreListApiRequest;
 use App\Http\Requests\Api\V1\Appointments\UpdateTreatmentDataListApiRequest;
 use App\Http\Resources\Treatment\TreatmentTemplateResource;
@@ -15,14 +18,17 @@ use App\Models\Business\TreatmentData;
 use App\Models\Business\TreatmentTemplate;
 use App\Models\Business\TreatmentType;
 use App\Services\v1\TreatmentService;
+use App\Services\v1\TreatmentTemplatesService;
 use Illuminate\Http\Request;
 
 class TreatmentsController extends ApiBaseController
 {
     private $treatmentService;
+    private $treatmentTemplateService;
 
-    public function __construct(TreatmentService $treatmentService)
+    public function __construct(TreatmentService $treatmentService, TreatmentTemplatesService $treatmentTemplateService)
     {
+        $this->treatmentTemplateService = $treatmentTemplateService;
         $this->treatmentService = $treatmentService;
     }
 
@@ -36,10 +42,39 @@ class TreatmentsController extends ApiBaseController
         return $this->successResponse(TreatmentTypeResource::collection($template->types));
     }
 
-    public function store(StoreTreatmentApiRequest $request){
-        return $this->successResponse(
-            $this->treatmentService->store($request)
-        );
+    public function storeTemplate(StoreTreatmentTemplateApiRequest $request){
+        $template = $this->treatmentTemplateService->store($request);
+        return $this->successResponse(TreatmentTemplateResource::make($template));
+    }
+
+    public function storeType(StoreTreatmentTypeApiRequest $request){
+        $type = $this->treatmentTemplateService->storeType($request);
+        return $this->successResponse(TreatmentTypeResource::make($type));
+    }
+
+    public function storeTypeList(StoreTreatmentTypeListApiRequest $request){
+        $types = $request->types;
+        foreach ($types as $type){
+            $data = new Request([
+                'id' => data_get($type, 'id'),
+                'name' => data_get($type, 'name'),
+                'template_id' => $request->template_id,
+            ]);
+            $new_type = $this->treatmentTemplateService->storeType($data);
+            if(data_get($type, 'options')){
+                foreach (data_get($type, 'options') as $option){
+                    $data = new Request([
+                        'id' => data_get($option, 'id'),
+                        'value' => data_get($option, 'value'),
+                        'template_id' => $request->template_id,
+                        'type_id' => $new_type->id,
+                    ]);
+                    $this->treatmentTemplateService->storeOption($data);
+                }
+            }
+        }
+
+        return $this->successResponse(['message' => 'Data successfully updated']);
     }
 
     public function storeTreatmentDataList(TreatmentDataStoreListApiRequest $request){

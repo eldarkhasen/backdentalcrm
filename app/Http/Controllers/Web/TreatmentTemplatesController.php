@@ -25,7 +25,7 @@ class TreatmentTemplatesController extends Controller
     {
         if(request()->ajax())
         {
-            return datatables()->of(TreatmentTemplate::latest()->get())
+            return datatables()->of(TreatmentTemplate::query())
                 ->addColumn('edit', function($data){
                     return '<button class="btn btn-primary btn-sm btn-block " data-id="'.$data->id.'" onclick="editTemplate(event.target)" ><i class="fas fa-edit" data-id="'.$data->id.'"></i> Изменить</button>';
                 })
@@ -84,18 +84,7 @@ class TreatmentTemplatesController extends Controller
             return response()->json(['errors' => $error->errors()->all()]);
         }
 
-        $type = TreatmentType::updateOrCreate([
-            'id' => $request->id,
-        ],[
-            'name' => $request->name,
-        ]);
-
-        TemplateOption::where('template_id', $request->template_id)
-            ->where('type_id', $type->id)
-            ->firstOrCreate([
-                'template_id' => $request->template_id,
-                'type_id' => $type->id,
-            ]);
+        $type = $this->treatmentTemplateService->storeType($request);
 
         return response()->json(['code'=>200, 'message'=>'Template type saved successfully','data' => $type], 200);
     }
@@ -132,17 +121,7 @@ class TreatmentTemplatesController extends Controller
             return response()->json(['errors' => $error->errors()->all()]);
         }
 
-        $option = TreatmentOption::updateOrCreate([
-            'id' => $request->id,
-        ],[
-            'value' => $request->value,
-        ]);
-
-        TemplateOption::updateOrCreate([
-            'template_id' => $request->template_id,
-            'type_id' => $request->type_id,
-            'option_id' => $option->id,
-        ],[]);
+        $option = $this->treatmentTemplateService->storeOption($request);
 
         return response()->json(['code'=>200, 'message'=>'Template option saved successfully','data' => $option], 200);
     }
