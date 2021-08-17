@@ -113,13 +113,14 @@ Route::group(['middleware' => 'auth:api'], function () {
             Route::post('/initial-inspections', 'InitialInspectionsController@store');
             Route::delete('/initial-inspections/{id}', 'InitialInspectionsController@delete');
 
-            Route::group(['prefix' => 'diagnosis'], function (){
-                Route::get('/', 'DiagnosisController@index');
-            });
-
             Route::get('/appointments/{id}/treatments', 'AppointmentsController@getAppointmentTreatments');
             Route::get('/appointments/{id}/treatments/{treatment_id}/edit', 'AppointmentsController@editTreatments');
 
+            Route::get('/diagnosis', 'DiagnosisController@index');
+            Route::get('/diagnosis-paginate', 'DiagnosisController@indexPaginate');
+            Route::post('/diagnosis', 'DiagnosisController@store');
+            Route::get('/diagnosis/{id}', 'DiagnosisController@show');
+            Route::get('/diagnosis/{id}/edit', 'DiagnosisController@edit');
 //            Route::get('/appointments/{id}/treatments', 'AppointmentsController@getAppointmentTreatments');
 
             Route::group(['prefix' => 'treatments'], function (){
