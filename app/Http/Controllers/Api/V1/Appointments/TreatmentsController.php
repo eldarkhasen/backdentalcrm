@@ -16,6 +16,7 @@ use App\Http\Resources\Treatment\TreatmentTemplateResource;
 use App\Http\Resources\Treatment\TreatmentTypeResource;
 use App\Models\Business\Treatment;
 use App\Models\Business\TreatmentData;
+use App\Models\Business\TreatmentOption;
 use App\Models\Business\TreatmentTemplate;
 use App\Models\Business\TreatmentType;
 use App\Services\v1\TreatmentService;
@@ -83,7 +84,22 @@ class TreatmentsController extends ApiBaseController
             }
         }
 
-        return $this->successResponse(['message' => 'Data successfully updated']);
+        return $this->successResponse(['message' => 'Data updated successfully']);
+    }
+
+    public function deleteType($id){
+        TreatmentType::findOrFail($id)->delete();
+        return $this->successResponse(['message' => 'Type deleted successfully']);
+    }
+
+    public function deleteOption($id){
+        TreatmentOption::findOrFail($id)->delete();
+        return $this->successResponse(['message' => 'Option deleted successfully']);
+    }
+
+    public function deleteTemplate($id){
+        TreatmentTemplate::findOrFail($id)->delete();
+        return $this->successResponse(['message' => 'Template deleted successfully']);
     }
 
     public function storeTreatmentDataList(TreatmentDataStoreListApiRequest $request){
@@ -111,7 +127,7 @@ class TreatmentsController extends ApiBaseController
             }
 
         }
-        return $this->successResponse(['message' => 'Data successfully stored']);
+        return $this->successResponse(['message' => 'Data stored successfully']);
     }
 
     public function updateTreatmentDataList(UpdateTreatmentDataListApiRequest $request){
@@ -148,6 +164,6 @@ class TreatmentsController extends ApiBaseController
             }
         }
 
-        return $this->successResponse(['message' => 'Data successfully updated']);
+        return $this->successResponse(['message' => 'Data updated successfully ']);
     }
 }

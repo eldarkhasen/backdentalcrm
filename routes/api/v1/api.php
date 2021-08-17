@@ -131,6 +131,9 @@ Route::group(['middleware' => 'auth:api'], function () {
                 Route::post('/templates', 'TreatmentsController@storeTemplate');
                 Route::post('/types', 'TreatmentsController@storeType');
                 Route::post('/types/list', 'TreatmentsController@storeTypeList');
+                Route::delete('/types/{id}', 'TreatmentsController@deleteType');
+                Route::delete('/options/{id}', 'TreatmentsController@deleteOption');
+                Route::delete('/templates/{id}', 'TreatmentsController@deleteTemplate');
 
                 Route::post('/store/list', 'TreatmentsController@storeTreatmentDataList');
                 Route::post('/update/list', 'TreatmentsController@updateTreatmentDataList');
