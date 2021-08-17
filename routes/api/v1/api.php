@@ -125,6 +125,7 @@ Route::group(['middleware' => 'auth:api'], function () {
             Route::group(['prefix' => 'treatments'], function (){
                 Route::get('/templates', 'TreatmentsController@indexTemplates');
                 Route::get('/templates/{id}', 'TreatmentsController@showTemplate');
+                Route::get('/templates-paginate', 'TreatmentsController@indexTemplatesPaginate');
 
                 Route::post('/templates', 'TreatmentsController@storeTemplate');
                 Route::post('/types', 'TreatmentsController@storeType');

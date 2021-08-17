@@ -11,6 +11,7 @@ use App\Http\Requests\Api\V1\Appointments\StoreTreatmentTypeApiRequest;
 use App\Http\Requests\Api\V1\Appointments\StoreTreatmentTypeListApiRequest;
 use App\Http\Requests\Api\V1\Appointments\TreatmentDataStoreListApiRequest;
 use App\Http\Requests\Api\V1\Appointments\UpdateTreatmentDataListApiRequest;
+use App\Http\Resources\Treatment\TreatmentTemplateCollection;
 use App\Http\Resources\Treatment\TreatmentTemplateResource;
 use App\Http\Resources\Treatment\TreatmentTypeResource;
 use App\Models\Business\Treatment;
@@ -35,6 +36,14 @@ class TreatmentsController extends ApiBaseController
     public function indexTemplates(){
         $templates = TreatmentTemplate::all();
         return $this->successResponse(TreatmentTemplateResource::collection($templates));
+    }
+
+    public function indexTemplatesPaginate(Request $request){
+        $templates = TreatmentTemplate::when($request->search, function ($q) use ($request) {
+            $q->where('name', 'like', '%' . $request->search .'%')->orWhere('code', 'like', '%' . $request->search .'%');
+        })->paginate($request->input('paginate', 10));
+
+        return new TreatmentTemplateCollection($templates);
     }
 
     public function showTemplate($id){
