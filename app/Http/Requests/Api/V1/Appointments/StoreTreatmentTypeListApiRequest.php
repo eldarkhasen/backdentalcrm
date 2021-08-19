@@ -8,6 +8,15 @@ use App\Http\Requests\ApiBaseRequest;
 
 class StoreTreatmentTypeListApiRequest extends ApiBaseRequest
 {
+    public function messages()
+    {
+        return [
+            'template_id.required' => 'Введите ID шаблона',
+            'types.required' => 'Заполните вопросы',
+            'types.*.name.required' => 'Введите название вопроса',
+            'types.*.options.*.value.required' => 'Введите опции',
+        ];
+    }
 
     public function injectedRules()
     {

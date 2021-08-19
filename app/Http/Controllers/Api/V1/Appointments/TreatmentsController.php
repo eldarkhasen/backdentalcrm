@@ -14,6 +14,7 @@ use App\Http\Requests\Api\V1\Appointments\UpdateTreatmentDataListApiRequest;
 use App\Http\Resources\Treatment\TreatmentTemplateCollection;
 use App\Http\Resources\Treatment\TreatmentTemplateResource;
 use App\Http\Resources\Treatment\TreatmentTypeResource;
+use App\Models\Business\TemplateOption;
 use App\Models\Business\Treatment;
 use App\Models\Business\TreatmentData;
 use App\Models\Business\TreatmentOption;
@@ -64,6 +65,8 @@ class TreatmentsController extends ApiBaseController
 
     public function storeTypeList(StoreTreatmentTypeListApiRequest $request){
         $types = $request->types;
+        $type_ids = collect($types)->pluck('id');
+        $option_ids = collect();
         foreach ($types as $type){
             $data = new Request([
                 'id' => data_get($type, 'id'),
@@ -71,6 +74,8 @@ class TreatmentsController extends ApiBaseController
                 'template_id' => $request->template_id,
             ]);
             $new_type = $this->treatmentTemplateService->storeType($data);
+
+            $type_ids->push($new_type->id);
             if(data_get($type, 'options')){
                 foreach (data_get($type, 'options') as $option){
                     $data = new Request([
@@ -79,12 +84,16 @@ class TreatmentsController extends ApiBaseController
                         'template_id' => $request->template_id,
                         'type_id' => $new_type->id,
                     ]);
-                    $this->treatmentTemplateService->storeOption($data);
+                    $new_option = $this->treatmentTemplateService->storeOption($data);
+                    $option_ids->push($new_option->id);
                 }
             }
         }
+        $template_options = TemplateOption::where('template_id', $request->template_id)->get();
+        TreatmentType::whereIn('id', $template_options->plucK('type_id'))->whereNotIn('id', $type_ids)->delete();
+        TreatmentOption::whereIn('id', $template_options->pluck('option_id'))->whereNotIn('id', $option_ids)->delete();
 
-        return $this->successResponse(['message' => 'Data updated successfully']);
+        return $this->successResponse(['message' => 'Data updated successfully', 'type_ids' => $type_ids, 'option_ids' => $option_ids]);
     }
 
     public function deleteType($id){
