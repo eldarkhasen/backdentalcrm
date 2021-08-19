@@ -65,7 +65,7 @@ class TreatmentsController extends ApiBaseController
 
     public function storeTypeList(StoreTreatmentTypeListApiRequest $request){
         $types = $request->types;
-        $type_ids = collect($types)->pluck('id');
+        $type_ids = collect();
         $option_ids = collect();
         foreach ($types as $type){
             $data = new Request([
