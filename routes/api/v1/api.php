@@ -121,6 +121,8 @@ Route::group(['middleware' => 'auth:api'], function () {
             Route::post('/diagnosis', 'DiagnosisController@store');
             Route::get('/diagnosis/{id}', 'DiagnosisController@show');
             Route::get('/diagnosis/{id}/edit', 'DiagnosisController@edit');
+            Route::delete('/diagnosis/{id}', 'DiagnosisController@delete');
+
 //            Route::get('/appointments/{id}/treatments', 'AppointmentsController@getAppointmentTreatments');
 
             Route::group(['prefix' => 'treatments'], function (){

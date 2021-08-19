@@ -67,4 +67,9 @@ class DiagnosisController extends ApiBaseController
         ]);
         return $this->successResponse($diagnosis);
     }
+
+    public function delete($id){
+        Diagnosis::findOrFail($id)->delete();
+        return $this->successResponse(['message' => 'Diagnosis deleted successfully']);
+    }
 }
