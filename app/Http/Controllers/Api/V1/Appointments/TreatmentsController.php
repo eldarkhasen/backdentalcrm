@@ -23,6 +23,7 @@ use App\Models\Business\TreatmentType;
 use App\Services\v1\TreatmentService;
 use App\Services\v1\TreatmentTemplatesService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class TreatmentsController extends ApiBaseController
 {
@@ -41,9 +42,15 @@ class TreatmentsController extends ApiBaseController
     }
 
     public function indexTemplatesPaginate(Request $request){
+        $user = Auth::user();
         $templates = TreatmentTemplate::when($request->search, function ($q) use ($request) {
             $q->where('name', 'like', '%' . $request->search .'%')->orWhere('code', 'like', '%' . $request->search .'%');
-        })->paginate($request->input('paginate', 10));
+        })
+            ->where(function ($q) use ($user) {
+                $q->where('organization_id', data_get($user, 'employee.organization_id'))
+                    ->orWhereNull('organization_id');
+            })
+            ->paginate($request->input('paginate', 10));
 
         return new TreatmentTemplateCollection($templates);
     }
@@ -54,6 +61,9 @@ class TreatmentsController extends ApiBaseController
     }
 
     public function storeTemplate(StoreTreatmentTemplateApiRequest $request){
+        $user = Auth::user();
+        $request['organization_id'] = data_get($user, 'employee.organization_id');
+
         $template = $this->treatmentTemplateService->store($request);
         return $this->successResponse(TreatmentTemplateResource::make($template));
     }
