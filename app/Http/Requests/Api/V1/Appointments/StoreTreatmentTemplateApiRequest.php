@@ -12,7 +12,7 @@ class StoreTreatmentTemplateApiRequest extends ApiBaseRequest
     {
         return [
             'name'=> 'required',
-            'code' => 'required|numeric|unique:treatment_templates,code,'. $this->id,
+            'code' => 'required|string|unique:treatment_templates,code,'. $this->id,
         ];
     }
 }
