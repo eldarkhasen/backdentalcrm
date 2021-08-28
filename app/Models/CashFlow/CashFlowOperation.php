@@ -16,7 +16,8 @@ class CashFlowOperation extends Model
         'amount',
         'comments',
         'committed',
-        'user_created_id'
+        'user_created_id',
+        'cash_flow_date'
     ];
 
     public function type(){

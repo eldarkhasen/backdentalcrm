@@ -20,7 +20,8 @@ class StoreAndUpdateAppointmentApiRequest extends ApiBaseRequest
             'treatment_course' => ['nullable'],
             'is_first_visit' => ['required', 'boolean'],
             'services'=>['nullable','array'],
-            'status' =>['required']
+            'status' => ['required'],
+            'cash_box_id' => ['required','numeric']
         ];
     }
 }

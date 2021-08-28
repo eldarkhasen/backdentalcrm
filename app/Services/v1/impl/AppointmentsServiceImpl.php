@@ -16,11 +16,18 @@ use App\Models\Business\Treatment;
 use App\Models\Business\TreatmentCourse;
 use App\Models\Business\TreatmentData;
 use App\Models\Business\TreatmentTemplate;
+use App\Models\CashFlow\CashBox;
+use App\Models\CashFlow\CashFlowOperation;
+use App\Models\CashFlow\CashFlowType;
 use App\Services\v1\AppointmentsService;
 use App\Services\v1\BaseServiceImpl;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
+use const App\Models\CashFlow\CASH_FLOW_TYPE_SERVICE;
+use const App\Models\CashFlow\INCOME;
 
 class AppointmentsServiceImpl
     extends BaseServiceImpl
@@ -156,6 +163,42 @@ class AppointmentsServiceImpl
 
             foreach ($services as $service) {
                 $appointment->services()->attach($service['service']['id'], ['amount'=>$service['quantity'],'actual_price'=>$service['overallPrice'], 'discount'=>$service['discount']]);
+            }
+
+            //Find in the cash flow operations this appointment
+            $cashFlowOperation = CashFlowOperation::where('appointment_id',$appointment->id)->first();
+
+            //if operation exists
+            if($cashFlowOperation!=null){
+                //Refresh Cashbox balance
+                $cashBox = CashBox::find($cashFlowOperation->to_cash_box_id);
+                $cashBox->balance = $cashBox->balance-$cashFlowOperation->amount;
+                $cashBox->save();
+
+
+                //Update Cashflow amount
+                $cashFlowOperation->amount = $appointment->price;
+                $cashFlowOperation->save();
+
+                //Update cashbox balance
+                $cashBox->balance = $cashBox->balance+$cashFlowOperation->amount;
+                $cashBox->save();
+            }else{
+                //Create a new cash flow operation
+                $newCashFlowOperation = CashFlowOperation::create([
+                    'to_cash_box_id'=>$request->get('cash_box_id'),
+                    'type_id'=>CASH_FLOW_TYPE_SERVICE,
+                    'appointment_id'=>$appointment->id,
+                    'amount'=>$appointment->price,
+                    'user_created_id'=>Auth::id(),
+                    'committed'=>1,
+                    'cash_flow_date'=>Date::now()
+                ]);
+
+                $cashBox = CashBox::findOrFail($request->get('cash_box_id'));
+                $cashBox->balance+=$newCashFlowOperation->amount;
+                $cashBox->save();
+
             }
 
             DB::commit();

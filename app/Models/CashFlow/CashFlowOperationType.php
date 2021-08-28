@@ -3,7 +3,7 @@
 namespace App\Models\CashFlow;
 
 use Illuminate\Database\Eloquent\Model;
-
+const CASH_FLOW_TYPE_SERVICE = 2;
 class CashFlowOperationType extends Model
 {
     protected $fillable = [
@@ -12,7 +12,7 @@ class CashFlowOperationType extends Model
         'organization_id'
     ];
 
-    public $timestamps = false;
+//    public $timestamps = false;
 
     public function cashFlowType()
     {
