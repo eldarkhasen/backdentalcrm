@@ -38,6 +38,11 @@ class AppointmentResource extends JsonResource
                 $this->relationLoaded('initialInspection'),
                 $this->initialInspection
 //                Carbon::parse(data_get($this, 'initialInspection.created_at'))->isoFormat('MM-DD-YYYY HH:mm')
+            ),
+            'cash_box_id' =>$this->when(
+                $this->relationLoaded('cashFlowOperation'),
+                $this->cashFlowOperation->to_cash_box_id
+//                Carbon::parse(data_get($this, 'initialInspection.created_at'))->isoFormat('MM-DD-YYYY HH:mm')
             )
         ];
     }

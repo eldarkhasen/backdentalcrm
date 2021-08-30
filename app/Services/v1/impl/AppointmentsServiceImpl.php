@@ -18,6 +18,7 @@ use App\Models\Business\TreatmentData;
 use App\Models\Business\TreatmentTemplate;
 use App\Models\CashFlow\CashBox;
 use App\Models\CashFlow\CashFlowOperation;
+use App\Models\CashFlow\CashFlowOperationType;
 use App\Models\CashFlow\CashFlowType;
 use App\Services\v1\AppointmentsService;
 use App\Services\v1\BaseServiceImpl;
@@ -27,7 +28,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use const App\Models\CashFlow\CASH_FLOW_TYPE_SERVICE;
-use const App\Models\CashFlow\INCOME;
 
 class AppointmentsServiceImpl
     extends BaseServiceImpl
@@ -83,7 +83,8 @@ class AppointmentsServiceImpl
             'patient',
             'treatmentCourse',
             'services',
-            'initialInspection'
+            'initialInspection',
+            'cashFlowOperation'
         ])
             ->findOrFail($id);
 
@@ -187,10 +188,10 @@ class AppointmentsServiceImpl
                 //Create a new cash flow operation
                 $newCashFlowOperation = CashFlowOperation::create([
                     'to_cash_box_id'=>$request->get('cash_box_id'),
-                    'type_id'=>CASH_FLOW_TYPE_SERVICE,
+                    'type_id'=>CashFlowOperationType::CASH_FLOW_TYPE_SERVICE,
                     'appointment_id'=>$appointment->id,
                     'amount'=>$appointment->price,
-                    'user_created_id'=>Auth::id(),
+                    'user_created_id'=>$employee['id'],
                     'committed'=>1,
                     'cash_flow_date'=>Date::now()
                 ]);

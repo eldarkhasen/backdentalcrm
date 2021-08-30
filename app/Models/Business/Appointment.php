@@ -2,6 +2,7 @@
 
 namespace App\Models\Business;
 
+use App\Models\CashFlow\CashFlowOperation;
 use App\Models\Patients\Patient;
 use App\Models\Settings\Employee;
 use App\Models\Settings\Service;
@@ -67,4 +68,9 @@ class Appointment extends Model
     public function initialInspectionTypes(){
         return $this->belongsToMany(InitInspectionType::class, 'initial_inspections', 'appointment_id', 'inspection_type_id')->distinct();
     }
+
+    public  function cashFlowOperation(){
+        return $this->hasOne(CashFlowOperation::class);
+    }
+
 }
