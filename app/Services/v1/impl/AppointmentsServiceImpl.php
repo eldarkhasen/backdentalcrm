@@ -7,7 +7,8 @@ namespace App\Services\v1\impl;
 use App\Exceptions\ApiServiceException;
 use App\Http\Errors\ErrorCode;
 use App\Http\Requests\Api\V1\Appointments\FilterAppointmentsApiRequest;
-use App\Http\Requests\Api\V1\Appointments\StoreAndUpdateAppointmentApiRequest;
+use App\Http\Requests\Api\V1\Appointments\StoreAppointmentApiRequest;
+use App\Http\Requests\Api\V1\Appointments\UpdateAppointmentApiRequest;
 use App\Http\Resources\Treatment\TreatmentResource;
 use App\Models\Business\Appointment;
 use App\Models\Business\InitialInspection;
@@ -90,12 +91,12 @@ class AppointmentsServiceImpl
 
     }
 
-    public function storeAppointment(StoreAndUpdateAppointmentApiRequest $request)
+    public function storeAppointment(StoreAppointmentApiRequest $request)
     {
         DB::beginTransaction();
         try {
             $this->validateUserAccess($request->user());
-
+            $main_cash_box = CashBox::where('is_main',true)->first();
             $appointment = new Appointment();
             $patient = $request->get('patient');
             $employee = $request->get('employee');
@@ -106,7 +107,7 @@ class AppointmentsServiceImpl
                 'patient_id' => $patient['id'],
                 'color' => $employee['color'],
                 'price' => data_get($request, 'price'),
-                'is_first_visit' => data_get($request, 'is_first_visit')
+                'is_first_visit' => data_get($request, 'is_first_visit'),
             ]);
 
             $patient = $request->get('patient');
@@ -135,7 +136,7 @@ class AppointmentsServiceImpl
         }
     }
 
-    public function updateAppointment(StoreAndUpdateAppointmentApiRequest $request, $id)
+    public function updateAppointment(UpdateAppointmentApiRequest $request, $id)
     {
         DB::beginTransaction();
         try {
@@ -149,13 +150,18 @@ class AppointmentsServiceImpl
             foreach ($all_services as $service) {
                 $appointment->services()->detach($service->id);
             }
+            $status_color =  $employee['color'];
+            if($request->get('status')=='success'){
+                $status_color = "#808080";
+            }else if($request->get('status')=='client_miss'){
+                $status_color = "#FF0000";
+            }
             $appointment->update([
-                'title' => $request->get('title'),
                 'starts_at' => Carbon::parse($request->get('starts_at')),
                 'ends_at' => Carbon::parse($request->get('ends_at')),
                 'employee_id' => $employee['id'],
                 'patient_id' => $patient['id'],
-                'color' => $employee['color'],
+                'color' => $status_color,
                 'is_first_visit' => data_get($request, 'is_first_visit'),
                 'status' => $request->get('status'),
                 'price' => data_get($request, 'price'),

@@ -6,7 +6,7 @@ namespace App\Http\Requests\Api\V1\Appointments;
 
 use App\Http\Requests\ApiBaseRequest;
 
-class StoreAndUpdateAppointmentApiRequest extends ApiBaseRequest
+class UpdateAppointmentApiRequest extends ApiBaseRequest
 {
     public function injectedRules()
     {

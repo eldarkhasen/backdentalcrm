@@ -12,6 +12,7 @@ class CashBoxResource extends JsonResource
             'id'            => $this->id,
             'name'          => $this->name,
             'balance'       => $this->balance,
+            'is_main'       => $this->is_main,
             'organization'  => $this->relationLoaded('organization')
                                 ? new OrganizationResource($this->organization)
                                 : null,

@@ -7,7 +7,7 @@ namespace App\Services\v1\impl;
 use App\Exceptions\ApiServiceException;
 use App\Http\Errors\ErrorCode;
 use App\Http\Requests\Api\V1\Appointments\FilterAppointmentsApiRequest;
-use App\Http\Requests\Api\V1\Appointments\StoreAndUpdateAppointmentApiRequest;
+use App\Http\Requests\Api\V1\Appointments\UpdateAppointmentApiRequest;
 use App\Models\Business\Appointment;
 use App\Models\Business\InitialInspection;
 use App\Models\Business\InitInspectionType;

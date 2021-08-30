@@ -4,7 +4,8 @@ namespace App\Http\Controllers\Api\V1\Appointments;
 
 use App\Http\Controllers\ApiBaseController;
 use App\Http\Requests\Api\V1\Appointments\FilterAppointmentsApiRequest;
-use App\Http\Requests\Api\V1\Appointments\StoreAndUpdateAppointmentApiRequest;
+use App\Http\Requests\Api\V1\Appointments\StoreAppointmentApiRequest;
+use App\Http\Requests\Api\V1\Appointments\UpdateAppointmentApiRequest;
 use App\Http\Resources\AppointmentResource;
 use App\Http\Resources\Treatment\TreatmentResource;
 use App\Models\Business\Treatment;
@@ -55,10 +56,10 @@ class AppointmentsController extends ApiBaseController
     }
 
     /**
-     * @param StoreAndUpdateAppointmentApiRequest $request
+     * @param StoreAppointmentApiRequest $request
      * @return JsonResponse|object
      */
-    public function store(StoreAndUpdateAppointmentApiRequest $request)
+    public function store(StoreAppointmentApiRequest $request)
     {
         return $this->successResponse(
             $this->appointmentsService->storeAppointment(
@@ -68,11 +69,11 @@ class AppointmentsController extends ApiBaseController
     }
 
     /**
-     * @param StoreAndUpdateAppointmentApiRequest $request
+     * @param UpdateAppointmentApiRequest $request
      * @param $id
      * @return JsonResponse|object
      */
-    public function update(StoreAndUpdateAppointmentApiRequest $request, $id)
+    public function update(UpdateAppointmentApiRequest $request, $id)
     {
         return $this->successResponse(
             $this->appointmentsService->updateAppointment(

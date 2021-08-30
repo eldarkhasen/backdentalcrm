@@ -40,12 +40,17 @@ class CashBoxServiceImpl
         try {
             $this->validateUserAccess($currentUser);
 
+            //Revert all cashboxes if this box is main
+            if($request->get('is_main')){
+                CashBox::query()->update(['is_main'=>false]);
+            }
             if (!!$id) {
                 $cashbox = CashBox::findOrFail($id);
                 $cashbox->fill([
                     $request->only([
                         'name',
                         'balance',
+                        'is_main'
                     ])
                 ]);
                 $cashbox->organization_id = $currentUser->employee->organization->id;
@@ -56,7 +61,8 @@ class CashBoxServiceImpl
 
                 $cashbox->fill($request->only([
                     'name',
-                    'balance'
+                    'balance',
+                    'is_main'
                 ]));
 
                 $cashbox->organization_id = $currentUser->employee->organization->id;

@@ -13,7 +13,8 @@ class CashBox extends Model
     protected $fillable = [
         'name',
         'balance',
-        'organization_id'
+        'organization_id',
+        'is_main'
     ];
 
     public function organization()
