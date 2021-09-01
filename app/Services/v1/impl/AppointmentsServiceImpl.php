@@ -182,14 +182,22 @@ class AppointmentsServiceImpl
                 $cashBox->balance = $cashBox->balance-$cashFlowOperation->amount;
                 $cashBox->save();
 
-
                 //Update Cashflow amount
                 $cashFlowOperation->amount = $appointment->price;
                 $cashFlowOperation->save();
 
+                if($cashBox->id!=$request->get('cash_box_id')){
+                    //Update cashbox ID in cashflow
+                    $cashFlowOperation->to_cash_box_id=$request->get('cash_box_id');
+                    $cashFlowOperation->save();
+
+                    //Update to new cashbox
+                    $cashBox = CashBox::find($request->get('cash_box_id'));
+                }
                 //Update cashbox balance
                 $cashBox->balance = $cashBox->balance+$cashFlowOperation->amount;
                 $cashBox->save();
+
             }else{
                 //Create a new cash flow operation
                 $newCashFlowOperation = CashFlowOperation::create([
@@ -264,7 +272,7 @@ class AppointmentsServiceImpl
                 'errorCode' => ErrorCode::NOT_ALLOWED
             ]);
         }
-        $query = Appointment::with(['employee', 'patient', 'treatmentCourse' , 'services'])
+        $query = Appointment::with(['employee', 'patient', 'services'])
             ->where('patient_id',$patient_id)
             ->where('status',Appointment::STATUS_SUCCESS);
 

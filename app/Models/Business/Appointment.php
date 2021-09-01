@@ -73,4 +73,7 @@ class Appointment extends Model
         return $this->hasOne(CashFlowOperation::class);
     }
 
+    public function treatments(){
+        return $this->hasMany(Treatment::class);
+    }
 }
