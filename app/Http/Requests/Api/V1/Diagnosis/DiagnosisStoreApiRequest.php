@@ -12,7 +12,7 @@ class DiagnosisStoreApiRequest extends ApiBaseRequest
     {
         return [
             'name' => 'required',
-            'code' => 'required|numeric|unique:diagnoses,code,'. $this->id,
+//            'code' => 'required|numeric|unique:diagnoses,code,'. $this->id,
 //            'organization_id' => 'required',
         ];
     }
