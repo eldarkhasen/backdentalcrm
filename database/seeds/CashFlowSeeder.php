@@ -14,19 +14,16 @@ class CashFlowSeeder extends Seeder
      */
     public function run()
     {
-//        DB::beginTransaction();
+        DB::statement("SET foreign_key_checks=0");
+        CashFlowOperationType::truncate();
+        CashFlowType::truncate();
+        DB::statement("SET foreign_key_checks=1");
         CashFlowType::insert([
             ['id' => 1, 'name' => 'Доход', 'description' => ''],
             ['id' => 2,'name' => 'Расход', 'description' => ''],
             ['id' => 3,'name' => 'Перевод', 'description' => 'Переводы между счетами']
         ]);
 
-//            $incomes->operationTypes()->createMany([
-//                ['name' => 'Начисление в депозит'],
-//                ['name' => 'Оказание услуг'],
-//                ['name' => 'Погашение долга'],
-//                ['name' => 'Прочие доходы'],
-//            ]);
         CashFlowOperationType::insert([
             ['id'=>1,'name' => 'Начисление в депозит', 'cash_flow_type_id'=>1],
             ['id'=>2,'name' => 'Оказание услуг','cash_flow_type_id'=>1],
@@ -49,12 +46,5 @@ class CashFlowSeeder extends Seeder
             ['id'=>11,'name' => 'Перевод между кассами','cash_flow_type_id'=>3]
             ]
         );
-//        try {
-//
-//
-////            DB::commit();
-//        } catch (\Exception $e) {
-////            DB::rollBack();
-//        }
     }
 }
