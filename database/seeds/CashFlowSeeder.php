@@ -14,41 +14,47 @@ class CashFlowSeeder extends Seeder
      */
     public function run()
     {
-        DB::beginTransaction();
-        try {
-            CashFlowType::insert([
-                ['name' => 'Доход',   'description' => ''],
-                ['name' => 'Расход',  'description' => ''],
-                ['name' => 'Перевод', 'description' => 'Переводы между счетами']
-            ]);
+//        DB::beginTransaction();
+        CashFlowType::insert([
+            ['id' => 1, 'name' => 'Доход', 'description' => ''],
+            ['id' => 2,'name' => 'Расход', 'description' => ''],
+            ['id' => 3,'name' => 'Перевод', 'description' => 'Переводы между счетами']
+        ]);
 
-            $incomes = CashFlowType::where('name', 'Доход')->first();
-            $expenses = CashFlowType::where('name', 'Расход')->first();
-            $transfers = CashFlowType::where('name', 'Перевод')->first();
+//            $incomes->operationTypes()->createMany([
+//                ['name' => 'Начисление в депозит'],
+//                ['name' => 'Оказание услуг'],
+//                ['name' => 'Погашение долга'],
+//                ['name' => 'Прочие доходы'],
+//            ]);
+        CashFlowOperationType::insert([
+            ['id'=>1,'name' => 'Начисление в депозит', 'cash_flow_type_id'=>1],
+            ['id'=>2,'name' => 'Оказание услуг','cash_flow_type_id'=>1],
+            ['id'=>3,'name' => 'Погашение долга','cash_flow_type_id'=>1],
+            ['id'=>4,'name' => 'Прочие доходы','cash_flow_type_id'=>1]
+            ]
+        );
+        CashFlowOperationType::insert(
+            [
+            ['id'=>5,'name' => 'Снятие с депозита','cash_flow_type_id'=>2],
+            ['id'=>6,'name' => 'Закупка товаров','cash_flow_type_id'=>2],
+            ['id'=>7,'name' => 'Зарплата персонала','cash_flow_type_id'=>2],
+            ['id'=>8,'name' => 'Возврат средств','cash_flow_type_id'=>2],
+            ['id'=>9,'name' => 'Прочие расходы','cash_flow_type_id'=>2],
+            ['id'=>10,'name' => 'Снятие','cash_flow_type_id'=>2],
+                ]
+        );
 
-            $incomes->operationTypes()->createMany([
-                ['name' => 'Начисление в депозит'],
-                ['name' => 'Оказание услуг'],
-                ['name' => 'Погашение долга'],
-                ['name' => 'Прочие доходы'],
-            ]);
-
-            $expenses->operationTypes()->createMany([
-                ['name' => 'Снятие с депозита'],
-                ['name' => 'Закупка товаров'],
-                ['name' => 'Зарплата персонала'],
-                ['name' => 'Возврат средств'],
-                ['name' => 'Прочие расходы'],
-                ['name' => 'Снятие'],
-            ]);
-
-            $transfers->operationTypes()->createMany([
-                [ 'name' => 'Перевод между кассами' ],
-            ]);
-
-            DB::commit();
-        } catch (\Exception $e) {
-            DB::rollBack();
-        }
+        CashFlowOperationType::insert([
+            ['id'=>11,'name' => 'Перевод между кассами','cash_flow_type_id'=>3]
+            ]
+        );
+//        try {
+//
+//
+////            DB::commit();
+//        } catch (\Exception $e) {
+////            DB::rollBack();
+//        }
     }
 }
