@@ -45,6 +45,7 @@ class CashFlowSeeder extends Seeder
             $transfers->operationTypes()->createMany([
                 [ 'name' => 'Перевод между кассами' ],
             ]);
+
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
