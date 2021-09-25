@@ -18,6 +18,7 @@ use App\Models\Business\TemplateOption;
 use App\Models\Business\Treatment;
 use App\Models\Business\TreatmentData;
 use App\Models\Business\TreatmentOption;
+use App\Models\Business\TreatmentTeeth;
 use App\Models\Business\TreatmentTemplate;
 use App\Models\Business\TreatmentType;
 use App\Services\v1\TreatmentService;
@@ -124,6 +125,15 @@ class TreatmentsController extends ApiBaseController
     public function storeTreatmentDataList(TreatmentDataStoreListApiRequest $request){
         $treatment = $this->treatmentService->store($request);
 
+
+        //register teeth
+        foreach ($request->teeth as $tooth){
+            TreatmentTeeth::create([
+                'treatment_id'=>$treatment->id,
+                'tooth_number'=>$tooth
+            ]);
+        }
+
         foreach ($request->data as $data){
             if(data_get($data, 'is_checked', false)){
                 TreatmentData::updateOrCreate([
@@ -151,6 +161,19 @@ class TreatmentsController extends ApiBaseController
 
     public function updateTreatmentDataList(UpdateTreatmentDataListApiRequest $request){
         $treatment = $this->treatmentService->store($request);
+
+        //refresh tooth_number
+        TreatmentTeeth::where('treatment_id',$treatment->id)->delete();
+
+        //set new teeth
+        //register teeth
+        foreach ($request->teeth as $tooth){
+            TreatmentTeeth::create([
+                'treatment_id'=>$treatment->id,
+                'tooth_number'=>$tooth
+            ]);
+        }
+
         foreach ($request->types as $type){
 
             TreatmentData::updateOrCreate([

@@ -43,4 +43,8 @@ class Treatment extends Model
     public function templates(){
         return $this->belongsToMany(TreatmentTemplate::class, TreatmentData::class, 'treatment_id', 'template_id')->distinct();
     }
+
+    public function teeth(){
+        return $this->hasMany(TreatmentTeeth::class,'treatment_id');
+    }
 }
