@@ -24,6 +24,10 @@ class TreatmentResource extends JsonResource
                 ($this->diagnosisType)
             ),
             'tooth_number'=> $this->tooth_number,
+            'teeth'=>$this->when(
+                $this->relationLoaded('teeth'),
+                TreatmentTeethResource::collection($this->teeth)
+            ),
             'is_finished' => $this->is_finished,
             'final_diagnosis_id'=>$this->final_diagnosis_id,
             'created_at' => $this->created_at,

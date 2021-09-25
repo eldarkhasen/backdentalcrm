@@ -60,7 +60,7 @@ class AppointmentsServiceImpl
         $time_to = $request->get('time_to', null);
         $search_key = $request->get('search_key', null);
 
-        $query = Appointment::with(['employee', 'patient','treatmentCourse', 'employee.organization','services']);
+        $query = Appointment::with(['employee', 'patient', 'treatmentCourse', 'employee.organization', 'services']);
 
         if (!!$time_from)
             $query = $query->whereDate('starts_at', '>=', Carbon::parse($time_from));
@@ -71,8 +71,8 @@ class AppointmentsServiceImpl
         if (!!$search_key and $search_key != '')
             $query = $query->where('title', 'like', '%' . $search_key . '%');
 
-        $query = $query->whereHas('employee', function($query) use ($currentUser){
-            $query->where('organization_id',$currentUser->employee->organization->id);
+        $query = $query->whereHas('employee', function ($query) use ($currentUser) {
+            $query->where('organization_id', $currentUser->employee->organization->id);
         });
         return $query->get();
     }
@@ -96,7 +96,7 @@ class AppointmentsServiceImpl
         DB::beginTransaction();
         try {
             $this->validateUserAccess($request->user());
-            $main_cash_box = CashBox::where('is_main',true)->first();
+            $main_cash_box = CashBox::where('is_main', true)->first();
             $appointment = new Appointment();
             $patient = $request->get('patient');
             $employee = $request->get('employee');
@@ -124,7 +124,7 @@ class AppointmentsServiceImpl
 
             if (isset($services)) {
                 foreach ($services as $serv) {
-                    $appointment->services()->attach($serv['service']['id'], ['amount'=>$serv['quantity'],'actual_price'=>$serv['overallPrice'], 'discount'=>$serv['discount']]);
+                    $appointment->services()->attach($serv['service']['id'], ['amount' => $serv['quantity'], 'actual_price' => $serv['overallPrice'], 'discount' => $serv['discount']]);
                 }
             }
             DB::commit();
@@ -150,10 +150,10 @@ class AppointmentsServiceImpl
             foreach ($all_services as $service) {
                 $appointment->services()->detach($service->id);
             }
-            $status_color =  $employee['color'];
-            if($request->get('status')=='success'){
+            $status_color = $employee['color'];
+            if ($request->get('status') == 'success') {
                 $status_color = "#808080";
-            }else if($request->get('status')=='client_miss'){
+            } else if ($request->get('status') == 'client_miss') {
                 $status_color = "#FF0000";
             }
             $appointment->update([
@@ -169,49 +169,49 @@ class AppointmentsServiceImpl
             ]);
 
             foreach ($services as $service) {
-                $appointment->services()->attach($service['service']['id'], ['amount'=>$service['quantity'],'actual_price'=>$service['overallPrice'], 'discount'=>$service['discount']]);
+                $appointment->services()->attach($service['service']['id'], ['amount' => $service['quantity'], 'actual_price' => $service['overallPrice'], 'discount' => $service['discount']]);
             }
 
             //Find in the cash flow operations this appointment
-            $cashFlowOperation = CashFlowOperation::where('appointment_id',$appointment->id)->first();
+            $cashFlowOperation = CashFlowOperation::where('appointment_id', $appointment->id)->first();
 
             //if operation exists
-            if($cashFlowOperation!=null){
+            if ($cashFlowOperation != null) {
                 //Refresh Cashbox balance
                 $cashBox = CashBox::find($cashFlowOperation->to_cash_box_id);
-                $cashBox->balance = $cashBox->balance-$cashFlowOperation->amount;
+                $cashBox->balance = $cashBox->balance - $cashFlowOperation->amount;
                 $cashBox->save();
 
                 //Update Cashflow amount
                 $cashFlowOperation->amount = $appointment->price;
                 $cashFlowOperation->save();
 
-                if($cashBox->id!=$request->get('cash_box_id')){
+                if ($cashBox->id != $request->get('cash_box_id')) {
                     //Update cashbox ID in cashflow
-                    $cashFlowOperation->to_cash_box_id=$request->get('cash_box_id');
+                    $cashFlowOperation->to_cash_box_id = $request->get('cash_box_id');
                     $cashFlowOperation->save();
 
                     //Update to new cashbox
                     $cashBox = CashBox::find($request->get('cash_box_id'));
                 }
                 //Update cashbox balance
-                $cashBox->balance = $cashBox->balance+$cashFlowOperation->amount;
+                $cashBox->balance = $cashBox->balance + $cashFlowOperation->amount;
                 $cashBox->save();
 
-            }else{
+            } else {
                 //Create a new cash flow operation
                 $newCashFlowOperation = CashFlowOperation::create([
-                    'to_cash_box_id'=>$request->get('cash_box_id'),
-                    'type_id'=>CashFlowOperationType::CASH_FLOW_TYPE_SERVICE,
-                    'appointment_id'=>$appointment->id,
-                    'amount'=>$appointment->price,
-                    'user_created_id'=>$employee['id'],
-                    'committed'=>1,
-                    'cash_flow_date'=>Date::now()
+                    'to_cash_box_id' => $request->get('cash_box_id'),
+                    'type_id' => CashFlowOperationType::CASH_FLOW_TYPE_SERVICE,
+                    'appointment_id' => $appointment->id,
+                    'amount' => $appointment->price,
+                    'user_created_id' => $employee['id'],
+                    'committed' => 1,
+                    'cash_flow_date' => Date::now()
                 ]);
 
                 $cashBox = CashBox::findOrFail($request->get('cash_box_id'));
-                $cashBox->balance+=$newCashFlowOperation->amount;
+                $cashBox->balance += $newCashFlowOperation->amount;
                 $cashBox->save();
 
             }
@@ -236,7 +236,7 @@ class AppointmentsServiceImpl
         $time_to = $request->get('time_to', null);
         $employee_id = $request->get('employee_id', null);
 
-        $query = Appointment::with(['employee', 'patient', 'treatmentCourse','services']);
+        $query = Appointment::with(['employee', 'patient', 'treatmentCourse', 'services']);
 
         if (!!$time_from)
             $query = $query->whereDate('starts_at', '>=', Carbon::parse($time_from));
@@ -273,11 +273,11 @@ class AppointmentsServiceImpl
             ]);
         }
         $query = Appointment::with(['employee', 'patient', 'services'])
-            ->where('patient_id',$patient_id)
-            ->where('status',Appointment::STATUS_SUCCESS);
+            ->where('patient_id', $patient_id)
+            ->where('status', Appointment::STATUS_SUCCESS);
 
-        $query = $query->whereHas('employee', function($query) use ($currentUser){
-            $query->where('organization_id',$currentUser->employee->organization->id);
+        $query = $query->whereHas('employee', function ($query) use ($currentUser) {
+            $query->where('organization_id', $currentUser->employee->organization->id);
         });
         return $query->get();
     }
@@ -285,7 +285,7 @@ class AppointmentsServiceImpl
     public function updateAppointmentTime($id, $starts_at, $ends_at)
     {
         DB::beginTransaction();
-        try{
+        try {
             $appointment = Appointment::findOrFail($id);
             $appointment->update([
                 'starts_at' => $starts_at,
@@ -309,7 +309,8 @@ class AppointmentsServiceImpl
 //            'templates.types.options',
             'diagnosis',
             'diagnosisType',
-        ])->where('appointment_id',$id)->get();
+            'teeth'
+        ])->where('appointment_id', $id)->get();
 
 //        $treatments->load([
 //            'templates.types.options.treatmentData' => function($q) use ($treatments) {
@@ -319,7 +320,7 @@ class AppointmentsServiceImpl
 //                $q->whereIn('treatment_id', $treatments->pluck('id'));
 //            },
 //        ]);
-
+//            return $treatments;
         return TreatmentResource::collection($treatments);
     }
 
@@ -340,22 +341,22 @@ class AppointmentsServiceImpl
 //            ->findOrFail($id);
         // version 3
         return InitInspectionType::with([
-            'options'  => function($q)use($id){
+            'options' => function ($q) use ($id) {
                 $q->where('is_custom', false)
                     ->with([
-                        'initialInspections' => function($qq)use($id){
+                        'initialInspections' => function ($qq) use ($id) {
                             $qq->where('appointment_id', $id);
                         }
                     ]);
             },
-            'customOptions'=> function($q)use($id){
-                $q->when('is_custom', function ($qq)use($id){
-                    $qq->whereHas('initialInspections',  function($qqq)use($id) {
+            'customOptions' => function ($q) use ($id) {
+                $q->when('is_custom', function ($qq) use ($id) {
+                    $qq->whereHas('initialInspections', function ($qqq) use ($id) {
                         $qqq->where('appointment_id', $id);
                     });
                 });
             },
-            ])
+        ])
             ->get();
         //version 2
 //        return InitialInspection::where('appointment_id',$id)->with(['inspectionType','inspectionTypeOption','appointment'])->get();
