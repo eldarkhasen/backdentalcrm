@@ -14,6 +14,9 @@ class AddColumnToCashBoxesTable extends Migration
     public function up()
     {
         Schema::table('cash_boxes', function (Blueprint $table) {
+            if (Schema::hasColumn('cash_boxes', 'is_main')){
+                $table->dropColumn('is_main');
+            }
             $table->boolean('is_main')->nullable();
         });
     }

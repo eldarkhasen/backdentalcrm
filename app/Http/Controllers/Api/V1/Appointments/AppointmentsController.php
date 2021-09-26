@@ -118,6 +118,7 @@ class AppointmentsController extends ApiBaseController
             'templates.types.options',
             'diagnosis',
             'diagnosisType',
+            'teeth'
         ])->where('appointment_id',$id)->findOrFail($treatment_id);
 
         $treatments->load([
