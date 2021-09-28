@@ -133,6 +133,10 @@ class AppointmentsController extends ApiBaseController
         return $this->successResponse(TreatmentResource::make($treatments));
     }
 
+    public function deleteTreatment($treatment_id){
+        return $this->successResponse(Treatment::where('id',$treatment_id)->delete());
+    }
+
     public function getAppointmentInitialInspections($id){
         return $this->successResponse($this->appointmentsService->getAppointmentInitialInspections($id));
     }

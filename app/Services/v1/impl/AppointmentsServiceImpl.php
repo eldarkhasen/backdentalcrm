@@ -169,7 +169,7 @@ class AppointmentsServiceImpl
             ]);
 
             foreach ($services as $service) {
-                $appointment->services()->attach($service['service']['id'], ['amount' => $service['quantity'], 'actual_price' => $service['overallPrice'], 'discount' => $service['discount']]);
+                $appointment->services()->attach($service['service']['id'], ['amount' => $service['quantity'], 'actual_price' => $service['overallPrice'], 'discount' => $service['discount']!=null ? $service['discount'] : 0]);
             }
 
             //Find in the cash flow operations this appointment
