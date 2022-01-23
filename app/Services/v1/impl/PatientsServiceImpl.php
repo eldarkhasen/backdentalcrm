@@ -164,7 +164,7 @@ class PatientsServiceImpl implements PatientsService
 
     public function deletePatient($id)
     {
-        // TODO: Implement deletePatient() method.
+       return Patient::findOrFail($id)->delete();
     }
 
     public function getPatientById($id)

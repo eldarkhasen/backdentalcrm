@@ -101,7 +101,7 @@ class PatientsController extends ApiBaseController
      */
     public function destroy($id)
     {
-        //
+        return $this->successResponse($this->patientsService->deletePatient($id));
     }
 
     public function organizationPatients(Request $request)

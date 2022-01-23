@@ -41,4 +41,5 @@ interface EmployeesAndPositionsService
     public function getEmployeeById($id);
 
     public function updateEmployee(StoreAndUpdateEmployeeApiRequest $request, $id);
+    public function deleteEmployee($id);
 }

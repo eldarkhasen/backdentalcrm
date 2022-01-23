@@ -90,6 +90,7 @@ Route::group(['middleware' => 'auth:api'], function () {
             Route::get('/employees/{id}', 'EmployeesController@show');
             Route::post('/employees', 'EmployeesController@store');
             Route::put('/employees/{id}', 'EmployeesController@update');
+            Route::delete('/employees/{id}', 'EmployeesController@destroy');
         });
 
         Route::group(['namespace' => 'Patients'], function () {
@@ -97,6 +98,7 @@ Route::group(['middleware' => 'auth:api'], function () {
             Route::get('/patients/{id}', 'PatientsController@show')->where('id', '[0-9]+');;
             Route::post('/patients', 'PatientsController@store');
             Route::put('/patients/{id}', 'PatientsController@update');
+            Route::delete('/patients/{id}', 'PatientsController@destroy');
             Route::get('/patients/organization', ['uses' => 'PatientsController@organizationPatients']);
             Route::get('/patients/search', 'PatientsController@searchPatient');
         });

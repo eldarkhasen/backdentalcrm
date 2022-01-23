@@ -24,7 +24,7 @@ class EmployeesController extends ApiBaseController
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response|object
      */
     public function index(Request $request)
     {
@@ -59,7 +59,7 @@ class EmployeesController extends ApiBaseController
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response|object
      */
     public function store(StoreAndUpdateEmployeeApiRequest $request)
     {
@@ -70,7 +70,7 @@ class EmployeesController extends ApiBaseController
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response|object
      */
     public function show($id)
     {
@@ -93,7 +93,7 @@ class EmployeesController extends ApiBaseController
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response|object
      */
     public function update(StoreAndUpdateEmployeeApiRequest $request, $id)
     {
@@ -104,10 +104,10 @@ class EmployeesController extends ApiBaseController
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response|object
      */
     public function destroy($id)
     {
-        //
+        return $this->successResponse($this->employeeService->deleteEmployee($id));
     }
 }

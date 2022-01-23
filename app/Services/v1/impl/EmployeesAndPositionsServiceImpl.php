@@ -403,4 +403,9 @@ class EmployeesAndPositionsServiceImpl implements EmployeesAndPositionsService
         $org_id = $currentUser->employee->organization->id;
         return Employee::where('organization_id',$org_id)->get();
     }
+
+    public function deleteEmployee($id)
+    {
+        return Employee::findOrFail($id)->delete();
+    }
 }
