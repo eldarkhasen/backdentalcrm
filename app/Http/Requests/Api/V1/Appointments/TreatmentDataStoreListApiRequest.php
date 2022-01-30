@@ -16,7 +16,7 @@ class TreatmentDataStoreListApiRequest extends ApiBaseRequest
             'tooth_number' => 'required',
             'diagnosis_id' => 'required',
             'is_finished' => 'required',
-            'teeth' => 'array|required',
+            'teeth' => 'array',
 //            'treatment_id' => 'required',
             'template_id' => 'required',
             'data' => 'array|required',
