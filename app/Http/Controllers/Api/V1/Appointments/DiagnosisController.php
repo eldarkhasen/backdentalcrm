@@ -31,7 +31,7 @@ class DiagnosisController extends ApiBaseController
             })
             ->where(function ($q) use ($user) {
                 $q->where('organization_id', data_get($user, 'employee.organization_id'))
-                    ->orWhereNull('organization_id', null);
+                    ->orWhereNull('organization_id');
             })
             ->paginate($request->input('paginate', 10));
 
