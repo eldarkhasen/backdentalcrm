@@ -53,14 +53,14 @@ class TreatmentsController extends ApiBaseController
                     ->orWhereNull('organization_id');
             });
 
-        $templates = $query->when($request->input('search'), function ($q) use ($request) {
             $search = $request->input('search');
-            $q->where('name', 'like', "%$search%")
-                ->orWhere('code', 'like', "%$search%");
-        })
-            ->paginate($request->input('paginate', 10));
+            if ($search) {
+                $query->where('name', 'like', "%$search%")
+                    ->orWhere('code', 'like', "%$search%")
+                    ->paginate($request->input('paginate', 10));
+            }
 
-        return new TreatmentTemplateCollection($templates);
+        return new TreatmentTemplateCollection($query);
     }
 
     public function showTemplate($id)
