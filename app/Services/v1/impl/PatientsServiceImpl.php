@@ -49,6 +49,9 @@ class PatientsServiceImpl implements PatientsService
         return $currentUser->employee->organization->patients;
     }
 
+    /**
+     * @throws ApiServiceException
+     */
     public function searchPaginatedPatients($currentUser, $search_key, $perPage)
     {
         if (!($currentUser->isEmployee() || $currentUser->isOwner())) {
@@ -69,13 +72,22 @@ class PatientsServiceImpl implements PatientsService
                 'errorCode' => ErrorCode::NOT_ALLOWED
             ]);
         }
-
-        return $currentUser->employee->organization->patients()->where('name', 'LIKE', '%' . $search_key . '%')
-            ->orWhere('surname', 'LIKE', '%' . $search_key . '%')
-            ->orWhere('patronymic', 'LIKE', '%' . $search_key . '%')
-            ->orWhere('id_card', 'LIKE', '%' . $search_key . '%')
-            ->orWhere('phone', 'LIKE', '%' . $search_key . '%')
+        $patients = $currentUser->employee->organization->patients()
+            ->where(function ($query) use ($search_key) {
+                $query->where('name', 'LIKE', '%' . $search_key . '%')
+                    ->orWhere('surname', 'LIKE', '%' . $search_key . '%')
+                    ->orWhere('patronymic', 'LIKE', '%' . $search_key . '%')
+                    ->orWhere('id_card', 'LIKE', '%' . $search_key . '%')
+                    ->orWhere('phone', 'LIKE', '%' . $search_key . '%');
+            })
             ->paginate($perPage);
+        return $patients;
+//        return $currentUser->employee->organization->patients()->where('name', 'LIKE', '%' . $search_key . '%')
+//            ->orWhere('surname', 'LIKE', '%' . $search_key . '%')
+//            ->orWhere('patronymic', 'LIKE', '%' . $search_key . '%')
+//            ->orWhere('id_card', 'LIKE', '%' . $search_key . '%')
+//            ->orWhere('phone', 'LIKE', '%' . $search_key . '%')
+//            ->paginate($perPage);
     }
 
     public function searchPatientsArray($currentUser, $search_key)
@@ -164,7 +176,7 @@ class PatientsServiceImpl implements PatientsService
 
     public function deletePatient($id)
     {
-       return Patient::findOrFail($id)->delete();
+        return Patient::findOrFail($id)->delete();
     }
 
     public function getPatientById($id)

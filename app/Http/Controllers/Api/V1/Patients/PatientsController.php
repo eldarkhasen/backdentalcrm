@@ -24,7 +24,7 @@ class PatientsController extends ApiBaseController
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response|object
      */
     public function index(Request $request)
     {

@@ -28,7 +28,7 @@ class ServicesController extends ApiBaseController
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response|object
      */
     public function index(Request $request)
     {
@@ -63,7 +63,7 @@ class ServicesController extends ApiBaseController
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response|object
      */
     public function store(StoreAndUpdateServiceApiRequest $request)
     {
@@ -96,7 +96,7 @@ class ServicesController extends ApiBaseController
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response|object
      */
     public function update(StoreAndUpdateServiceApiRequest $request, $id)
     {
