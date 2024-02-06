@@ -37,31 +37,35 @@ class TreatmentsController extends ApiBaseController
         $this->treatmentService = $treatmentService;
     }
 
-    public function indexTemplates(){
+    public function indexTemplates()
+    {
         $templates = TreatmentTemplate::all();
         return $this->successResponse(TreatmentTemplateResource::collection($templates));
     }
 
-    public function indexTemplatesPaginate(Request $request){
+    public function indexTemplatesPaginate(Request $request)
+    {
         $user = Auth::user();
-        $templates = TreatmentTemplate::when($request->search, function ($q) use ($request) {
-            $q->where('name', 'like', '%' . $request->search .'%')->orWhere('code', 'like', '%' . $request->search .'%');
+        $templates = TreatmentTemplate::where(function ($q) use ($user) {
+            $q->where('organization_id', data_get($user, 'employee.organization_id'))
+                ->orWhereNull('organization_id');
         })
-            ->where(function ($q) use ($user) {
-                $q->where('organization_id', data_get($user, 'employee.organization_id'))
-                    ->orWhereNull('organization_id');
+            ->when($request->search, function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->search . '%')->orWhere('code', 'like', '%' . $request->search . '%');
             })
             ->paginate($request->input('paginate', 10));
 
         return new TreatmentTemplateCollection($templates);
     }
 
-    public function showTemplate($id){
+    public function showTemplate($id)
+    {
         $template = TreatmentTemplate::with('types.options')->findOrFail($id);
         return $this->successResponse(TreatmentTypeResource::collection($template->types));
     }
 
-    public function storeTemplate(StoreTreatmentTemplateApiRequest $request){
+    public function storeTemplate(StoreTreatmentTemplateApiRequest $request)
+    {
         $user = Auth::user();
         $request['organization_id'] = data_get($user, 'employee.organization_id');
 
@@ -69,16 +73,18 @@ class TreatmentsController extends ApiBaseController
         return $this->successResponse(TreatmentTemplateResource::make($template));
     }
 
-    public function storeType(StoreTreatmentTypeApiRequest $request){
+    public function storeType(StoreTreatmentTypeApiRequest $request)
+    {
         $type = $this->treatmentTemplateService->storeType($request);
         return $this->successResponse(TreatmentTypeResource::make($type));
     }
 
-    public function storeTypeList(StoreTreatmentTypeListApiRequest $request){
+    public function storeTypeList(StoreTreatmentTypeListApiRequest $request)
+    {
         $types = $request->types;
         $type_ids = collect();
         $option_ids = collect();
-        foreach ($types as $type){
+        foreach ($types as $type) {
             $data = new Request([
                 'id' => data_get($type, 'id'),
                 'name' => data_get($type, 'name'),
@@ -87,8 +93,8 @@ class TreatmentsController extends ApiBaseController
             $new_type = $this->treatmentTemplateService->storeType($data);
 
             $type_ids->push($new_type->id);
-            if(data_get($type, 'options')){
-                foreach (data_get($type, 'options') as $option){
+            if (data_get($type, 'options')) {
+                foreach (data_get($type, 'options') as $option) {
                     $data = new Request([
                         'id' => data_get($option, 'id'),
                         'value' => data_get($option, 'value'),
@@ -107,41 +113,45 @@ class TreatmentsController extends ApiBaseController
         return $this->successResponse(['message' => 'Data updated successfully', 'type_ids' => $type_ids, 'option_ids' => $option_ids]);
     }
 
-    public function deleteType($id){
+    public function deleteType($id)
+    {
         TreatmentType::findOrFail($id)->delete();
         return $this->successResponse(['message' => 'Type deleted successfully']);
     }
 
-    public function deleteOption($id){
+    public function deleteOption($id)
+    {
         TreatmentOption::findOrFail($id)->delete();
         return $this->successResponse(['message' => 'Option deleted successfully']);
     }
 
-    public function deleteTemplate($id){
+    public function deleteTemplate($id)
+    {
         TreatmentTemplate::findOrFail($id)->delete();
         return $this->successResponse(['message' => 'Template deleted successfully']);
     }
 
-    public function storeTreatmentDataList(TreatmentDataStoreListApiRequest $request){
+    public function storeTreatmentDataList(TreatmentDataStoreListApiRequest $request)
+    {
         $treatment = $this->treatmentService->store($request);
 
 
         //register teeth
-        foreach ($request->teeth as $tooth){
+        foreach ($request->teeth as $tooth) {
             TreatmentTeeth::create([
-                'treatment_id'=>$treatment->id,
-                'tooth_number'=>$tooth
+                'treatment_id' => $treatment->id,
+                'tooth_number' => $tooth
             ]);
         }
 
-        foreach ($request->data as $data){
-            if(data_get($data, 'is_checked', false)){
+        foreach ($request->data as $data) {
+            if (data_get($data, 'is_checked', false)) {
                 TreatmentData::updateOrCreate([
                     'treatment_id' => $treatment->id,
                     'template_id' => $request->template_id,
-                    'type_id'=> data_get($data, 'type_id'),
+                    'type_id' => data_get($data, 'type_id'),
                     'option_id' => data_get($data, 'option_id'),
-                ],[
+                ], [
                     'value' => data_get($data, 'value'),
                 ]);
             } else {
@@ -159,40 +169,41 @@ class TreatmentsController extends ApiBaseController
         return $this->successResponse(['message' => 'Data stored successfully']);
     }
 
-    public function updateTreatmentDataList(UpdateTreatmentDataListApiRequest $request){
+    public function updateTreatmentDataList(UpdateTreatmentDataListApiRequest $request)
+    {
         $treatment = $this->treatmentService->store($request);
 
         //refresh tooth_number
-        TreatmentTeeth::where('treatment_id',$treatment->id)->delete();
+        TreatmentTeeth::where('treatment_id', $treatment->id)->delete();
 
         //set new teeth
         //register teeth
-        foreach ($request->teeth as $tooth){
+        foreach ($request->teeth as $tooth) {
             TreatmentTeeth::create([
-                'treatment_id'=>$treatment->id,
-                'tooth_number'=>$tooth
+                'treatment_id' => $treatment->id,
+                'tooth_number' => $tooth
             ]);
         }
 
-        foreach ($request->types as $type){
+        foreach ($request->types as $type) {
 
             TreatmentData::updateOrCreate([
                 'treatment_id' => $treatment->id,
                 'template_id' => $request->template_id,
-                'type_id'=> data_get($type, 'id'),
+                'type_id' => data_get($type, 'id'),
                 'option_id' => null,
-            ],[
+            ], [
                 'value' => data_get($type, 'value'),
             ]);
-            if(data_get($type, 'options')){
-                foreach ($type['options'] as $option){
-                    if(data_get($option, 'is_checked', false)){
+            if (data_get($type, 'options')) {
+                foreach ($type['options'] as $option) {
+                    if (data_get($option, 'is_checked', false)) {
                         TreatmentData::updateOrCreate([
                             'treatment_id' => $treatment->id,
                             'template_id' => $request->template_id,
-                            'type_id'=> data_get($type, 'id'),
+                            'type_id' => data_get($type, 'id'),
                             'option_id' => data_get($option, 'id'),
-                        ],[
+                        ], [
 
                         ]);
                     } else {
