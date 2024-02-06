@@ -52,12 +52,13 @@ class TreatmentsController extends ApiBaseController
                 $q->where('organization_id', data_get($user, 'employee.organization_id'))
                     ->orWhereNull('organization_id');
             })
-            ->when($request->search, function ($q) use ($request) {
-                $q->where('name', 'like', '%' . $request->search . '%')->orWhere('code', 'like', '%' . $request->search . '%');
-            })
+//            ->when($request->search, function ($q) use ($request) {
+//                $q->where('name', 'like', '%' . $request->search . '%')->orWhere('code', 'like', '%' . $request->search . '%');
+//            })
+                ->where('name','like', '%К%')
             ->paginate($request->input('paginate', 10));
 
-        return $templates;
+        return new TreatmentTemplateCollection($templates);
     }
 
     public function showTemplate($id)
