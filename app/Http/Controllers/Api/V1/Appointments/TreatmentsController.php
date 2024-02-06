@@ -52,8 +52,9 @@ class TreatmentsController extends ApiBaseController
                 $q->where('organization_id', data_get($user, 'employee.organization_id'))
                     ->orWhereNull('organization_id');
             })
-            ->when($request->search, function ($q) use ($request) {
-                $q->where('name', 'like', '%' . $request->search . '%')->orWhere('code', 'like', '%' . $request->search . '%');
+            ->when($request->input('search'), function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->input('search') . '%')
+                    ->orWhere('code', 'like', '%' . $request->input('search') . '%');
             })
             ->paginate($request->input('paginate', 10));
 
