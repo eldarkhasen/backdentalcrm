@@ -13,7 +13,8 @@ use Illuminate\Support\Facades\Auth;
 
 class DiagnosisController extends ApiBaseController
 {
-    public function index(){
+    public function index()
+    {
         return $this->successResponse(
             Diagnosis::with('types')
                 ->select('id', 'name', 'code', 'organization_id')
@@ -21,25 +22,26 @@ class DiagnosisController extends ApiBaseController
         );
     }
 
-    public function indexPaginate(Request $request){
+    public function indexPaginate(Request $request)
+    {
         $user = Auth::user();
         $user->load('employee');
         $diagnosis = Diagnosis::with('types')
-            ->where('organization_id', data_get($user, 'employee.organization_id'))
-            ->when($request->input('search'), function ($q) use ($request) {
-                $q->where('name', 'like', '%'. $request->input('search') .'%')
-                    ->orWhere('code', 'like', '%'. $request->input('search') .'%');
+            ->where(function ($q) use ($user) {
+                $q->where('organization_id', data_get($user, 'employee.organization_id'))
+                    ->orWhereNull('organization_id');
             })
-//            ->where(function ($q) use ($user) {
-//                $q->where('organization_id', data_get($user, 'employee.organization_id'))
-//                    ->orWhereNull('organization_id');
-//            })
+            ->when($request->input('search'), function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->input('search') . '%')
+                    ->orWhere('code', 'like', '%' . $request->input('search') . '%');
+            })
             ->paginate($request->input('paginate', 10));
 
         return new DiagnosisCollection($diagnosis);
     }
 
-    public function show($id){
+    public function show($id)
+    {
         return $this->successResponse(
             Diagnosis::with('types')
                 ->select('id', 'name', 'code', 'organization_id')
@@ -47,7 +49,8 @@ class DiagnosisController extends ApiBaseController
         );
     }
 
-    public function edit($id){
+    public function edit($id)
+    {
         return $this->successResponse(
             Diagnosis::with('types')
                 ->select('id', 'name', 'code', 'organization_id')
@@ -55,13 +58,14 @@ class DiagnosisController extends ApiBaseController
         );
     }
 
-    public function store(DiagnosisStoreApiRequest $request){
+    public function store(DiagnosisStoreApiRequest $request)
+    {
         $user = Auth::user();
         $user->load('employee');
 
         $diagnosis = Diagnosis::updateOrCreate([
             'id' => $request->id
-        ],[
+        ], [
             'name' => $request->name,
             'code' => $request->code,
             'organization_id' => data_get($user, 'employee.organization_id'),
@@ -69,7 +73,8 @@ class DiagnosisController extends ApiBaseController
         return $this->successResponse($diagnosis);
     }
 
-    public function delete($id){
+    public function delete($id)
+    {
         Diagnosis::findOrFail($id)->delete();
         return $this->successResponse(['message' => 'Diagnosis deleted successfully']);
     }
