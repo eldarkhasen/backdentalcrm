@@ -24,7 +24,7 @@ use Illuminate\Support\Facades\DB;
 class EmployeesAndPositionsServiceImpl implements EmployeesAndPositionsService
 {
 
-    public function getEmployees($currentUser,$perPage)
+    public function getEmployees($currentUser, $perPage)
     {
         if (!($currentUser->isEmployee() || $currentUser->isOwner())) {
             throw new ApiServiceException(400, false, [
@@ -46,10 +46,10 @@ class EmployeesAndPositionsServiceImpl implements EmployeesAndPositionsService
         }
 
         $org_id = $currentUser->employee->organization->id;
-        return Employee::where('organization_id',$org_id)->with('positions', 'account', 'services')->paginate($perPage);
+        return Employee::where('organization_id', $org_id)->with('positions', 'account', 'services')->paginate($perPage);
     }
 
-    public function getEmployeeByPosition($currentUser,$position, $perPage)
+    public function getEmployeeByPosition($currentUser, $position, $perPage)
     {
         if (!($currentUser->isEmployee() || $currentUser->isOwner())) {
             throw new ApiServiceException(400, false, [
@@ -72,10 +72,10 @@ class EmployeesAndPositionsServiceImpl implements EmployeesAndPositionsService
 
         $org_id = $currentUser->employee->organization->id;
         $pos = Position::findOrFail($position);
-        return $pos->employees()->where('organization_id',$org_id)->with('positions')->paginate($perPage);
+        return $pos->employees()->where('organization_id', $org_id)->with('positions')->paginate($perPage);
     }
 
-    public function searchEmployeeByPosition($currentUser,$search_key, $position_id, $perPage = 10)
+    public function searchEmployeeByPosition($currentUser, $search_key, $position_id, $perPage = 10)
     {
         if (!($currentUser->isEmployee() || $currentUser->isOwner())) {
             throw new ApiServiceException(400, false, [
@@ -97,7 +97,7 @@ class EmployeesAndPositionsServiceImpl implements EmployeesAndPositionsService
         }
 
         $org_id = $currentUser->employee->organization->id;
-        return Employee::where('organization_id',$org_id)->with(['positions'])
+        return Employee::where('organization_id', $org_id)->with(['positions'])
             ->leftJoin('employees_has_positions as pos', 'pos.employee_id', '=', 'employees.id')
             ->where('pos.position_id', '=', $position_id)
             ->where(function ($query) use ($search_key) {
@@ -132,7 +132,7 @@ class EmployeesAndPositionsServiceImpl implements EmployeesAndPositionsService
         }
 
         $org_id = $currentUser->employee->organization->id;
-        return Position::where('organization_id',$org_id)->get();
+        return Position::where('organization_id', $org_id)->get();
     }
 
     public function searchEmployee($currentUser, $search_key, $perPage)
@@ -157,15 +157,14 @@ class EmployeesAndPositionsServiceImpl implements EmployeesAndPositionsService
         }
 
         $org_id = $currentUser->employee->organization->id;
-        return Employee::where('name', 'LIKE', '%' . $search_key . '%')
-            ->where('organization_id',$org_id)
-            ->orWhere('surname', 'LIKE', '%' . $search_key . '%')
-            ->orWhere('patronymic', 'LIKE', '%' . $search_key . '%')
-            ->with('positions')
-            ->paginate($perPage);
+        return Employee::where('organization_id', $org_id)->where(function ($query) use ($search_key) {
+            $query->where('name', 'LIKE', '%' . $search_key . '%')
+                ->orWhere('surname', 'LIKE', '%' . $search_key . '%')
+                ->orWhere('patronymic', 'LIKE', '%' . $search_key . '%');
+        })->with('positions')->paginate($perPage);
     }
 
-    public function searchPosition($currentUser,$search_key)
+    public function searchPosition($currentUser, $search_key)
     {
         if (!($currentUser->isEmployee() || $currentUser->isOwner())) {
             throw new ApiServiceException(400, false, [
@@ -187,10 +186,10 @@ class EmployeesAndPositionsServiceImpl implements EmployeesAndPositionsService
         }
 
         $org_id = $currentUser->employee->organization->id;
-        return Position::where('name', $search_key)->where('organization_id',$org_id)->paginate(10);
+        return Position::where('name', $search_key)->where('organization_id', $org_id)->paginate(10);
     }
 
-    public function storeEmployee($currentUser,StoreAndUpdateEmployeeApiRequest $request)
+    public function storeEmployee($currentUser, StoreAndUpdateEmployeeApiRequest $request)
     {
         if (!($currentUser->isEmployee() || $currentUser->isOwner())) {
             throw new ApiServiceException(400, false, [
@@ -222,7 +221,7 @@ class EmployeesAndPositionsServiceImpl implements EmployeesAndPositionsService
                 'birth_date' => $request->birth_date,
                 'gender' => $request->gender,
                 'color' => $request->color,
-                'organization_id'=>$org_id
+                'organization_id' => $org_id
             ]);
 
             $positions = $request->positions;
@@ -296,9 +295,9 @@ class EmployeesAndPositionsServiceImpl implements EmployeesAndPositionsService
 
         $org_id = $currentUser->employee->organization->id;
         return Position::create([
-            'name'=>$request->name,
-            'description'=>$request->description,
-            'organization_id'=>$org_id
+            'name' => $request->name,
+            'description' => $request->description,
+            'organization_id' => $org_id
         ]);
     }
 
@@ -375,7 +374,7 @@ class EmployeesAndPositionsServiceImpl implements EmployeesAndPositionsService
                 //delete account
             }
         }
-        Appointment::where('employee_id','=',$employee->id)->update(['color'=>$employee->color]);
+        Appointment::where('employee_id', '=', $employee->id)->update(['color' => $employee->color]);
         return $employee;
     }
 
@@ -401,7 +400,7 @@ class EmployeesAndPositionsServiceImpl implements EmployeesAndPositionsService
         }
 
         $org_id = $currentUser->employee->organization->id;
-        return Employee::where('organization_id',$org_id)->get();
+        return Employee::where('organization_id', $org_id)->get();
     }
 
     public function deleteEmployee($id)
