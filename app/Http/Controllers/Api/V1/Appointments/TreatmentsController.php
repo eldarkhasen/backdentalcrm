@@ -47,7 +47,8 @@ class TreatmentsController extends ApiBaseController
     {
         $user = Auth::user();
         $user->load('employee');
-        dd(data_get($user, 'employee.organization_id'));
+        echo (data_get($user, 'employee.organization_id'));
+        die();
         $query = TreatmentTemplate::query()
             ->where(function ($q) use ($user) {
                 $q->where('organization_id', data_get($user, 'employee.organization_id'))
