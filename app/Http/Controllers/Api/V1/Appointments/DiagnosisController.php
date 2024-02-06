@@ -32,8 +32,10 @@ class DiagnosisController extends ApiBaseController
                     ->orWhereNull('organization_id');
             })
             ->when($request->input('search'), function ($q) use ($request) {
-                $q->where('name', 'like', '%' . $request->input('search') . '%')
-                    ->orWhere('code', 'like', '%' . $request->input('search') . '%');
+                $q->where(function ($q) use ($request) {
+                    $q->where('name', 'like', '%' . $request->input('search') . '%')
+                        ->orWhere('code', 'like', '%' . $request->input('search') . '%');
+                });
             })
             ->paginate($request->input('paginate', 10));
 
