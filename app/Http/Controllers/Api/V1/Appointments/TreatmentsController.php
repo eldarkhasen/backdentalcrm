@@ -46,6 +46,7 @@ class TreatmentsController extends ApiBaseController
     public function indexTemplatesPaginate(Request $request)
     {
         $user = Auth::user();
+        $user->load('employee');
         $templates = TreatmentTemplate::where(function ($q) use ($user) {
             $q->where('organization_id', data_get($user, 'employee.organization_id'))
                 ->orWhereNull('organization_id');
