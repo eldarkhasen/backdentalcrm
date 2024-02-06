@@ -29,10 +29,11 @@ class DiagnosisController extends ApiBaseController
                 $q->where('name', 'like', '%'. $request->input('search') .'%')
                     ->orWhere('code', 'like', '%'. $request->input('search') .'%');
             })
-            ->where(function ($q) use ($user) {
-                $q->where('organization_id', data_get($user, 'employee.organization_id'))
-                    ->orWhereNull('organization_id');
-            })
+            ->where('organization_id', data_get($user, 'employee.organization_id'))
+//            ->where(function ($q) use ($user) {
+//                $q->where('organization_id', data_get($user, 'employee.organization_id'))
+//                    ->orWhereNull('organization_id');
+//            })
             ->paginate($request->input('paginate', 10));
 
         return new DiagnosisCollection($diagnosis);
