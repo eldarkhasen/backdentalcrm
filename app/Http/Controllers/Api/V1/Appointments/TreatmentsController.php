@@ -56,11 +56,10 @@ class TreatmentsController extends ApiBaseController
             $search = $request->input('search');
             if ($search) {
                 $query->where('name', 'like', "%$search%")
-                    ->orWhere('code', 'like', "%$search%")
-                    ->paginate($request->input('paginate', 10));
+                    ->orWhere('code', 'like', "%$search%");
             }
 
-        return new TreatmentTemplateCollection($query);
+        return new TreatmentTemplateCollection($query->paginate($request->input('paginate', 10)));
     }
 
     public function showTemplate($id)
