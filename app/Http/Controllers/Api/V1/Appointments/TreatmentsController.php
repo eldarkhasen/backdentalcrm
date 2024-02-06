@@ -47,15 +47,13 @@ class TreatmentsController extends ApiBaseController
     {
         $user = Auth::user();
         $user->load('employee');
-        echo (data_get($user, 'employee.organization_id'));
-        die();
         $query = TreatmentTemplate::query()
             ->where(function ($q) use ($user) {
                 $q->where('organization_id', data_get($user, 'employee.organization_id'))
                     ->orWhereNull('organization_id');
             });
 
-        $query->when($request->input('search'), function ($q) use ($request) {
+        $templates = $query->when($request->input('search'), function ($q) use ($request) {
             $search = $request->input('search');
             $q->where('name', 'like', "%$search%")
                 ->orWhere('code', 'like', "%$search%");
