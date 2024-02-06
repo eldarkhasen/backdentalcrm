@@ -57,7 +57,7 @@ class TreatmentsController extends ApiBaseController
             })
             ->paginate($request->input('paginate', 10));
 
-        return data_get($user, 'employee.organization_id');
+        return new TreatmentTemplateCollection($templates);
     }
 
     public function showTemplate($id)
