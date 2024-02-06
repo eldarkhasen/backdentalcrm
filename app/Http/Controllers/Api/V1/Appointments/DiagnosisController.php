@@ -25,11 +25,11 @@ class DiagnosisController extends ApiBaseController
         $user = Auth::user();
         $user->load('employee');
         $diagnosis = Diagnosis::with('types')
+            ->where('organization_id', data_get($user, 'employee.organization_id'))
             ->when($request->input('search'), function ($q) use ($request) {
                 $q->where('name', 'like', '%'. $request->input('search') .'%')
                     ->orWhere('code', 'like', '%'. $request->input('search') .'%');
             })
-            ->where('organization_id', data_get($user, 'employee.organization_id'))
 //            ->where(function ($q) use ($user) {
 //                $q->where('organization_id', data_get($user, 'employee.organization_id'))
 //                    ->orWhereNull('organization_id');
